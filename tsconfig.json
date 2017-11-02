@@ -4,10 +4,11 @@
     "outDir": "./dist/out-tsc",
     "baseUrl": "src",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "traceResolution": true,
     "allowJs": true,
     "target": "es5",
     "paths": {

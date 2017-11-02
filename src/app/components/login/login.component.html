@@ -1,0 +1,16 @@
+<div id="form">
+    <h1>Welcome to Groupme Client!</h1>
+    <p>
+        Please visit this link:
+    </p>
+    <p>
+        <a target="_blank" href="https://oauth.groupme.com/oauth/authorize?client_id=m5NGOjpxI2y1ltO04dq6QFWWThBcQak4Jd4kD1kTEbU0lBfx">GroupMe Authentication</a>
+    </p>
+    <p>
+        And paste the key provided into this box:
+    </p>
+    <form (ngSubmit)="onSubmit(keyInput.value)">
+        <input #keyInput required /><br />
+        <button>Submit</button>
+    </form>
+</div>

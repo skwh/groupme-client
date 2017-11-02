@@ -12,15 +12,13 @@ if (serve) {
 
 function createWindow() {
 
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height
+    x: 100,
+    y: 100,
+    width: 800,
+    height: 600
   });
 
   // and load the index.html of the app.
@@ -30,6 +28,11 @@ function createWindow() {
   if (serve) {
     win.webContents.openDevTools();
   }
+
+  win.webContents.on('new-window', function(e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {

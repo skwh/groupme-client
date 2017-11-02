@@ -1,0 +1,12 @@
+div#form {
+  text-align: center; }
+
+form > button {
+  margin-top: 2%;
+  font-size: 1.25rem; }
+
+form > input {
+  width: 60%;
+  height: 1.25rem; }
+
+/*# sourceMappingURL=login.component.css.map */
