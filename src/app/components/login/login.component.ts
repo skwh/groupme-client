@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { StoreService } from "../../providers/store.service";
+import { Router } from "@angular/router";
+import { StateService } from "../../providers/state.service";
 
 @Component({
   selector: 'app-login',
@@ -7,10 +8,10 @@ import { StoreService } from "../../providers/store.service";
   styleUrls: ['login.component.scss']
 })
 export class LoginComponent {
-  constructor(private store: StoreService) {}
+  constructor(private state: StateService, private router: Router) {}
 
   onSubmit(keyValue: string) {
-    this.store.setUserKey(keyValue);
-    // redirect to groups list component
+    this.state.doFirstTimeSetup(keyValue);
+    this.router.navigate(['']);
   }
 }

@@ -1,0 +1,17 @@
+<div id="sidebar">
+    <h1 class="title">gmg</h1>
+    <div class="sidebar-links">
+        <h3 class="subheader">Chats</h3>
+        <ul class="groups">
+            <li *ngFor="let group of groups">
+                <a routerLink="#" routerLinkActive="selected">{{ group.name }}</a>
+            </li>
+        </ul>
+        <h3 class="subheader">Contacts</h3>
+        <ul class="contacts">
+            <li *ngFor="let chat of chats">
+                <a routerLink="#" routerLinkActive="selected">{{ chat.message.user_id }}</a>
+            </li>
+        </ul>
+    </div>
+</div>

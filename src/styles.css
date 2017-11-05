@@ -2,11 +2,10 @@
 html, body {
   margin: 0;
   padding: 0;
-
   height: 100%;
-  font-family: "Encode Sans", "Quicksand", sans-serif;
-}
+  font-family: "Encode Sans", "Quicksand", sans-serif; }
 
 *, *:before, *:after {
-  box-sizing: border-box;
-}
+  box-sizing: border-box; }
+
+/*# sourceMappingURL=styles.css.map */

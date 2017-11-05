@@ -1,5 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron';
-import * as path from 'path';
+import { app, BrowserWindow } from 'electron';
 
 let win, serve;
 const args = process.argv.slice(1);
@@ -17,8 +16,8 @@ function createWindow() {
   win = new BrowserWindow({
     x: 100,
     y: 100,
-    width: 800,
-    height: 600
+    width: 950,
+    height: 650
   });
 
   // and load the index.html of the app.

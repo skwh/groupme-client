@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ElectronService } from './providers/electron.service';
+import { StoreService } from "./providers/store.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  constructor(public electronService: ElectronService) {
+export class AppComponent implements OnInit {
+  constructor(public electronService: ElectronService, private store: StoreService) {
 
     if (electronService.isElectron()) {
       console.log('Mode electron');
@@ -18,5 +19,9 @@ export class AppComponent {
     } else {
       console.log('Mode web');
     }
+  }
+
+  ngOnInit() {
+    this.store.doLoad();
   }
 }

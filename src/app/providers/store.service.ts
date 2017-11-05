@@ -1,63 +1,81 @@
 import { Injectable } from "@angular/core";
 import { Group } from "../models/group";
+import { Chat } from "../models/chat";
+import { isNull } from "util";
 
 @Injectable()
 export class StoreService {
   private localStore = window.localStorage;
-  private state = {
-    last_updated: 0,
-    groups: [],
-    user_key: ""
+
+  private store = {
+    'user_key': "",
+    'groups': [],
+    'groups_last_updated': 0,
+    'chats': [],
+    'chats_last_updated': 0,
+    'last_updated': 0
   };
 
-  setUserKey(key: string) {
-    if (key === '') {
-      console.log("This key is empty!");
-      return;
+  get(key: string): any {
+    return this.store[key];
+  }
+
+  put(key:string, value: any) {
+    this.store.last_updated = Date.now();
+    this.store[key] = value;
+    this.putToLocalStore(key, value);
+  }
+
+  private putOnlyToStore(key: string, value: any) {
+    this.store.last_updated = Date.now();
+    this.store[key] = value;
+  }
+
+  updateFromLocalStore(key: string): boolean {
+    let value = this.localStore.getItem(key);
+    if (isNull(value)) {
+      return false;
+    } else {
+      this.putOnlyToStore(key, value);
+      return true;
     }
-    console.log("Setting user key to " + key);
-    this.state.user_key = key;
-    this.commitToLocalStore('user_key', this.state.user_key);
   }
 
-  getUserKey(): string {
-    return this.state.user_key;
+  doLoad() {
+    this.updateFromLocalStore('user_key');
+    this.updateFromLocalStore('groups');
+    this.updateFromLocalStore('chats');
   }
 
-  updateGroups(groups: Group[]) {
-    console.log("Updating groups!");
-    this.state.groups = groups;
-    this.state.last_updated = Date.now();
-    this.commitStateToLocalStore();
+  private putToLocalStore(key: string, value: any) {
+    console.log("Putting "+ key + " to LocalStorage");
+    this.localStore.setItem(key, value);
+  }
+
+  putUserKey(user_key: string) {
+    if (user_key === "") {
+      console.error("This key is empty!");
+      throw new Error("This key is empty!");
+    }
+    this.put('user_key', user_key);
+  }
+
+  putGroups(groups: Group[]) {
+    this.put('groups', JSON.stringify(groups));
+    this.put('groups_last_updated', Date.now());
   }
 
   getGroups(): Group[] {
-    return this.state.groups;
+    return JSON.parse(this.get('groups'));
   }
 
-  getLastUpdated(): number {
-    return this.state.last_updated;
+  putChats(chats: Chat[]) {
+    this.put('chats', JSON.stringify(chats));
+    this.put('chats_last_updated', Date.now());
   }
 
-  commitStateToLocalStore() {
-    this.localStore.setItem('last_updated', this.state.last_updated.toString());
-    this.localStore.setItem('user_key', this.state.user_key);
-    this.localStore.setItem('groups', this.state.groups.toString());
-  }
-
-  private commitToLocalStore(key:string, item: any) {
-    this.localStore.setItem(key, item.toString());
-  }
-
-  private clearFromLocalStore(key: string) {
-    this.localStore.setItem(key, '');
-  }
-
-  retrieveAllFromLocalStore() {
-    console.log("Overwriting current store with values from localStorage!");
-    this.state.last_updated = parseInt(this.localStore.getItem('last_updated'), 10);
-    this.state.user_key = this.localStore.getItem('user_key');
-    console.log(this.localStore.getItem('groups'));
+  getChats(): Chat[] {
+    return JSON.parse(this.get('chats'));
   }
 
 }

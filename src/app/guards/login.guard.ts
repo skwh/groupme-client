@@ -1,10 +1,22 @@
 import { Injectable } from "@angular/core";
-import { CanActivate } from "@angular/router";
+import { CanActivate, CanActivateChild, Router } from "@angular/router";
+import { StateService } from "../providers/state.service";
 
 @Injectable()
-export class LoginGuard implements CanActivate {
+export class LoginGuard implements CanActivate, CanActivateChild {
+
+  constructor(private state: StateService, private router: Router) {}
+
   canActivate() {
-    console.log("LoginGuard#canActivate called!");
-    return true;
+    if (!this.state.userKeyIsEmpty()) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+
+  canActivateChild() {
+    return this.canActivate();
   }
 }

@@ -15,11 +15,18 @@ import { ElectronService } from './providers/electron.service';
 import { GroupmeService } from "./providers/groupme.service";
 import { LoginComponent } from "./components/login/login.component";
 import { StoreService } from "./providers/store.service";
+import { LoginGuard } from "./guards/login.guard";
+import { GroupmeMockService } from "./providers/groupme-mock.service";
+import { StateService } from "./providers/state.service";
+import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { MessagesComponent } from "./components/messages/messages.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    SidebarComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -30,9 +37,12 @@ import { StoreService } from "./providers/store.service";
   ],
   providers: [
     ElectronService,
-    GroupmeService,
-    StoreService
+    StoreService,
+    {provide: GroupmeService, useClass: GroupmeMockService},
+    StateService,
+    LoginGuard
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

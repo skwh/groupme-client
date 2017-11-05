@@ -1,0 +1,62 @@
+@import "../../../variables.scss";
+
+div#sidebar {
+  background-color: $secondary;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 200px;
+  box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.25);
+
+  div.sidebar-links {
+    padding-left: 20px;
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding-left: 5%;
+      li {
+        display: inline;
+      }
+      li>a {
+        display: block;
+        padding: 2%;
+        font-size: 20px;
+        letter-spacing: -0.54px;
+        color: black;
+        text-decoration: none;
+
+        &.selected {
+          background-color: $primary;
+        }
+
+        &:hover {
+          background-color: $secondary-dark;
+        }
+
+      }
+    }
+  }
+
+  h1.title, h3.subheader {
+    font-family: "Quicksand", sans-serif;
+    font-weight: normal;
+  }
+
+  h1.title {
+    text-align: center;
+    font-size: 48px;
+    letter-spacing: -1.92px;
+    margin: 3vh 0vw;
+  }
+
+  h3.subheader {
+    text-transform: uppercase;
+    font-size: 22px;
+    letter-spacing: -3%;
+    margin-bottom: 0;
+    margin-top: 5%;
+  }
+}
+

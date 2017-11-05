@@ -1,23 +1,21 @@
-import {Member} from "./member";
-import {Message} from "./message";
+import { Member } from "./member";
+import { Message } from "./message";
 
 export class Group {
-  id: number;
-  name: string;
-  type: string;
-  description: string;
-  image_url: string;
-  creator_user_id: number;
-  created_at: number;
-  updated_at: number;
-  share_url: string;
-  max_members: number;
-  office_mode: boolean;
-  phone_number: string;
-  members: Member[];
-  messages: Message[];
+  public type: string;
+  public description: string;
+  public image_url: string;
+  public creator_user_id: number;
+  public created_at: number;
+  public updated_at: number;
+  public share_url: string;
+  public max_members: number;
+  public office_mode: boolean;
+  public phone_number: string;
+  public members: Member[];
+  public messages: Message[];
 
-  constructor() {}
+  constructor(public id: number, public name: string) {}
 
   static fields: string[] = [
     "id", "name", "type", "description", "image_url", "creator_user_id", "created_at", "updated_at", "share_url",
