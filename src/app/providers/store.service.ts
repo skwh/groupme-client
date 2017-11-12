@@ -44,7 +44,9 @@ export class StoreService {
   doLoad() {
     this.updateFromLocalStore('user_key');
     this.updateFromLocalStore('groups');
+    this.updateFromLocalStore('groups_last_updated');
     this.updateFromLocalStore('chats');
+    this.updateFromLocalStore('chats_last_updated');
   }
 
   private putToLocalStore(key: string, value: any) {
@@ -65,8 +67,13 @@ export class StoreService {
     this.put('groups_last_updated', Date.now());
   }
 
-  getGroups(): Group[] {
-    return JSON.parse(this.get('groups'));
+  getGroups(limit: number): Group[] {
+    let groups: Group[] = JSON.parse(this.get('groups'));
+    if (limit <= 0) {
+      return groups;
+    } else {
+      return groups.slice(0, limit);
+    }
   }
 
   putChats(chats: Chat[]) {
@@ -74,8 +81,13 @@ export class StoreService {
     this.put('chats_last_updated', Date.now());
   }
 
-  getChats(): Chat[] {
-    return JSON.parse(this.get('chats'));
+  getChats(limit: number): Chat[] {
+    let chats: Chat[] = JSON.parse(this.get('chats'));
+    if (limit <= 0) {
+      return chats;
+    } else {
+      return chats.slice(0, limit);
+    }
   }
 
 }

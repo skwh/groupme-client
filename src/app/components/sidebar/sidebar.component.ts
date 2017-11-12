@@ -15,8 +15,12 @@ export class SidebarComponent implements OnInit {
   contacts: Chat[];
 
   ngOnInit() {
-    this.state.getGroups(true).then(response => this.groups = response);
-    this.state.getChats(true).then(response => this.contacts = response);
+    this.updateInfo();
+  }
+
+  updateInfo() {
+    this.state.getGroups(false, 5).then(response => this.groups = response);
+    this.state.getChats(false, 5).then(response => this.contacts = response);
   }
 
 }

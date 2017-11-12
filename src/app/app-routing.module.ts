@@ -12,6 +12,14 @@ const routes: Routes = [
       {
         path: '',
         component: MessagesComponent
+      },
+      {
+        path: 'group/:id',
+        component: MessagesComponent
+      },
+      {
+        path: 'chat/:id',
+        component: MessagesComponent
       }
     ]
   },

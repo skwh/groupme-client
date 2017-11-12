@@ -1,7 +1,9 @@
 import { Member } from "./member";
 import { Message } from "./message";
+import { Model } from "./model.interface";
 
-export class Chat {
+export class Chat implements Model {
+  [index: number]: string;
   public created_at: number;
   public updated_at: number;
   public other_user: Member;
@@ -9,7 +11,7 @@ export class Chat {
 
   constructor(public messages_count: number) {}
 
-  static fields: string[] = [
+  public fields: string[] = [
       "created_at", "updated_at", "other_user", "last_message", "messages_count"
   ];
 }

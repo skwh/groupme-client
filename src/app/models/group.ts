@@ -1,7 +1,10 @@
 import { Member } from "./member";
 import { Message } from "./message";
+import { Model } from "./model.interface";
 
-export class Group {
+export class Group implements Model {
+  public id: number;
+  public name: string;
   public type: string;
   public description: string;
   public image_url: string;
@@ -15,9 +18,9 @@ export class Group {
   public members: Member[];
   public messages: Message[];
 
-  constructor(public id: number, public name: string) {}
+  constructor() {}
 
-  static fields: string[] = [
+  public fields: string[] = [
     "id", "name", "type", "description", "image_url", "creator_user_id", "created_at", "updated_at", "share_url",
     "max_members", "office_mode", "phone_number", "members", "messages"
   ];

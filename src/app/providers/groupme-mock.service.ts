@@ -11,12 +11,12 @@ export class GroupmeMockService extends GroupmeService {
   }
 
   private FAKE_GROUPS: Group[] = [
-    new Group(1, "Family"),
-    new Group(2, "Roommates"),
-    new Group(3, "Brunch Club"),
-    new Group(4, "Ski Trip"),
-    new Group(5, "Superfriends"),
-    new Group(6, "California Coast")
+    new Group(),
+    new Group(),
+    new Group(),
+    new Group(),
+    new Group(),
+    new Group()
   ];
 
   private FAKE_CHATS: Chat[] = [
@@ -25,11 +25,11 @@ export class GroupmeMockService extends GroupmeService {
       new Chat(1)
   ];
 
-  getGroups(): Promise<Group[]> {
+  getGroups(token: string): Promise<Group[]> {
     return Promise.resolve(this.FAKE_GROUPS);
   }
 
-  getChats(): Promise<Chat[]> {
+  getChats(token: string): Promise<Chat[]> {
     return Promise.resolve(this.FAKE_CHATS);
   }
 

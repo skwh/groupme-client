@@ -1,1 +1,1 @@
-Messages !
+<app-message *ngFor="let message of messages | async | reverse" [message]="message"></app-message>

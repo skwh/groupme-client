@@ -3,6 +3,7 @@ import { StoreService } from "./store.service";
 import { GroupmeService } from "./groupme.service";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
+import { Message } from "../models/message";
 
 @Injectable()
 export class StateService {
@@ -19,7 +20,10 @@ export class StateService {
    */
   private checkInStore(key: string, defaultValue: any): boolean {
     let val = this.store.get(key);
-    return val == defaultValue;
+    if (val == defaultValue) {
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -28,7 +32,7 @@ export class StateService {
    * @returns {boolean}
    */
   private checkLastUpdated(key: string): boolean {
-    return this.checkInStore(key, 0);
+    return this.checkInStore(key + "_last_updated", '0');
   }
 
   /**
@@ -48,26 +52,68 @@ export class StateService {
   }
 
 
-  getGroups(forceUpdate: boolean): Promise<Group[]> {
+  getGroups(forceUpdate: boolean, limit: number): Promise<Group[]> {
    if (this.userKeyIsEmpty()) {
      return Promise.resolve([]);
    } else {
      if (!this.checkLastUpdated('groups') || forceUpdate) {
-       return this.groupme.getGroups(this.getUserKey());
-     } else {
-       return Promise.resolve(this.store.get('groups'));
+       let newGroups: Group[] = [];
+       return this.groupme.getGroups(this.getUserKey()).then(response => {
+         newGroups = response;
+         this.store.putGroups(newGroups);
+         return Promise.resolve(this.store.getGroups(limit));
+       });
      }
+     return Promise.resolve(this.store.getGroups(limit));
    }
   }
 
-  getChats(forceUpdate: boolean): Promise<Chat[]> {
+  getChats(forceUpdate: boolean, limit: number): Promise<Chat[]> {
     if (this.userKeyIsEmpty()) {
       return Promise.resolve([]);
     } else {
       if (!this.checkLastUpdated('chats') || forceUpdate) {
-        return this.groupme.getChats(this.getUserKey());
+        let newChats: Chat[] = [];
+        return this.groupme.getChats(this.getUserKey()).then(response => {
+          newChats = response;
+          this.store.putChats(newChats);
+          return Promise.resolve(this.store.getChats(limit));
+        });
       }
-      return Promise.resolve(this.store.getChats());
+      return Promise.resolve(this.store.getChats(limit));
+    }
+  }
+
+  getDirectMessages(user_id: number, before_id?: number, since_id?: number): Promise<Message[]> {
+    if (this.userKeyIsEmpty()) {
+      return Promise.resolve([]);
+    } else {
+      return this.groupme.getDirectMessages(this.getUserKey(), user_id, before_id, since_id);
+    }
+  }
+
+  getGroupMessages(group_id: number): Promise<Message[]> {
+    if (this.userKeyIsEmpty()) {
+      return Promise.resolve([]);
+    } else {
+      return this.groupme.getGroupMessages(this.getUserKey(), group_id);
+    }
+  }
+
+  getMostRecentGroupMessages(): Promise<Message[]> {
+    if (this.userKeyIsEmpty()) {
+      return Promise.resolve([]);
+    } else {
+      let groupId = this.store.getGroups(1)[0].id;
+      return this.getGroupMessages(groupId);
+    }
+  }
+
+  getMostRecentGroupId(): number {
+    if (this.userKeyIsEmpty()) {
+      return 0;
+    } else {
+      return this.store.getGroups(1)[0].id;
     }
   }
 
@@ -76,14 +122,15 @@ export class StateService {
   }
 
   doFirstTimeSetup(key: string) {
+    console.log("Performing first time setup");
     this.putUserKey(key);
     let newGroups: Group[];
     let newChats: Chat[];
-    this.getGroups(true).then(response => {
+    this.getGroups(true, 0).then(response => {
       newGroups = response;
       this.store.putGroups(newGroups);
     });
-    this.getChats(true).then(response => {
+    this.getChats(true, 0).then(response => {
       newChats = response;
       this.store.putChats(newChats);
     });

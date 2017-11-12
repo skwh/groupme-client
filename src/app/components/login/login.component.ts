@@ -11,7 +11,9 @@ export class LoginComponent {
   constructor(private state: StateService, private router: Router) {}
 
   onSubmit(keyValue: string) {
-    this.state.doFirstTimeSetup(keyValue);
-    this.router.navigate(['']);
+    if (keyValue != "") {
+      this.state.doFirstTimeSetup(keyValue);
+      this.router.navigate(['']);
+    }
   }
 }

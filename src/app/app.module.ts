@@ -16,17 +16,20 @@ import { GroupmeService } from "./providers/groupme.service";
 import { LoginComponent } from "./components/login/login.component";
 import { StoreService } from "./providers/store.service";
 import { LoginGuard } from "./guards/login.guard";
-import { GroupmeMockService } from "./providers/groupme-mock.service";
 import { StateService } from "./providers/state.service";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { MessagesComponent } from "./components/messages/messages.component";
+import { MessageComponent } from "./components/message/message.component";
+import { ReversePipe } from "./pipes/reverse.pipe";
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     SidebarComponent,
-    MessagesComponent
+    MessagesComponent,
+    MessageComponent,
+    ReversePipe
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,7 @@ import { MessagesComponent } from "./components/messages/messages.component";
   providers: [
     ElectronService,
     StoreService,
-    {provide: GroupmeService, useClass: GroupmeMockService},
+    {provide: GroupmeService, useClass: GroupmeService},
     StateService,
     LoginGuard
   ],
