@@ -13,7 +13,8 @@ export class StoreService {
     'groups_last_updated': 0,
     'chats': [],
     'chats_last_updated': 0,
-    'last_updated': 0
+    'last_updated': 0,
+    'myUserId': 0
   };
 
   get(key: string): any {
@@ -47,6 +48,7 @@ export class StoreService {
     this.updateFromLocalStore('groups_last_updated');
     this.updateFromLocalStore('chats');
     this.updateFromLocalStore('chats_last_updated');
+    this.updateFromLocalStore('myUserId');
   }
 
   private putToLocalStore(key: string, value: any) {
@@ -88,6 +90,14 @@ export class StoreService {
     } else {
       return chats.slice(0, limit);
     }
+  }
+
+  putMyUserId(userId: number) {
+    this.put('myUserId', ""+userId);
+  }
+
+  getMyUserId(): number {
+    return this.get('myUserId');
   }
 
 }

@@ -21,6 +21,8 @@ import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { MessagesComponent } from "./components/messages/messages.component";
 import { MessageComponent } from "./components/message/message.component";
 import { ReversePipe } from "./pipes/reverse.pipe";
+import { InputComponent } from "./components/input/input.component";
+import { FayeService } from "./providers/faye.service";
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { ReversePipe } from "./pipes/reverse.pipe";
     SidebarComponent,
     MessagesComponent,
     MessageComponent,
+    InputComponent,
     ReversePipe
   ],
   imports: [
@@ -43,6 +46,7 @@ import { ReversePipe } from "./pipes/reverse.pipe";
     StoreService,
     {provide: GroupmeService, useClass: GroupmeService},
     StateService,
+    FayeService,
     LoginGuard
   ],
   bootstrap: [AppComponent]

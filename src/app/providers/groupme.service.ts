@@ -5,6 +5,7 @@ import { HttpClient } from "@angular/common/http";
 import "rxjs/add/operator/toPromise";
 import { Message } from "../models/message";
 import { Model } from "../models/model.interface";
+import { Member } from "../models/member";
 
 const BASE_URL = "https://api.groupme.com/v3";
 
@@ -51,6 +52,15 @@ export class GroupmeService {
         ).catch(this.handleError);
   }
 
+  getMe(token: string): Promise<Member> {
+    const url = this.safeGetApiURL('users/me', token);
+    return this.http.get(url)
+        .toPromise()
+        .then( response => {
+          return this.MakeSingleTfromJson(Member, response["response"]);
+        }).catch(this.handleError);
+  }
+
   handleError(error: any): Promise<any> {
     console.error('An error occurred in Groupme Service: ', error);
     return Promise.reject(error.message || error);
@@ -80,5 +90,16 @@ export class GroupmeService {
       objects.push(newObject);
     }
     return objects;
+  }
+
+  private MakeSingleTfromJson<T extends Model>(tClass: { new (...args: any[]): T }, json: Object): T {
+    let newObject = new tClass();
+    for (let j=0;j<newObject.fields.length;j++) {
+      let field = newObject.fields[j];
+      if (json.hasOwnProperty(field)) {
+        newObject[field] = json[field];
+      }
+    }
+    return newObject;
   }
 }

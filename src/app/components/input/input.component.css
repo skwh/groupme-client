@@ -1,0 +1,31 @@
+div.input-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #E7E7E7;
+  padding: 1%;
+  max-width: 720px; }
+  div.input-container div.textbox-container {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 3px; }
+    div.input-container div.textbox-container input {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      flex: 1 0 auto;
+      font-size: 16px;
+      font-family: "Encode Sans", sans-serif; }
+      div.input-container div.textbox-container input::placeholder {
+        color: #C4C4C4; }
+      div.input-container div.textbox-container input:focus {
+        border: none; }
+    div.input-container div.textbox-container i {
+      margin: 1%;
+      color: #80D8FF;
+      cursor: pointer; }
+
+/*# sourceMappingURL=input.component.css.map */

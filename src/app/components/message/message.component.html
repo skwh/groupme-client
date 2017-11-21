@@ -1,10 +1,14 @@
-<div class="message">
-    <img [src]="message.avatar_url" [alt]="message.name" />
+<div class="message" [class.me]="message.user_id == this.myUserId">
+    <img *ngIf="message.avatar_url != null" class="user-avatar" [src]="message.avatar_url" [alt]="message.name" />
+    <div *ngIf="message.avatar_url == null" class="user-avatar"></div>
     <div class="message-text">
         <p class="name">{{ message.name }}</p>
-        <p class="text">{{ message.text }}</p>
+        <p class="text" [innerHTML]="this.finalText"></p>
+        <img *ngIf="this.hasImageAttachment" class="image-attachment" [src]="this.imageAttachmentUrl" />
     </div>
     <div class="message-heart">
-        <i class="material-icons">favorite_border</i>
+        <i *ngIf="!this.isFavorited" class="material-icons">favorite_border</i>
+        <i *ngIf="this.isFavorited" class="material-icons">favorite</i>
+        <span *ngIf="message.favorited_by.length !=0">{{ message.favorited_by.length }}</span>
     </div>
 </div>

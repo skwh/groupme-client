@@ -1,17 +1,21 @@
+app-message:last-child > div.message {
+  margin-bottom: 57px; }
+
 div.message {
   display: flex;
   align-items: stretch;
-  padding: 1%;
+  padding: 1% 1% 1% 2%;
   justify-content: space-between;
-  max-width: 700px; }
-  div.message img {
+  max-width: 720px; }
+  div.message .user-avatar {
     height: 40px;
     width: 40px;
     display: block;
     -webkit-border-radius: 50%;
     -moz-border-radius: 50%;
     border-radius: 50%;
-    border: 1px solid #737373; }
+    border: 1px solid #737373;
+    background-color: #737373; }
   div.message div.message-text {
     padding: 1%;
     display: flex;
@@ -22,19 +26,41 @@ div.message {
       margin: 0;
       font-family: "Encode Sans", sans-serif; }
     div.message div.message-text p.name {
-      font-size: 12px;
+      font-size: 14px;
       letter-spacing: -0.36px;
       color: #737373;
       position: relative;
       top: -5px; }
     div.message div.message-text p.text {
-      font-size: 14px;
+      font-size: 16px;
       letter-spacing: normal;
       color: black;
       position: relative;
-      top: -4px;
+      bottom: 4px;
       left: 1px; }
-  div.message div.message-heart i {
-    color: #80D8FF; }
+      div.message div.message-text p.text b.mention {
+        cursor: pointer; }
+    div.message div.message-text img.image-attachment {
+      display: block;
+      width: 80%;
+      border: 4px solid #C4C4C4;
+      margin: auto; }
+    div.message div.message-text img.image-attachment:last-child {
+      margin-top: 1%; }
+  div.message div.message-heart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #80D8FF;
+    margin-right: 1%; }
+    div.message div.message-heart span {
+      font-size: 10px;
+      font-family: "Encode Sans", sans-serif;
+      font-weight: 600; }
+    div.message div.message-heart i {
+      cursor: pointer; }
+
+div.me {
+  background-color: #cdefff; }
 
 /*# sourceMappingURL=message.component.css.map */

@@ -61,5 +61,24 @@ div#sidebar {
     margin-bottom: 0;
     margin-top: 5%;
   }
+
+  div.bottom {
+    position: absolute;
+    bottom: 0;
+    padding: 4%;
+  }
+
+  a.settings {
+    color: $secondary-dark;
+    text-decoration: none;
+
+    i {
+      vertical-align: bottom;
+    }
+
+    &:hover {
+      color: $primary;
+    }
+  }
 }
 

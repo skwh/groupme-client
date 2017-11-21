@@ -1,0 +1,42 @@
+@import "../../../variables.scss";
+
+div.input-container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: $secondary;
+  padding: 1%;
+  max-width: 720px;
+
+  div.textbox-container {
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 3px;
+
+    input {
+      background-color: transparent;
+      outline: none;
+      border: none;
+      flex: 1 0 auto;
+      font-size: 16px;
+      font-family: "Encode Sans", sans-serif;
+
+      &::placeholder {
+        color: $secondary-dark;
+      }
+
+      &:focus {
+        border: none;
+      }
+    }
+
+    i {
+      margin: 1%;
+      color: $primary;
+      cursor: pointer;
+    }
+  }
+}

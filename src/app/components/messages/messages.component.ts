@@ -4,6 +4,7 @@ import 'rxjs/add/operator/switchMap';
 import { Observable } from "rxjs/Observable";
 import { StateService } from "../../providers/state.service";
 import { Message } from "../../models/message";
+import { FayeService } from "../../providers/faye.service";
 
 @Component({
   selector: 'app-messages-list',
@@ -11,9 +12,9 @@ import { Message } from "../../models/message";
   styleUrls: ['messages.component.scss']
 })
 export class MessagesComponent implements OnInit{
-  constructor(private router: Router, private route: ActivatedRoute, private state: StateService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private state: StateService, private faye: FayeService) {}
 
-  currentId: number;
+  myUserId: number;
   messages: Observable<Message[]>;
 
   ngOnInit() {
@@ -29,6 +30,7 @@ export class MessagesComponent implements OnInit{
         return this.state.getMostRecentGroupMessages();
       }
     });
+    this.state.getMyUserId().then(response => this.myUserId = response);
   }
 
   private isGroupMessageId(id: string):boolean {

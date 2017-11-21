@@ -117,6 +117,26 @@ export class StateService {
     }
   }
 
+  getMyUserId(): Promise<number> {
+    if (this.userKeyIsEmpty()) {
+      return Promise.resolve(0);
+    } else {
+      if (!this.checkInStore('myUserId', 0)) {
+        return this.groupme.getMe(this.getUserKey()).then(response => {
+          this.store.putMyUserId(response.id);
+          return Promise.resolve(this.store.getMyUserId());
+        });
+      }
+      return Promise.resolve(this.store.getMyUserId());
+    }
+  }
+
+  validateUserKey(key: string): Promise<boolean> {
+    return this.groupme.getMe(key).then(() => {
+      return true;
+    }).catch(() => {return false;});
+  }
+
   putUserKey(key: string) {
     this.store.putUserKey(key);
   }
@@ -124,18 +144,10 @@ export class StateService {
   doFirstTimeSetup(key: string) {
     console.log("Performing first time setup");
     this.putUserKey(key);
-    let newGroups: Group[];
-    let newChats: Chat[];
-    this.getGroups(true, 0).then(response => {
-      newGroups = response;
-      this.store.putGroups(newGroups);
-    });
-    this.getChats(true, 0).then(response => {
-      newChats = response;
-      this.store.putChats(newChats);
+    this.getMyUserId().then(() => {
+      this.getGroups(true, 0);
+      this.getChats(true, 0);
     });
   }
-
-
 
 }

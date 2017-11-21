@@ -10,7 +10,7 @@
         Then, copy and pase the token provided into this box:
     </p>
     <form (ngSubmit)="onSubmit(keyInput.value)">
-        <input #keyInput required placeholder="the token should look like '2fe283013e329b1293a'" /><br />
+        <input #keyInput required placeholder="the token should look like '2fe283013e329b1293a'" [class.valid]="!this.valid" /><br />
         <button>Submit</button>
     </form>
 </div>

@@ -43,6 +43,10 @@ form>input {
   }
 }
 
+form>input.invalid {
+  border: 2px solid red;
+}
+
 h1 {
   font-family: "Quicksand", sans-serif;
   font-size: 64px;

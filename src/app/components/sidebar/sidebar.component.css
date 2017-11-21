@@ -43,5 +43,16 @@ div#sidebar {
     letter-spacing: -3%;
     margin-bottom: 0;
     margin-top: 5%; }
+  div#sidebar div.bottom {
+    position: absolute;
+    bottom: 0;
+    padding: 4%; }
+  div#sidebar a.settings {
+    color: #C4C4C4;
+    text-decoration: none; }
+    div#sidebar a.settings i {
+      vertical-align: bottom; }
+    div#sidebar a.settings:hover {
+      color: #80D8FF; }
 
 /*# sourceMappingURL=sidebar.component.css.map */

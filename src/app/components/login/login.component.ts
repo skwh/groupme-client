@@ -10,10 +10,19 @@ import { StateService } from "../../providers/state.service";
 export class LoginComponent {
   constructor(private state: StateService, private router: Router) {}
 
+  valid: boolean = true;
+
   onSubmit(keyValue: string) {
     if (keyValue != "") {
-      this.state.doFirstTimeSetup(keyValue);
-      this.router.navigate(['']);
+      this.state.validateUserKey(keyValue).then(response => {
+        if (response) {
+          this.state.doFirstTimeSetup(keyValue);
+          this.router.navigate(['']);
+        } else {
+          //show an error message
+          this.valid = false;
+        }
+      })
     }
   }
 }

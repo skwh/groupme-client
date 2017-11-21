@@ -31,6 +31,9 @@ form > input {
   form > input::placeholder {
     color: #C4C4C4; }
 
+form > input.invalid {
+  border: 2px solid red; }
+
 h1 {
   font-family: "Quicksand", sans-serif;
   font-size: 64px;

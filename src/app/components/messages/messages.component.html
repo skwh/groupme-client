@@ -1,1 +1,4 @@
-<app-message *ngFor="let message of messages | async | reverse" [message]="message"></app-message>
+<div class="messages-container">
+    <app-message *ngFor="let message of messages | async | reverse" [message]="message" [myUserId]="this.myUserId"></app-message>
+</div>
+<app-input></app-input>
