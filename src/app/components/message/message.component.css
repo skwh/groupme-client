@@ -15,7 +15,8 @@ div.message {
     -moz-border-radius: 50%;
     border-radius: 50%;
     border: 1px solid #737373;
-    background-color: #737373; }
+    background-color: #737373;
+    object-fit: cover; }
   div.message div.message-text {
     padding: 1%;
     display: flex;

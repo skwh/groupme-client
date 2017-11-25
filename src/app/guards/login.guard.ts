@@ -8,7 +8,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
   constructor(private state: StateService, private router: Router) {}
 
   canActivate() {
-    if (!this.state.userKeyIsEmpty()) {
+    if (!this.state.accessTokenIsEmpty()) {
       return true;
     } else {
       this.router.navigate(['/login']);

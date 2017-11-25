@@ -24,4 +24,6 @@ export class Group implements Model {
     "id", "name", "type", "description", "image_url", "creator_user_id", "created_at", "updated_at", "share_url",
     "max_members", "office_mode", "phone_number", "members", "messages"
   ];
+
+  public static storeKey: string = "groups";
 }

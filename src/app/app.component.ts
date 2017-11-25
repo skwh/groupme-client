@@ -19,9 +19,9 @@ export class AppComponent implements OnInit {
     } else {
       console.log('Mode web');
     }
+    this.store.doLoad();
   }
 
   ngOnInit() {
-    this.store.doLoad();
   }
 }

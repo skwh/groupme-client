@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "../../models/message";
+import { Attachment } from "../../models/attachment";
 
 @Component({
   selector: 'app-message',
@@ -25,22 +26,27 @@ export class MessageComponent implements OnInit {
     if (this.message.attachments.length > 0) {
       for (let i=0;i<this.message.attachments.length;i++) {
         let attachment = this.message.attachments[i];
-        console.log(attachment);
         if (attachment.type == "image") {
           this.hasImageAttachment = true;
           this.imageAttachmentUrl = attachment.url;
         } else if (attachment.type == "mentions") {
           this.hasMentionAttachment = true;
-          for (let j=0;j<attachment.loci.length;j++) {
-            let a = attachment.loci[j][0];
-            let b = attachment.loci[j][1];
-            let string1 = this.finalText.slice(0, a);
-            let string2 = this.finalText.slice(a, b);
-            let string3 = this.finalText.slice(b);
-            this.finalText = string1 + "<b class='mention'>" + string2 + "</b>" + string3;
-          }
+          this.finalText = this.createMentionAttachment(this.finalText, attachment);
         }
       }
     }
+  }
+
+  private createMentionAttachment(finalText: string, attachment: Attachment): string {
+    let newText = finalText;
+    for (let i=0;i<attachment.loci.length;i++) {
+      let a = attachment.loci[i][0];
+      let b = attachment.loci[i][1];
+      let string1 = finalText.slice(0, a);
+      let string2 = finalText.slice(a, b);
+      let string3 = finalText.slice(b);
+      newText = string1 + "<b class='mention'>" + string2 + "</b>" + string3;
+    }
+    return newText;
   }
 }

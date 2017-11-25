@@ -14,4 +14,6 @@ export class Chat implements Model {
   public fields: string[] = [
       "created_at", "updated_at", "other_user", "last_message", "messages_count"
   ];
+
+  public static storeKey: string = "chats";
 }

@@ -20,6 +20,7 @@ div.message {
     border-radius: 50%;
     border: 1px solid $disabled;
     background-color: $disabled;
+    object-fit: cover;
   }
 
   div.message-text {

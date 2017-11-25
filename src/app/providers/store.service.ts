@@ -2,19 +2,23 @@ import { Injectable } from "@angular/core";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
 import { isNull } from "util";
+import { Member } from "../models/member";
 
 @Injectable()
 export class StoreService {
   private localStore = window.localStorage;
 
+  ACCESS_TOKEN_KEY = "access_token";
+
   private store = {
-    'user_key': "",
-    'groups': [],
+    'access_token': "",
+    'groups': ["{}"],
     'groups_last_updated': 0,
-    'chats': [],
+    'chats': ["{}"],
     'chats_last_updated': 0,
     'last_updated': 0,
-    'myUserId': 0
+    'me': "{}",
+    'current_chat_id': '',
   };
 
   get(key: string): any {
@@ -43,12 +47,11 @@ export class StoreService {
   }
 
   doLoad() {
-    this.updateFromLocalStore('user_key');
-    this.updateFromLocalStore('groups');
-    this.updateFromLocalStore('groups_last_updated');
-    this.updateFromLocalStore('chats');
-    this.updateFromLocalStore('chats_last_updated');
-    this.updateFromLocalStore('myUserId');
+    for (let property in this.store) {
+      if (this.store.hasOwnProperty(property)) {
+        this.updateFromLocalStore(property);
+      }
+    }
   }
 
   private putToLocalStore(key: string, value: any) {
@@ -56,21 +59,21 @@ export class StoreService {
     this.localStore.setItem(key, value);
   }
 
-  putUserKey(user_key: string) {
-    if (user_key === "") {
-      console.error("This key is empty!");
-      throw new Error("This key is empty!");
+  putAccessToken(user_token: string) {
+    if (user_token === "") {
+      console.error("This token is empty!");
+      throw new Error("This token is empty!");
     }
-    this.put('user_key', user_key);
+    this.put(this.ACCESS_TOKEN_KEY, user_token);
   }
 
   putGroups(groups: Group[]) {
-    this.put('groups', JSON.stringify(groups));
-    this.put('groups_last_updated', Date.now());
+    this.put(Group.storeKey, JSON.stringify(groups));
+    this.put(Group.storeKey + '_last_updated', Date.now());
   }
 
   getGroups(limit: number): Group[] {
-    let groups: Group[] = JSON.parse(this.get('groups'));
+    let groups: Group[] = JSON.parse(this.get(Group.storeKey));
     if (limit <= 0) {
       return groups;
     } else {
@@ -78,13 +81,23 @@ export class StoreService {
     }
   }
 
+  getGroupById(id: number): Group {
+    let groups: Group[] = this.getGroups(0);
+    for (let g of groups) {
+      if (g.id === id) {
+        return g;
+      }
+    }
+    return null;
+  }
+
   putChats(chats: Chat[]) {
-    this.put('chats', JSON.stringify(chats));
-    this.put('chats_last_updated', Date.now());
+    this.put(Chat.storeKey, JSON.stringify(chats));
+    this.put(Chat.storeKey + '_last_updated', Date.now());
   }
 
   getChats(limit: number): Chat[] {
-    let chats: Chat[] = JSON.parse(this.get('chats'));
+    let chats: Chat[] = JSON.parse(this.get(Chat.storeKey));
     if (limit <= 0) {
       return chats;
     } else {
@@ -92,12 +105,20 @@ export class StoreService {
     }
   }
 
-  putMyUserId(userId: number) {
-    this.put('myUserId', ""+userId);
+  putMe(me: Member) {
+    this.put(Member.userStoreKey, JSON.stringify(me));
   }
 
-  getMyUserId(): number {
-    return this.get('myUserId');
+  getMe(): Member {
+    return JSON.parse(this.get(Member.userStoreKey));
+  }
+
+  putCurrentChatId(chat_id: string) {
+    this.put('current_chat_id', chat_id);
+  }
+
+  getCurrentChatId(): string {
+    return this.get('current_chat_id');
   }
 
 }

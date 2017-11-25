@@ -14,4 +14,8 @@ export class Member implements Model {
   public fields: string[] = ["id", "name", "muted", "image_url", "phone_number", "created_at", "updated_at", "email", "sms"];
 
   constructor () {}
+
+  public static storeKey: string = "members";
+
+  public static userStoreKey: string = "me";
 }

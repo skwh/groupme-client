@@ -18,7 +18,8 @@ function createWindow() {
     y: 100,
     width: 950,
     height: 650,
-    resizable: false
+    resizable: false,
+    backgroundColor: '#fefefe',
   });
 
   // and load the index.html of the app.
@@ -33,6 +34,8 @@ function createWindow() {
     e.preventDefault();
     require('electron').shell.openExternal(url);
   });
+
+
 
   // Emitted when the window is closed.
   win.on('closed', () => {

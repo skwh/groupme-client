@@ -22,14 +22,13 @@ div#sidebar {
       }
       li>a {
         display: block;
-        padding: 2%;
         font-size: 20px;
         letter-spacing: -0.54px;
         color: black;
         text-decoration: none;
         position: relative;
         left: -30px;
-        padding-left: 30px;
+        padding: 1.5% 1.5% 2.5% 30px;
 
         &.selected {
           background-color: $primary;

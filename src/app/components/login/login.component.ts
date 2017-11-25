@@ -15,14 +15,13 @@ export class LoginComponent {
   onSubmit(keyValue: string) {
     if (keyValue != "") {
       this.state.validateUserKey(keyValue).then(response => {
-        if (response) {
-          this.state.doFirstTimeSetup(keyValue);
+        this.valid = response;
+        if (this.valid) {
           this.router.navigate(['']);
-        } else {
-          //show an error message
-          this.valid = false;
         }
-      })
+      });
+    } else {
+      this.valid = false;
     }
   }
 }

@@ -4,150 +4,136 @@ import { GroupmeService } from "./groupme.service";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
 import { Message } from "../models/message";
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
+import 'rxjs/add/observable/fromPromise';
 
 @Injectable()
 export class StateService {
-  constructor(private groupme: GroupmeService, private store: StoreService) {}
 
-  USER_KEY = 'user_key';
+  ACCESS_TOKEN_KEY: string = "access_token";
 
-  /**
-   * Checks if a value exists in the store. If the value of the item in the store equals defaultValue,
-   * this returns false, otherwise true.
-   * @param {string} key
-   * @param defaultValue
-   * @returns {boolean}
+  currentAccessToken: string = "";
+  currentChatId: string = "";
+  currentUserId: number = 0;
+
+  constructor(private groupme: GroupmeService, private store: StoreService) {
+    this.currentAccessToken = this.store.get(this.ACCESS_TOKEN_KEY);
+    this.currentUserId = this.store.getMe().id;
+    this.currentChatId = this.store.getCurrentChatId();
+  }
+
+  groupsSubject: Subject<Group[]> = new Subject();
+  groups$: Observable<Group[]> = this.groupsSubject.asObservable();
+
+  updateGroupsFromApi(limit?: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
+    }
+    if (this.storeLastUpdate(Group.storeKey)) {
+      this.groupsSubject.next(this.store.getGroups(limit));
+    } else {
+      this.groupme.getGroups(this.currentAccessToken).then(response => {
+        this.groupsSubject.next(response.slice(0, limit));
+        this.store.putGroups(response);
+      });
+    }
+  }
+
+  getGroupById(id: number): Group {
+    return this.store.getGroupById(id);
+  }
+
+  chatsSubject: Subject<Chat[]> = new Subject();
+  chats$: Observable<Chat[]> = this.chatsSubject.asObservable();
+
+  updateChatsFromApi(limit?: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
+    }
+    if (this.storeLastUpdate(Chat.storeKey)) {
+      this.chatsSubject.next(this.store.getChats(limit));
+    } else {
+      this.groupme.getChats(this.currentAccessToken).then(response => {
+        this.chatsSubject.next(response.slice(0, limit));
+        this.store.putChats(response);
+      });
+    }
+  }
+
+  /*
+    The messages channel is always the messages that are currently visible on screen.
    */
-  private checkInStore(key: string, defaultValue: any): boolean {
-    let val = this.store.get(key);
-    if (val == defaultValue) {
-      return false;
+  messagesSubject: Subject<Message[]> = new Subject();
+  messages$: Observable<Message[]> = this.messagesSubject.asObservable();
+
+  updateGroupMessagesFromApi(group_id: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
     }
-    return true;
-  }
-
-  /**
-   * Wraps around StateService.checkInStore, used for *_last_updated keys.
-   * @param {string} key
-   * @returns {boolean}
-   */
-  private checkLastUpdated(key: string): boolean {
-    return this.checkInStore(key + "_last_updated", '0');
-  }
-
-  /**
-   * Return the user_key held in storage.
-   * @returns {string}
-   */
-  getUserKey(): string {
-    return this.store.get(this.USER_KEY);
-  }
-
-  /**
-   * If a user key has not been entered into the store, return true. Else return false.
-   * @returns {boolean}
-   */
-  userKeyIsEmpty(): boolean {
-    return this.getUserKey() == "";
-  }
-
-
-  getGroups(forceUpdate: boolean, limit: number): Promise<Group[]> {
-   if (this.userKeyIsEmpty()) {
-     return Promise.resolve([]);
-   } else {
-     if (!this.checkLastUpdated('groups') || forceUpdate) {
-       let newGroups: Group[] = [];
-       return this.groupme.getGroups(this.getUserKey()).then(response => {
-         newGroups = response;
-         this.store.putGroups(newGroups);
-         return Promise.resolve(this.store.getGroups(limit));
-       });
-     }
-     return Promise.resolve(this.store.getGroups(limit));
-   }
-  }
-
-  getChats(forceUpdate: boolean, limit: number): Promise<Chat[]> {
-    if (this.userKeyIsEmpty()) {
-      return Promise.resolve([]);
-    } else {
-      if (!this.checkLastUpdated('chats') || forceUpdate) {
-        let newChats: Chat[] = [];
-        return this.groupme.getChats(this.getUserKey()).then(response => {
-          newChats = response;
-          this.store.putChats(newChats);
-          return Promise.resolve(this.store.getChats(limit));
-        });
-      }
-      return Promise.resolve(this.store.getChats(limit));
-    }
-  }
-
-  getDirectMessages(user_id: number, before_id?: number, since_id?: number): Promise<Message[]> {
-    if (this.userKeyIsEmpty()) {
-      return Promise.resolve([]);
-    } else {
-      return this.groupme.getDirectMessages(this.getUserKey(), user_id, before_id, since_id);
-    }
-  }
-
-  getGroupMessages(group_id: number): Promise<Message[]> {
-    if (this.userKeyIsEmpty()) {
-      return Promise.resolve([]);
-    } else {
-      return this.groupme.getGroupMessages(this.getUserKey(), group_id);
-    }
-  }
-
-  getMostRecentGroupMessages(): Promise<Message[]> {
-    if (this.userKeyIsEmpty()) {
-      return Promise.resolve([]);
-    } else {
-      let groupId = this.store.getGroups(1)[0].id;
-      return this.getGroupMessages(groupId);
-    }
-  }
-
-  getMostRecentGroupId(): number {
-    if (this.userKeyIsEmpty()) {
-      return 0;
-    } else {
-      return this.store.getGroups(1)[0].id;
-    }
-  }
-
-  getMyUserId(): Promise<number> {
-    if (this.userKeyIsEmpty()) {
-      return Promise.resolve(0);
-    } else {
-      if (!this.checkInStore('myUserId', 0)) {
-        return this.groupme.getMe(this.getUserKey()).then(response => {
-          this.store.putMyUserId(response.id);
-          return Promise.resolve(this.store.getMyUserId());
-        });
-      }
-      return Promise.resolve(this.store.getMyUserId());
-    }
-  }
-
-  validateUserKey(key: string): Promise<boolean> {
-    return this.groupme.getMe(key).then(() => {
-      return true;
-    }).catch(() => {return false;});
-  }
-
-  putUserKey(key: string) {
-    this.store.putUserKey(key);
-  }
-
-  doFirstTimeSetup(key: string) {
-    console.log("Performing first time setup");
-    this.putUserKey(key);
-    this.getMyUserId().then(() => {
-      this.getGroups(true, 0);
-      this.getChats(true, 0);
+    this.groupme.getGroupMessages(this.currentAccessToken, group_id).then(response => {
+      this.messagesSubject.next(response);
+      this.store.putCurrentChatId('g'+group_id);
     });
+  }
+
+  updateChatMessagesFromApi(user_id: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
+    }
+    this.groupme.getDirectMessages(this.currentAccessToken, user_id).then(response => {
+      this.messagesSubject.next(response);
+      this.store.putCurrentChatId('u'+user_id);
+    });
+  }
+
+  updateMostRecentMessages() {
+    if (this.currentChatId != "" && !this.accessTokenIsEmpty()) {
+      if (this.currentChatIdIsGroup(this.currentChatId)) {
+        this.updateGroupMessagesFromApi(this.getIdFromIdString(this.currentChatId));
+      } else {
+        this.updateChatMessagesFromApi(this.getIdFromIdString(this.currentChatId));
+      }
+    }
+  }
+
+  private currentChatIdIsGroup(chat_id: string): boolean {
+    return chat_id.indexOf('g') == 0;
+  }
+
+  private getIdFromIdString(chat_id: string): number {
+    return parseInt(chat_id.slice(1), 10);
+  }
+
+  private storeHas(key: string, defaultValue: any): boolean {
+    return this.store.get(key) != defaultValue;
+  }
+
+  private storeLastUpdate(key: string): boolean {
+    return this.storeHas(key+'_last_updated', 0);
+  }
+
+  accessTokenIsEmpty(): boolean {
+    return this.store.get(this.ACCESS_TOKEN_KEY) == "";
+  }
+
+  validateUserKey(input_token: string): Promise<boolean> {
+    return this.groupme.getMe(input_token).then((response) => {
+      this.store.putMe(response);
+      this.currentUserId = response.id;
+      this.currentAccessToken = input_token;
+      this.doFirstTimeSetup(input_token);
+      return true;
+    }).catch((response) => {
+      console.error(response);
+      return false;
+    });
+  }
+
+  doFirstTimeSetup(validated_token: string) {
+    this.store.putAccessToken(validated_token);
+    this.updateGroupsFromApi(5);
+    this.updateChatsFromApi(5);
   }
 
 }
