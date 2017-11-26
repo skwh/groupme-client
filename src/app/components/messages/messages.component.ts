@@ -23,36 +23,57 @@ export class MessagesComponent implements OnInit{
   currentGroupId: number;
   myUserId: number;
   messageSubject: Subject<Message[]> = new Subject();
-  messages: Observable<Message[]> = this.messageSubject.asObservable();
+  messages$: Observable<Message[]> = this.messageSubject.asObservable();
+  messages: Message[] = [];
 
   ngOnInit() {
     this.myUserId = this.state.currentUserId;
-    this.state.messages$.subscribe((messages) => this.messageSubject.next(messages));
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      if (params.has('id')) {
-        let originalId = this.getOriginalId(params.get('id'));
-        this.currentGroupId = originalId;
-        if (this.isGroupMessageId(params.get('id'))) {
-          this.state.updateGroupMessagesFromApi(this.currentGroupId);
-        } else {
-          this.state.updateChatMessagesFromApi(this.currentGroupId);
-        }
-      } else {
-        this.state.updateMostRecentMessages();
-      }
+    this.state.messages$.subscribe((messages) => {
+      this.addMessagesFromArray(messages);
     });
-    this.faye.message$.subscribe((message) => {
-      let relevantGroup = this.state.getGroupById(message.subject.group_id);
-      if (relevantGroup.id == this.currentGroupId) {
-        this.addMessage(message.subject);
-      }
-      this.showNotification(message, relevantGroup);
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.processGroupChange(params);
+    });
+    this.faye.message$.subscribe((notification) => {
+      this.processNotification(notification);
     });
   }
 
+  private addMessagesFromArray(messages: Message[]) {
+    for (let message of messages) {
+      this.addMessage(message);
+    }
+  }
+
+  private processGroupChange(params: ParamMap) {
+    this.messages = [];
+    if (params.has('id')) {
+      let originalId = this.getOriginalId(params.get('id'));
+      this.currentGroupId = originalId;
+      if (this.isGroupMessageId(params.get('id'))) {
+        this.state.updateGroupMessagesFromApi(this.currentGroupId);
+      } else {
+        this.state.updateChatMessagesFromApi(this.currentGroupId);
+      }
+    } else {
+      this.state.updateMostRecentMessages();
+    }
+  }
+
+  private processNotification(notification: FayeNotification) {
+    if (notification.type == "line.create") {
+      let message = notification.subject;
+      let relevantGroup = this.state.getGroupById(message.group_id);
+      if (relevantGroup.id == this.currentGroupId) {
+        this.addMessage(message);
+      }
+      this.showNotification(notification, relevantGroup);
+    }
+  }
+
   private addMessage(message: Message) {
-    this.messageSubject.next([message]);
-    console.log(this.messageSubject);
+    this.messages.push(message);
+    this.messageSubject.next(this.messages);
   }
 
   private showNotification(notification: FayeNotification, relevantGroup: Group): Notification {

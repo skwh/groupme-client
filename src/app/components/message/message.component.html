@@ -1,4 +1,4 @@
-<div class="message" [class.me]="message.user_id == this.myUserId">
+<div class="message" [class.me]="message.user_id == this.myUserId" [id]="message.id">
     <img *ngIf="message.avatar_url != null" class="user-avatar" [src]="message.avatar_url" [alt]="message.name" />
     <div *ngIf="message.avatar_url == null" class="user-avatar"></div>
     <div class="message-text">
@@ -7,8 +7,8 @@
         <img *ngIf="this.hasImageAttachment" class="image-attachment" [src]="this.imageAttachmentUrl" />
     </div>
     <div class="message-heart">
-        <i *ngIf="!this.isFavorited" class="material-icons">favorite_border</i>
-        <i *ngIf="this.isFavorited" class="material-icons">favorite</i>
+        <i *ngIf="!this.isFavorited" (click)="favoriteMessage()" class="material-icons">favorite_border</i>
+        <i *ngIf="this.isFavorited" (click)="unfavoriteMessage()" class="material-icons">favorite</i>
         <span *ngIf="message.favorited_by.length !=0">{{ message.favorited_by.length }}</span>
     </div>
 </div>

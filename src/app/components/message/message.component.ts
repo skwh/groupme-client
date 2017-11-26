@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "../../models/message";
-import { Attachment } from "../../models/attachment";
+import { Attachment, AttachmentType } from "../../models/attachment";
+import { StateService } from "../../providers/state.service";
+import { isUndefined } from "util";
 
 @Component({
   selector: 'app-message',
@@ -8,8 +10,11 @@ import { Attachment } from "../../models/attachment";
   styleUrls: ['message.component.scss']
 })
 export class MessageComponent implements OnInit {
+  constructor(private state: StateService) {}
+
   @Input() message: Message;
   @Input() myUserId: number;
+  @Input() conversationId: number;
 
   isFavorited: boolean = false;
   hasImageAttachment: boolean = false;
@@ -20,16 +25,28 @@ export class MessageComponent implements OnInit {
 
   ngOnInit() {
     this.finalText = this.message.text;
-    if (this.message.favorited_by.indexOf(this.myUserId) != -1) {
+    this.message.conversation_id = this.conversationId;
+    this.handleMessageFavorites(this.message);
+    this.handleMessageAttachments(this.message);
+  }
+
+  private handleMessageFavorites(message: Message) {
+    if (isUndefined(message.favorited_by)) {
+      message.favorited_by = [];
+    }
+    if (message.favorited_by.indexOf(this.myUserId) != -1) {
       this.isFavorited = true;
     }
-    if (this.message.attachments.length > 0) {
-      for (let i=0;i<this.message.attachments.length;i++) {
-        let attachment = this.message.attachments[i];
-        if (attachment.type == "image") {
+  }
+
+  private handleMessageAttachments(message: Message) {
+    if (message.attachments.length > 0) {
+      for (let i=0;i<message.attachments.length;i++) {
+        let attachment = message.attachments[i];
+        if (attachment.type === AttachmentType.Image) {
           this.hasImageAttachment = true;
           this.imageAttachmentUrl = attachment.url;
-        } else if (attachment.type == "mentions") {
+        } else if (attachment.type === AttachmentType.Mention) {
           this.hasMentionAttachment = true;
           this.finalText = this.createMentionAttachment(this.finalText, attachment);
         }
@@ -48,5 +65,17 @@ export class MessageComponent implements OnInit {
       newText = string1 + "<b class='mention'>" + string2 + "</b>" + string3;
     }
     return newText;
+  }
+
+  favoriteMessage() {
+    this.state.favoriteMessage(this.message.conversation_id, this.message.id).then(response => {
+      this.isFavorited = response;
+    });
+  }
+
+  unfavoriteMessage() {
+    this.state.unfavoriteMessage(this.message.conversation_id, this.message.id).then(response => {
+      this.isFavorited = !response;
+    })
   }
 }

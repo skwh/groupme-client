@@ -1,7 +1,15 @@
 import { Model } from "./model.interface";
 
+export enum AttachmentType {
+  Image = "image",
+  Location = "location",
+  Split = "split",
+  Emoji = "emoji",
+  Mention = "mentions",
+}
+
 export class Attachment implements Model {
-  public type: string;
+  public type: AttachmentType;
   public url: string;
   public loci: number[];
   public user_ids: number[];

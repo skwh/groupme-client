@@ -97,6 +97,14 @@ export class StateService {
     }
   }
 
+  favoriteMessage(conversation_id: number, message_id: number): Promise<boolean> {
+    return this.groupme.createLike(this.currentAccessToken, conversation_id, message_id);
+  }
+
+  unfavoriteMessage(conversation_id: number, message_id: number): Promise<boolean> {
+    return this.groupme.destroyLike(this.currentAccessToken, conversation_id, message_id);
+  }
+
   private currentChatIdIsGroup(chat_id: string): boolean {
     return chat_id.indexOf('g') == 0;
   }

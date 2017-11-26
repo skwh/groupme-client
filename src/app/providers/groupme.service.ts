@@ -61,6 +61,22 @@ export class GroupmeService {
         }).catch(this.handleError);
   }
 
+  createLike(token: string, conversation_id: number, message_id: number): Promise<boolean> {
+    const url = this.safeGetApiURL(`messages/${conversation_id}/${message_id}/like`, token);
+    return this.http.post(url, null)
+        .toPromise()
+        .then(response => { return true })
+        .catch(this.handleError);
+  }
+
+  destroyLike(token: string, conversation_id: number, message_id: number): Promise<boolean> {
+    const url = this.safeGetApiURL(`messages/${conversation_id}/${message_id}/unlike`, token);
+    return this.http.post(url, null)
+        .toPromise()
+        .then(response => { return true })
+        .catch(this.handleError);
+  }
+
   handleError(error: any): Promise<any> {
     console.error('An error occurred in Groupme Service: ', error);
     return Promise.reject(error.message || error);

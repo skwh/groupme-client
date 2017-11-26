@@ -32,7 +32,5 @@ export class FayeService {
     let subscription = this.client.subscribe('/user/'+user_id, (message) => {
       this.messageSubject.next(message);
     });
-    console.log(subscription);
-    console.log(this.client);
   }
 }
