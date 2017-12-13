@@ -18,6 +18,8 @@ export class Group implements Model {
   public members: Member[];
   public messages: Message[];
 
+  public hasNotification: boolean;
+
   constructor() {}
 
   public fields: string[] = [

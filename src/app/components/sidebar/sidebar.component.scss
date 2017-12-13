@@ -37,6 +37,10 @@ div#sidebar {
         &:hover {
           background-color: $secondary-dark;
         }
+
+        &.hasNotification {
+          color: $accent;
+        }
       }
     }
   }
@@ -51,6 +55,7 @@ div#sidebar {
     font-size: 48px;
     letter-spacing: -1.92px;
     margin: 3vh 0vw;
+    cursor: default;
   }
 
   h3.subheader {

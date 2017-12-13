@@ -66,8 +66,10 @@ export class MessagesComponent implements OnInit{
       let relevantGroup = this.state.getGroupById(message.group_id);
       if (relevantGroup.id == this.currentGroupId) {
         this.addMessage(message);
+      } else {
+        relevantGroup.hasNotification = true;
+        this.showNotification(notification, relevantGroup);
       }
-      this.showNotification(notification, relevantGroup);
     }
   }
 

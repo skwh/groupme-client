@@ -19,6 +19,7 @@ export class StoreService {
     'last_updated': 0,
     'me': "{}",
     'current_chat_id': '',
+    'members': ["{}"],
   };
 
   get(key: string): any {
@@ -119,6 +120,30 @@ export class StoreService {
 
   getCurrentChatId(): string {
     return this.get('current_chat_id');
+  }
+
+  putMember(member: Member) {
+    let previousMembers: Member[] = this.getMembers();
+    previousMembers.push(member);
+    this.put(Member.storeKey, JSON.stringify(previousMembers));
+  }
+
+  putMembersOverwrite(members: Member[]) {
+    this.put(Member.storeKey, JSON.stringify(members));
+  }
+
+  getMembers(): Member[] {
+    return JSON.parse(this.get(Member.storeKey));
+  }
+
+  getMemberById(id: number): Member {
+    let members: Member[] = this.getMembers();
+    for (let i=0;i<members.length;i++) {
+      if (members[i].id === id) {
+        return members[i];
+      }
+    }
+    return null;
   }
 
 }

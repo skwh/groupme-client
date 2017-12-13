@@ -16,13 +16,14 @@ div.input-container {
     justify-content: space-around;
     border-radius: 3px;
 
-    input {
+    textarea {
       background-color: transparent;
       outline: none;
       border: none;
       flex: 1 0 auto;
       font-size: 16px;
       font-family: "Encode Sans", sans-serif;
+      resize: none;
 
       &::placeholder {
         color: $secondary-dark;

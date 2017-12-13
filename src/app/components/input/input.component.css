@@ -12,16 +12,17 @@ div.input-container {
     align-items: center;
     justify-content: space-around;
     border-radius: 3px; }
-    div.input-container div.textbox-container input {
+    div.input-container div.textbox-container textarea {
       background-color: transparent;
       outline: none;
       border: none;
       flex: 1 0 auto;
       font-size: 16px;
-      font-family: "Encode Sans", sans-serif; }
-      div.input-container div.textbox-container input::placeholder {
+      font-family: "Encode Sans", sans-serif;
+      resize: none; }
+      div.input-container div.textbox-container textarea::placeholder {
         color: #C4C4C4; }
-      div.input-container div.textbox-container input:focus {
+      div.input-container div.textbox-container textarea:focus {
         border: none; }
     div.input-container div.textbox-container i {
       margin: 1%;

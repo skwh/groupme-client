@@ -28,6 +28,8 @@ div#sidebar {
           background-color: #80D8FF; }
         div#sidebar div.sidebar-links ul li > a:hover {
           background-color: #C4C4C4; }
+        div#sidebar div.sidebar-links ul li > a.hasNotification {
+          color: #3BFFA2; }
   div#sidebar h1.title, div#sidebar h3.subheader {
     font-family: "Quicksand", sans-serif;
     font-weight: normal; }
@@ -35,7 +37,8 @@ div#sidebar {
     text-align: center;
     font-size: 48px;
     letter-spacing: -1.92px;
-    margin: 3vh 0vw; }
+    margin: 3vh 0vw;
+    cursor: default; }
   div#sidebar h3.subheader {
     text-transform: uppercase;
     font-size: 22px;

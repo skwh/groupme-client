@@ -7,6 +7,7 @@ import { Message } from "../models/message";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/observable/fromPromise';
+import { Member } from "../models/member";
 
 @Injectable()
 export class StateService {
@@ -36,8 +37,34 @@ export class StateService {
       this.groupme.getGroups(this.currentAccessToken).then(response => {
         this.groupsSubject.next(response.slice(0, limit));
         this.store.putGroups(response);
+        this.updateMembersList(response);
       });
     }
+  }
+
+  /**
+   * Using a list of members obtained from a Group API call, store a list of unique users
+   * @param {Group[]} groups
+   */
+  private updateMembersList(groups: Group[]) {
+    let members: Member[] = this.store.getMembers();
+    for (let i=0;i<groups.length;i++) {
+      let group: Group = groups[i];
+      for (let j=0;j<group.members.length;j++) {
+        let groupMember: Member = group.members[j];
+        let contains = false;
+        for (let k=0;k<members.length;k++) {
+          let member: Member = members[k];
+          if (member.id === groupMember.id) {
+            contains = true;
+          }
+        }
+        if (!contains) {
+          members.push(groupMember);
+        }
+      }
+    }
+    this.store.putMembersOverwrite(members);
   }
 
   getGroupById(id: number): Group {

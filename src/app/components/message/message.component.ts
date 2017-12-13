@@ -56,13 +56,15 @@ export class MessageComponent implements OnInit {
 
   private createMentionAttachment(finalText: string, attachment: Attachment): string {
     let newText = finalText;
+    let changeSum = 0;
     for (let i=0;i<attachment.loci.length;i++) {
-      let a = attachment.loci[i][0];
-      let b = attachment.loci[i][1];
+      let a = attachment.loci[i][0] + changeSum;
+      let b = attachment.loci[i][1] + changeSum;
       let string1 = finalText.slice(0, a);
       let string2 = finalText.slice(a, b);
       let string3 = finalText.slice(b);
       newText = string1 + "<b class='mention'>" + string2 + "</b>" + string3;
+      changeSum += "<b class='mention'></b>".length;
     }
     return newText;
   }
