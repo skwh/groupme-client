@@ -14,7 +14,7 @@ import { Group } from "../../models/group";
   templateUrl: 'messages.component.html',
   styleUrls: ['messages.component.scss']
 })
-export class MessagesComponent implements OnInit{
+export class MessagesComponent implements OnInit {
   constructor(private router: Router,
               private route: ActivatedRoute,
               private state: StateService,
@@ -48,9 +48,8 @@ export class MessagesComponent implements OnInit{
   private processGroupChange(params: ParamMap) {
     this.messages = [];
     if (params.has('id')) {
-      let originalId = this.getOriginalId(params.get('id'));
-      this.currentGroupId = originalId;
-      if (this.isGroupMessageId(params.get('id'))) {
+      this.currentGroupId = MessagesComponent.getOriginalId(params.get('id'));
+      if (MessagesComponent.isGroupMessageId(params.get('id'))) {
         this.state.updateGroupMessagesFromApi(this.currentGroupId);
       } else {
         this.state.updateChatMessagesFromApi(this.currentGroupId);
@@ -68,7 +67,7 @@ export class MessagesComponent implements OnInit{
         this.addMessage(message);
       } else {
         relevantGroup.hasNotification = true;
-        this.showNotification(notification, relevantGroup);
+        MessagesComponent.showNotification(notification, relevantGroup);
       }
     }
   }
@@ -78,21 +77,19 @@ export class MessagesComponent implements OnInit{
     this.messageSubject.next(this.messages);
   }
 
-  private showNotification(notification: FayeNotification, relevantGroup: Group): Notification {
+  private static showNotification(notification: FayeNotification, relevantGroup: Group): Notification {
     return new Notification(relevantGroup.name, {
       'body': notification.alert,
       'icon': relevantGroup.image_url,
     });
   }
 
-  private isGroupMessageId(id: string):boolean {
-    if (id.indexOf("g") != -1) {
-      return true;
-    }
-    return false;
+  private static isGroupMessageId(id: string): boolean {
+    return id.indexOf("g") != -1;
+
   }
 
-  private getOriginalId(id: string): number {
+  private static getOriginalId(id: string): number {
     return parseInt(id.slice(1),10);
   }
 }

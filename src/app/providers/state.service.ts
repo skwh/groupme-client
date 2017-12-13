@@ -27,11 +27,11 @@ export class StateService {
   groupsSubject: Subject<Group[]> = new Subject();
   groups$: Observable<Group[]> = this.groupsSubject.asObservable();
 
-  updateGroupsFromApi(limit?: number) {
+  updateGroupsFromApi(limit?: number, force = false) {
     if (this.accessTokenIsEmpty()) {
       return;
     }
-    if (this.storeLastUpdate(Group.storeKey)) {
+    if (this.storeLastUpdate(Group.storeKey) && !force) {
       this.groupsSubject.next(this.store.getGroups(limit));
     } else {
       this.groupme.getGroups(this.currentAccessToken).then(response => {
@@ -55,7 +55,7 @@ export class StateService {
         let contains = false;
         for (let k=0;k<members.length;k++) {
           let member: Member = members[k];
-          if (member.id === groupMember.id) {
+          if (member.id == groupMember.id) {
             contains = true;
           }
         }
@@ -74,11 +74,11 @@ export class StateService {
   chatsSubject: Subject<Chat[]> = new Subject();
   chats$: Observable<Chat[]> = this.chatsSubject.asObservable();
 
-  updateChatsFromApi(limit?: number) {
+  updateChatsFromApi(limit?: number, force = false) {
     if (this.accessTokenIsEmpty()) {
       return;
     }
-    if (this.storeLastUpdate(Chat.storeKey)) {
+    if (this.storeLastUpdate(Chat.storeKey) && !force) {
       this.chatsSubject.next(this.store.getChats(limit));
     } else {
       this.groupme.getChats(this.currentAccessToken).then(response => {
@@ -116,10 +116,10 @@ export class StateService {
 
   updateMostRecentMessages() {
     if (this.currentChatId != "" && !this.accessTokenIsEmpty()) {
-      if (this.currentChatIdIsGroup(this.currentChatId)) {
-        this.updateGroupMessagesFromApi(this.getIdFromIdString(this.currentChatId));
+      if (StateService.currentChatIdIsGroup(this.currentChatId)) {
+        this.updateGroupMessagesFromApi(StateService.getIdFromIdString(this.currentChatId));
       } else {
-        this.updateChatMessagesFromApi(this.getIdFromIdString(this.currentChatId));
+        this.updateChatMessagesFromApi(StateService.getIdFromIdString(this.currentChatId));
       }
     }
   }
@@ -132,11 +132,11 @@ export class StateService {
     return this.groupme.destroyLike(this.currentAccessToken, conversation_id, message_id);
   }
 
-  private currentChatIdIsGroup(chat_id: string): boolean {
+  private static currentChatIdIsGroup(chat_id: string): boolean {
     return chat_id.indexOf('g') == 0;
   }
 
-  private getIdFromIdString(chat_id: string): number {
+  private static getIdFromIdString(chat_id: string): number {
     return parseInt(chat_id.slice(1), 10);
   }
 

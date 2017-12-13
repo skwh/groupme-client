@@ -24,8 +24,8 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.state.chats$.subscribe((chats) => {this.addChatFromArray(chats)});
     this.state.groups$.subscribe((groups) => {this.addGroupFromArray(groups)});
-    this.state.updateChatsFromApi(5);
-    this.state.updateGroupsFromApi(5);
+    this.state.updateChatsFromApi(5, true);
+    this.state.updateGroupsFromApi(5, true);
   }
 
   private addGroupFromArray(groups: Group[]) {
