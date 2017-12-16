@@ -29,7 +29,7 @@ export class StoreService {
   put(key:string, value: any) {
     this.store.last_updated = Date.now();
     this.store[key] = value;
-    this.putToLocalStore(key, value);
+    this.putToLocalStore(key, JSON.stringify(value));
   }
 
   private putOnlyToStore(key: string, value: any) {
@@ -38,7 +38,7 @@ export class StoreService {
   }
 
   updateFromLocalStore(key: string): boolean {
-    let value = this.localStore.getItem(key);
+    let value = JSON.parse(this.localStore.getItem(key));
     if (isNull(value)) {
       return false;
     } else {
@@ -69,12 +69,24 @@ export class StoreService {
   }
 
   putGroups(groups: Group[]) {
-    this.put(Group.storeKey, JSON.stringify(groups));
+    this.put(Group.storeKey, groups);
     this.put(Group.storeKey + '_last_updated', Date.now());
   }
 
+  updateGroup(group: Group) {
+    let groups: Group[] = this.get(Group.storeKey);
+    for (let g of groups) {
+      if (g.id == group.id) {
+        g = group;
+        this.putGroups(groups);
+        return;
+      }
+    }
+    // if the group was not already in the list, do nothing.
+  }
+
   getGroups(limit: number): Group[] {
-    let groups: Group[] = JSON.parse(this.get(Group.storeKey));
+    let groups: Group[] = this.get(Group.storeKey);
     if (limit <= 0) {
       return groups;
     } else {
@@ -85,7 +97,8 @@ export class StoreService {
   getGroupById(id: number): Group {
     let groups: Group[] = this.getGroups(0);
     for (let g of groups) {
-      if (g.id === id) {
+      // even though we've listed the id as a number, it gets read from json as a string
+      if (g.id == id) {
         return g;
       }
     }
@@ -93,12 +106,12 @@ export class StoreService {
   }
 
   putChats(chats: Chat[]) {
-    this.put(Chat.storeKey, JSON.stringify(chats));
+    this.put(Chat.storeKey, chats);
     this.put(Chat.storeKey + '_last_updated', Date.now());
   }
 
   getChats(limit: number): Chat[] {
-    let chats: Chat[] = JSON.parse(this.get(Chat.storeKey));
+    let chats: Chat[] = this.get(Chat.storeKey);
     if (limit <= 0) {
       return chats;
     } else {
@@ -107,11 +120,11 @@ export class StoreService {
   }
 
   putMe(me: Member) {
-    this.put(Member.userStoreKey, JSON.stringify(me));
+    this.put(Member.userStoreKey, me);
   }
 
   getMe(): Member {
-    return JSON.parse(this.get(Member.userStoreKey));
+    return this.get(Member.userStoreKey);
   }
 
   putCurrentChatId(chat_id: string) {
@@ -125,15 +138,15 @@ export class StoreService {
   putMember(member: Member) {
     let previousMembers: Member[] = this.getMembers();
     previousMembers.push(member);
-    this.put(Member.storeKey, JSON.stringify(previousMembers));
+    this.put(Member.storeKey, previousMembers);
   }
 
   putMembersOverwrite(members: Member[]) {
-    this.put(Member.storeKey, JSON.stringify(members));
+    this.put(Member.storeKey, members);
   }
 
   getMembers(): Member[] {
-    return JSON.parse(this.get(Member.storeKey));
+    return this.get(Member.storeKey);
   }
 
   getMemberById(id: number): Member {

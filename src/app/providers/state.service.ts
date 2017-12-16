@@ -71,6 +71,12 @@ export class StateService {
     return this.store.getGroupById(id);
   }
 
+  updateGroup(groupId: number, property: any, value: any) {
+    let group = this.getGroupById(groupId);
+    group[property] = value;
+    this.store.updateGroup(group);
+  }
+
   chatsSubject: Subject<Chat[]> = new Subject();
   chats$: Observable<Chat[]> = this.chatsSubject.asObservable();
 
@@ -100,7 +106,7 @@ export class StateService {
     }
     this.groupme.getGroupMessages(this.currentAccessToken, group_id).then(response => {
       this.messagesSubject.next(response);
-      this.store.putCurrentChatId('g'+group_id);
+      this.updateChatId('g'+group_id);
     });
   }
 
@@ -110,7 +116,7 @@ export class StateService {
     }
     this.groupme.getDirectMessages(this.currentAccessToken, user_id).then(response => {
       this.messagesSubject.next(response);
-      this.store.putCurrentChatId('u'+user_id);
+      this.updateChatId('u'+user_id);
     });
   }
 
@@ -122,6 +128,15 @@ export class StateService {
         this.updateChatMessagesFromApi(StateService.getIdFromIdString(this.currentChatId));
       }
     }
+  }
+
+  updateChatId(chat_id: string) {
+    this.currentChatId = chat_id;
+    this.store.putCurrentChatId(chat_id);
+  }
+
+  resetCurrentChatId() {
+    this.store.putCurrentChatId('');
   }
 
   favoriteMessage(conversation_id: number, message_id: number): Promise<boolean> {

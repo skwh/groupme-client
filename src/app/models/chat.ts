@@ -9,7 +9,7 @@ export class Chat implements Model {
   public other_user: Member;
   public last_message: Message;
 
-  public hasNotification: boolean;
+  public hasNotification: boolean = false;
 
   constructor(public messages_count: number) {}
 

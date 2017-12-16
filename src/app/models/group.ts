@@ -3,22 +3,22 @@ import { Message } from "./message";
 import { Model } from "./model.interface";
 
 export class Group implements Model {
-  public id: number;
+  public id: number = 0;
   public name: string;
   public type: string;
   public description: string;
   public image_url: string;
-  public creator_user_id: number;
-  public created_at: number;
-  public updated_at: number;
+  public creator_user_id: number = 0;
+  public created_at: number = 0;
+  public updated_at: number = 0;
   public share_url: string;
-  public max_members: number;
+  public max_members: number = 0;
   public office_mode: boolean;
   public phone_number: string;
   public members: Member[];
   public messages: Message[];
 
-  public hasNotification: boolean;
+  public hasNotification: boolean = false;
 
   constructor() {}
 

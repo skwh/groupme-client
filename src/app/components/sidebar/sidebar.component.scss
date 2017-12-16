@@ -29,6 +29,7 @@ div#sidebar {
         position: relative;
         left: -30px;
         padding: 1.5% 1.5% 2.5% 30px;
+        transition: background-color 0.5s, text-shadow 0.5s;
 
         &.selected {
           background-color: $primary;
@@ -83,6 +84,23 @@ div#sidebar {
     &:hover {
       color: $primary;
     }
+  }
+
+  a.notification::before {
+    content: " ";
+    display: block;
+    background-color: $accent;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 10px;
+    left: 13px;
+    top: 36%;
+    border: 1px solid $disabled;
+  }
+
+  a.notification {
+    text-shadow: 1px 1px 5px $accent;
   }
 }
 

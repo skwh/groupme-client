@@ -1,4 +1,7 @@
-<div class="messages-container">
+<div #messagesContainer class="messages-container">
     <app-message *ngFor="let message of this.messages$ | async | reverse" [message]="message" [myUserId]="this.myUserId" [conversationId]="this.currentGroupId"></app-message>
 </div>
 <app-input></app-input>
+<div class="empty-message" [class.hidden]="this.messages.length != 0">
+    Select a Group or Contact from the sidebar to get started!
+</div>

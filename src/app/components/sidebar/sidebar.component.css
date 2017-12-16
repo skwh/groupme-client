@@ -23,7 +23,8 @@ div#sidebar {
         text-decoration: none;
         position: relative;
         left: -30px;
-        padding: 1.5% 1.5% 2.5% 30px; }
+        padding: 1.5% 1.5% 2.5% 30px;
+        transition: background-color 0.5s, text-shadow 0.5s; }
         div#sidebar div.sidebar-links ul li > a.selected {
           background-color: #80D8FF; }
         div#sidebar div.sidebar-links ul li > a:hover {
@@ -56,5 +57,18 @@ div#sidebar {
       vertical-align: bottom; }
     div#sidebar a.settings:hover {
       color: #80D8FF; }
+  div#sidebar a.notification::before {
+    content: " ";
+    display: block;
+    background-color: #3BFFA2;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 10px;
+    left: 13px;
+    top: 36%;
+    border: 1px solid #737373; }
+  div#sidebar a.notification {
+    text-shadow: 1px 1px 5px #3BFFA2; }
 
 /*# sourceMappingURL=sidebar.component.css.map */

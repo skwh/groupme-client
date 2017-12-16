@@ -29,6 +29,7 @@ export class SidebarComponent implements OnInit {
   }
 
   private addGroupFromArray(groups: Group[]) {
+    this.groups = [];
     for (let i=0;i<groups.length;i++) {
       this.addGroup(groups[i]);
     }
@@ -40,6 +41,7 @@ export class SidebarComponent implements OnInit {
   }
 
   private addChatFromArray(chats: Chat[]) {
+    this.contacts = [];
     for (let i=0;i<chats.length;i++) {
       this.addChat(chats[i]);
     }
