@@ -1,7 +1,7 @@
 <div class="input-container">
     <div class="textbox-container">
         <i class="material-icons">add</i>
-        <textarea rows="1" placeholder="Send Message..." ></textarea>
-        <i class="material-icons">send</i>
+        <textarea #box (keyup.enter)="this.sendMessage(box.value)" rows="1" placeholder="Send Message..." ></textarea>
+        <i class="material-icons" (click)="this.sendMessage(box.value)">send</i>
     </div>
 </div>

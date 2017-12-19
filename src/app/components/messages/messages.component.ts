@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, ParamMap, Router } from "@angular/router";
+import { ActivatedRoute, ParamMap } from "@angular/router";
 import 'rxjs/add/operator/switchMap';
 import { Observable } from "rxjs/Observable";
 import { StateService } from "../../providers/state.service";
@@ -15,8 +15,7 @@ import { Group } from "../../models/group";
   styleUrls: ['messages.component.scss']
 })
 export class MessagesComponent implements OnInit, OnDestroy {
-  constructor(private router: Router,
-              private route: ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               private state: StateService,
               private faye: FayeService) {}
 
@@ -25,6 +24,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
   messageSubject: Subject<Message[]> = new Subject();
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
   messages: Message[] = [];
+  reverseMessages: boolean = false;
+  previousScrollHeightMinusTop: number = 0;
 
   stateMessageSubscription;
   routeParamMapSubscription;
@@ -36,6 +37,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.myUserId = this.state.currentUserId;
     this.stateMessageSubscription = this.state.messages$.subscribe((messages) => {
       this.addMessagesFromArray(messages);
+      this.reverseMessages = false;
     });
     this.routeParamMapSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       this.processGroupChange(params);
@@ -44,10 +46,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.processNotification(notification);
     });
     this.scrollToBottom();
+    this.previousScrollHeightMinusTop = this.getPreviousScrollHeightMinusTop();
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
+  sendMessageToGroup(text: string): void {
+    this.state.sendMessage(this.currentGroupId, text).then(result => {
+      console.log(result);
+    });
   }
 
   private addMessagesFromArray(messages: Message[]): void  {
@@ -101,9 +106,20 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   private addMessage(message: Message): void {
-    this.messages.push(message);
-    this.messageSubject.next(this.messages);
+    if (this.reverseMessages) {
+      this.messages.unshift(message);
+      this.messageSubject.next(this.messages);
+      let newScrollHeight = this.messagesContainer.nativeElement.scrollHeight;
+      console.log("New Scroll height: " + newScrollHeight);
+      console.log("Previous Scroll Height: " + this.previousScrollHeightMinusTop);
+      this.scrollToLocation(newScrollHeight - this.previousScrollHeightMinusTop);
+    } else {
+      this.messages.push(message);
+      this.messageSubject.next(this.messages);
+      this.scrollToBottom();
+    }
   }
+
 
   private static showNotification(notification: FayeNotification, relevantGroup: Group): Notification {
     return new Notification(relevantGroup.name, {
@@ -121,10 +137,34 @@ export class MessagesComponent implements OnInit, OnDestroy {
     return parseInt(id.slice(1),10);
   }
 
-  scrollToBottom(): void {
+  private scrollToBottom(): void {
     try {
       this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
     } catch(err) { }
+  }
+
+  private scrollToLocation(location: number): void {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = location;
+    } catch (error) { }
+  }
+
+  private getPreviousScrollHeightMinusTop(): number {
+    return this.messagesContainer.nativeElement.scrollHeight - this.messagesContainer.nativeElement.scrollTop;
+  }
+
+  onScroll(ev: Event) {
+    this.previousScrollHeightMinusTop = this.getPreviousScrollHeightMinusTop();
+    if (ev.srcElement.scrollTop === 0) {
+      console.log("At the top!");
+      this.getPreviousMessages();
+    }
+  }
+
+  private getPreviousMessages(): void {
+    let firstMessageId = this.messages[0].id;
+    this.reverseMessages = true;
+    this.state.updateGroupMessagesFromApiBeforeMessage(this.currentGroupId, firstMessageId);
   }
 
   ngOnDestroy() {

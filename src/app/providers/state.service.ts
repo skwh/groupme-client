@@ -110,6 +110,16 @@ export class StateService {
     });
   }
 
+  updateGroupMessagesFromApiBeforeMessage(group_id: number, before_id: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
+    }
+    this.groupme.getGroupMessages(this.currentAccessToken, group_id, before_id).then(response => {
+      this.messagesSubject.next(response);
+      this.updateChatId('g'+group_id);
+    });
+  }
+
   updateChatMessagesFromApi(user_id: number) {
     if (this.accessTokenIsEmpty()) {
       return;
@@ -145,6 +155,11 @@ export class StateService {
 
   unfavoriteMessage(conversation_id: number, message_id: number): Promise<boolean> {
     return this.groupme.destroyLike(this.currentAccessToken, conversation_id, message_id);
+  }
+
+  sendMessage(conversation_id: number, text: string): Promise<boolean> {
+    let message_guid = ""+Date.now();
+    return this.groupme.sendMessage(this.currentAccessToken, conversation_id, this.currentUserId, text, message_guid);
   }
 
   private static currentChatIdIsGroup(chat_id: string): boolean {
