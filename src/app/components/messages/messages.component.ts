@@ -25,7 +25,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
   messages: Message[] = [];
   reverseMessages: boolean = false;
-  previousScrollHeightMinusTop: number = 0;
+  oldScrollHeight: number = 0;
 
   stateMessageSubscription;
   routeParamMapSubscription;
@@ -37,7 +37,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.myUserId = this.state.currentUserId;
     this.stateMessageSubscription = this.state.messages$.subscribe((messages) => {
       this.addMessagesFromArray(messages);
-      this.reverseMessages = false;
     });
     this.routeParamMapSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       this.processGroupChange(params);
@@ -46,7 +45,18 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.processNotification(notification);
     });
     this.scrollToBottom();
-    this.previousScrollHeightMinusTop = this.getPreviousScrollHeightMinusTop();
+  }
+
+  ngAfterViewChecked() {
+    if (this.oldScrollHeight != this.getScrollHeight()) {
+      if (this.reverseMessages) {
+        this.scrollToOldPosition();
+        this.reverseMessages = false;
+      } else {
+        this.scrollToBottom();
+      }
+      this.oldScrollHeight = this.getScrollHeight();
+    }
   }
 
   sendMessageToGroup(text: string): void {
@@ -59,6 +69,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     for (let message of messages) {
       this.addMessage(message);
     }
+    this.oldScrollHeight = this.getScrollHeight();
   }
 
   private processGroupChange(params: ParamMap): void {
@@ -109,15 +120,21 @@ export class MessagesComponent implements OnInit, OnDestroy {
     if (this.reverseMessages) {
       this.messages.unshift(message);
       this.messageSubject.next(this.messages);
-      let newScrollHeight = this.messagesContainer.nativeElement.scrollHeight;
-      console.log("New Scroll height: " + newScrollHeight);
-      console.log("Previous Scroll Height: " + this.previousScrollHeightMinusTop);
-      this.scrollToLocation(newScrollHeight - this.previousScrollHeightMinusTop);
     } else {
       this.messages.push(message);
       this.messageSubject.next(this.messages);
-      this.scrollToBottom();
     }
+  }
+
+  private scrollToOldPosition(): void {
+    /*
+        When the new content is loaded, we want to measure its height and scroll down by that much.
+        scrollHeight = total scrollable height of the element
+        scrollTop = current scrolled amount
+       */
+    let newScrollHeight = this.getScrollHeight();
+    let oldPosition = newScrollHeight - this.oldScrollHeight;
+    this.scrollToLocation(oldPosition);
   }
 
 
@@ -149,12 +166,11 @@ export class MessagesComponent implements OnInit, OnDestroy {
     } catch (error) { }
   }
 
-  private getPreviousScrollHeightMinusTop(): number {
-    return this.messagesContainer.nativeElement.scrollHeight - this.messagesContainer.nativeElement.scrollTop;
+  private getScrollHeight(): number {
+    return this.messagesContainer.nativeElement.scrollHeight;
   }
 
   onScroll(ev: Event) {
-    this.previousScrollHeightMinusTop = this.getPreviousScrollHeightMinusTop();
     if (ev.srcElement.scrollTop === 0) {
       console.log("At the top!");
       this.getPreviousMessages();
