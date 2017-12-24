@@ -3,6 +3,8 @@ import { LoginComponent } from "./components/login/login.component"
 import { RouterModule, Routes } from '@angular/router';
 import { LoginGuard } from "./guards/login.guard";
 import { MessagesComponent } from "./components/messages/messages.component";
+import { GroupsComponent } from "./components/groups/groups.component";
+import { MembersComponent } from "./components/members/members.component";
 
 const routes: Routes = [
   {
@@ -20,6 +22,14 @@ const routes: Routes = [
       {
         path: 'chat/:id',
         component: MessagesComponent
+      },
+      {
+        path: 'groups',
+        component: GroupsComponent
+      },
+      {
+        path: 'members',
+        component: MembersComponent
       }
     ]
   },

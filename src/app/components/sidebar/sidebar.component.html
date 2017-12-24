@@ -1,13 +1,17 @@
 <div id="sidebar">
     <h1 class="title">gmg</h1>
     <div class="sidebar-links">
-        <h3 class="subheader">Groups</h3>
+        <h3 class="subheader">
+            <a [routerLink]="['/groups']" routerLinkActive="selected">Groups</a>
+        </h3>
         <ul class="groups">
             <li *ngFor="let group of this.groups$ | async ">
                 <a [routerLink]="['/group', 'g'+group.id]" routerLinkActive="selected" [class.notification]="group.hasNotification">{{ group.name }}</a>
             </li>
         </ul>
-        <h3 class="subheader">Contacts</h3>
+        <h3 class="subheader">
+            <a [routerLink]="['/members']" routerLinkActive="selected">Contacts</a>
+        </h3>
         <ul class="contacts">
             <li *ngFor="let chat of this.contacts$ | async ">
                 <a [routerLink]="['/chat', 'u'+chat.other_user.id]" routerLinkActive="selected" [class.notification]="chat.hasNotification">{{ chat.other_user.name }}</a>

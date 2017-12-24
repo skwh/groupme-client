@@ -1,0 +1,30 @@
+<h3 class="header">All Groups</h3>
+<div *ngFor="let group of this.groups" class="group-container">
+    <img *ngIf="group.image_url != null" [src]="group.image_url" [alt]="group.name" class="group-avatar" />
+    <img *ngIf="group.image_url == null" class="group-avatar" />
+    <div class="group-text">
+        <p class="name" [class.notification]="group.hasNotification">
+            <a [routerLink]="['/group', 'g'+group.id]">{{ group.name }}</a>
+        </p>
+        <p class="text">Last message on {{ group.updated_at * 1000 | date:'longDate' }}</p>
+    </div>
+    <div class="group-icon">
+        <a [routerLink]="['/group', 'g'+group.id, 'settings']"><i class="material-icons">settings</i></a>
+        <span>Settings</span>
+    </div>
+</div>
+<h3 class="header">Former Groups</h3>
+<div *ngFor="let group of this.formerGroups" class="group-container">
+    <img *ngIf="group.image_url != null" [src]="group.image_url" [alt]="group.name" class="group-avatar" />
+    <img *ngIf="group.image_url == null" class="group-avatar" />
+    <div class="group-text">
+        <p class="name">
+            {{ group.name }}
+        </p>
+        <p class="text">Created on {{ group.created_at * 1000 | date:'longDate' }}</p>
+    </div>
+    <div class="group-icon">
+        <i class="material-icons">cached</i>
+        <span>Rejoin</span>
+    </div>
+</div>

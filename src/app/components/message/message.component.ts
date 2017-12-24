@@ -3,6 +3,7 @@ import { Message } from "../../models/message";
 import { Attachment, AttachmentType } from "../../models/attachment";
 import { StateService } from "../../providers/state.service";
 import { isUndefined } from "util";
+import { Member } from "../../models/member";
 
 @Component({
   selector: 'app-message',
@@ -22,12 +23,14 @@ export class MessageComponent implements OnInit {
   hasMentionAttachment: boolean = false;
 
   finalText: string = "";
+  favoritedMembers: Member[] = [];
 
   ngOnInit() {
     this.finalText = this.message.text;
     this.message.conversation_id = this.conversationId;
     this.handleMessageFavorites(this.message);
     this.handleMessageAttachments(this.message);
+    this.favoritedMembers = this.getFavoriteNames();
   }
 
   private handleMessageFavorites(message: Message) {
@@ -48,13 +51,13 @@ export class MessageComponent implements OnInit {
           this.imageAttachmentUrl = attachment.url;
         } else if (attachment.type === AttachmentType.Mention) {
           this.hasMentionAttachment = true;
-          this.finalText = this.createMentionAttachment(this.finalText, attachment);
+          this.finalText = MessageComponent.createMentionAttachment(this.finalText, attachment);
         }
       }
     }
   }
 
-  private createMentionAttachment(finalText: string, attachment: Attachment): string {
+  private static createMentionAttachment(finalText: string, attachment: Attachment): string {
     let newText = finalText;
     let changeSum = 0;
     for (let i=0;i<attachment.loci.length;i++) {
@@ -67,6 +70,16 @@ export class MessageComponent implements OnInit {
       changeSum += "<b class='mention'></b>".length;
     }
     return newText;
+  }
+
+  private getFavoriteNames(): Member[] {
+    let favorites: Member[] = [];
+    for (let i=0;i<this.message.favorited_by.length;i++) {
+      let id = this.message.favorited_by[i];
+      let member = this.state.getMemberFromStoreById(id);
+      favorites.push(member);
+    }
+    return favorites;
   }
 
   favoriteMessage() {

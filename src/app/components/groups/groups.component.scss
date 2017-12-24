@@ -1,0 +1,47 @@
+@import "../../../common_styles";
+@import "../../../variables";
+
+@include notification();
+
+h3.header {
+  @include subheader();
+  margin-left: 1%;
+}
+
+img.group-avatar {
+  @include avatar(50px);
+}
+
+div.group-container {
+  @include msg-list-container();
+
+  div.group-text {
+    @include msg-list-text();
+    flex: 0 auto;
+
+    p.name>a {
+      color: darken($primary, 25%);
+      text-decoration: underline;
+      text-decoration-skip: ink;
+      &:hover {
+        color: inherit;
+      }
+    }
+  }
+
+  div.group-icon {
+    @include msg-list-icon();
+    color: $secondary-dark;
+    a {
+      @include undolink();
+    }
+
+    i {
+      transition: 0.5s ease-in-out;
+      &:hover {
+        transform: rotate(90deg);
+        color: $primary;
+      }
+    }
+  }
+}

@@ -20,7 +20,7 @@ export class StateService {
 
   constructor(private groupme: GroupmeService, private store: StoreService) {
     this.currentAccessToken = this.store.get(this.ACCESS_TOKEN_KEY);
-    this.currentUserId = this.store.getMe().id;
+    this.currentUserId = this.store.getMe().user_id;
     this.currentChatId = this.store.getCurrentChatId();
   }
 
@@ -55,7 +55,7 @@ export class StateService {
         let contains = false;
         for (let k=0;k<members.length;k++) {
           let member: Member = members[k];
-          if (member.id == groupMember.id) {
+          if (member.user_id == groupMember.user_id) {
             contains = true;
           }
         }
@@ -67,8 +67,20 @@ export class StateService {
     this.store.putMembersOverwrite(members);
   }
 
+  getMemberFromStoreById(member_id: number): Member {
+    return this.store.getMemberById(member_id);
+  }
+
   getGroupById(id: number): Group {
     return this.store.getGroupById(id);
+  }
+
+  getAllGroups(): Promise<Group[]> {
+    return this.groupme.getGroups(this.currentAccessToken, 1, 20, true);
+  }
+
+  getFormerGroups(): Promise<Group[]> {
+    return this.groupme.getFormerGroups(this.currentAccessToken);
   }
 
   updateGroup(groupId: number, property: any, value: any) {
@@ -185,7 +197,7 @@ export class StateService {
   validateUserKey(input_token: string): Promise<boolean> {
     return this.groupme.getMe(input_token).then((response) => {
       this.store.putMe(response);
-      this.currentUserId = response.id;
+      this.currentUserId = response.user_id;
       this.currentAccessToken = input_token;
       this.doFirstTimeSetup(input_token);
       return true;

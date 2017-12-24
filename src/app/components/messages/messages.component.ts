@@ -1,13 +1,13 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, ParamMap } from "@angular/router";
-import 'rxjs/add/operator/switchMap';
-import { Observable } from "rxjs/Observable";
 import { StateService } from "../../providers/state.service";
 import { Message } from "../../models/message";
 import { FayeService } from "../../providers/faye.service";
 import { FayeNotification } from "../../models/notification";
-import { Subject } from "rxjs/Subject";
 import { Group } from "../../models/group";
+import { Observable } from "rxjs/Observable";
+import { Subject } from "rxjs/Subject";
+import 'rxjs/add/operator/switchMap';
 
 @Component({
   selector: 'app-messages-list',

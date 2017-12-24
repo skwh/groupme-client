@@ -1,8 +1,9 @@
 import { Model } from "./model.interface";
 
 export class Member implements Model {
-  public id: number;
+  public user_id: number;
   public name: string;
+  public nickname: string;
   public muted: boolean;
   public image_url: string;
   public phone_number: string;
@@ -11,7 +12,7 @@ export class Member implements Model {
   public email: string;
   public sms: boolean;
 
-  public fields: string[] = ["id", "name", "muted", "image_url", "phone_number", "created_at", "updated_at", "email", "sms"];
+  public fields: string[] = ["user_id", "name", "nickname", "muted", "image_url", "phone_number", "created_at", "updated_at", "email", "sms"];
 
   constructor () {}
 

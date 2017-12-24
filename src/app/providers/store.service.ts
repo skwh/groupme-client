@@ -152,7 +152,7 @@ export class StoreService {
   getMemberById(id: number): Member {
     let members: Member[] = this.getMembers();
     for (let i=0;i<members.length;i++) {
-      if (members[i].id === id) {
+      if (members[i].user_id == id) {
         return members[i];
       }
     }

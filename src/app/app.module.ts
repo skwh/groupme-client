@@ -23,6 +23,8 @@ import { MessageComponent } from "./components/message/message.component";
 import { ReversePipe } from "./pipes/reverse.pipe";
 import { InputComponent } from "./components/input/input.component";
 import { FayeService } from "./providers/faye.service";
+import { GroupsComponent } from "./components/groups/groups.component";
+import { MembersComponent } from "./components/members/members.component";
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { FayeService } from "./providers/faye.service";
     MessagesComponent,
     MessageComponent,
     InputComponent,
+    GroupsComponent,
+    MembersComponent,
     ReversePipe
   ],
   imports: [

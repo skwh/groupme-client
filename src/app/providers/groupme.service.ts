@@ -13,8 +13,22 @@ const BASE_URL = "https://api.groupme.com/v3";
 export class GroupmeService {
   constructor(private http: HttpClient) {}
 
-  getGroups(token: string): Promise<Group[]>  {
-    const url = GroupmeService.safeGetApiURL('groups', token);
+  getGroups(token: string, page?: number, per_page?: number, omit_memberships: boolean = false): Promise<Group[]>  {
+    const url = GroupmeService.safeGetApiURL('groups', token, [
+        ["page", ""+page],
+        ["per_page", ""+per_page],
+        ["omit", (omit_memberships)? "memberships" : ""]
+    ]);
+    return this.http.get(url)
+        .toPromise()
+        .then(response =>
+          GroupmeService.MakeTfromJson(Group, response["response"])
+        )
+        .catch(this.handleError);
+  }
+
+  getFormerGroups(token: string): Promise<Group[]> {
+    const url = GroupmeService.safeGetApiURL('groups/former', token);
     return this.http.get(url)
         .toPromise()
         .then(response =>
@@ -34,8 +48,11 @@ export class GroupmeService {
         ).catch(this.handleError);
   }
 
-  getChats(token: string): Promise<Chat[]> {
-    const url = GroupmeService.safeGetApiURL('chats', token);
+  getChats(token: string, page?: number, per_page?: number): Promise<Chat[]> {
+    const url = GroupmeService.safeGetApiURL('chats', token, [
+        ['page', ""+page],
+        ['per_page', ""+per_page]
+    ]);
     return this.http.get(url)
         .toPromise()
         .then(response =>
