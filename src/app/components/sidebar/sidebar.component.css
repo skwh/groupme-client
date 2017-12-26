@@ -24,7 +24,7 @@ div#sidebar {
         position: relative;
         left: -30px;
         padding: 1.5% 1.5% 2.5% 30px;
-        transition: background-color 0.5s, text-shadow 0.5s; }
+        transition: background-color 0.4s, text-shadow 0.4s; }
         div#sidebar div.sidebar-links ul li > a.selected {
           background-color: #80D8FF; }
         div#sidebar div.sidebar-links ul li > a:hover {
@@ -59,7 +59,7 @@ div#sidebar {
         top: -3px;
         left: 15px;
         font-size: 15px;
-        transition: 0.5s ease-in-out;
+        transition: 0.4s ease-in-out;
         color: #737373; }
       div#sidebar h3.subheader a:hover:after {
         left: 20px;
@@ -75,9 +75,12 @@ div#sidebar {
     color: #C4C4C4;
     text-decoration: none; }
     div#sidebar a.settings i {
-      vertical-align: bottom; }
+      vertical-align: bottom;
+      transition: 0.4s ease-in-out; }
     div#sidebar a.settings:hover {
       color: #80D8FF; }
+      div#sidebar a.settings:hover i {
+        transform: rotate(90deg); }
   div#sidebar a.notification::before {
     content: " ";
     display: block;

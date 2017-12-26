@@ -97,11 +97,15 @@
 @mixin avatar($diameter) {
   height: $diameter;
   width: $diameter;
-  display: block;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
   border: 1px solid $disabled;
-  background-color: $disabled;
+  background-color: $primary;
   object-fit: cover;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
 }

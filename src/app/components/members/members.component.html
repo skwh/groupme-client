@@ -1,0 +1,27 @@
+<h3 class="subheader">Current Chats</h3>
+<a *ngFor="let chat of this.chats" class="chat-content-wrapper" [routerLink]="['/chat', 'u'+chat.other_user.id]">
+    <img *ngIf="chat.other_user.avatar_url != ''" class="user-avatar" [src]="chat.other_user.avatar_url" [alt]="chat.other_user.name" />
+    <div *ngIf="chat.other_user.avatar_url == ''" class="user-avatar">{{ chat.other_user.name | initials }}</div>
+    <div class="chat-text">
+        <p class="name">{{ chat.other_user.name }}</p>
+        <p class="text truncated">
+            <span>{{ chat.last_message.name }}:</span>
+            <span *ngIf="chat.last_message.text != null">
+                {{ chat.last_message.text | truncate: 50 }}
+            </span>
+            <span *ngIf="chat.last_message.text == null">
+                [attachment]
+            </span>
+        </p>
+    </div>
+</a>
+<h3 class="subheader">All Contacts</h3>
+<a *ngFor="let member of this.members | alphabetize: 'nickname' " class="chat-content-wrapper" [routerLink]="['/chat', 'u'+member.user_id]">
+    <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+    <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+    <div class="chat-text">
+        <p class="text">
+            {{ member.nickname }}
+        </p>
+    </div>
+</a>

@@ -29,7 +29,7 @@ div#sidebar {
         position: relative;
         left: -30px;
         padding: 1.5% 1.5% 2.5% 30px;
-        transition: background-color 0.5s, text-shadow 0.5s;
+        transition: background-color $animation-time, text-shadow $animation-time;
 
         &.selected {
           background-color: $primary;
@@ -79,7 +79,7 @@ div#sidebar {
         top: -3px;
         left: 15px;
         font-size: 15px;
-        transition: 0.5s ease-in-out;
+        transition: $animation-time ease-in-out;
         color: $disabled;
       }
 
@@ -111,10 +111,15 @@ div#sidebar {
 
     i {
       vertical-align: bottom;
+      transition: $animation-time ease-in-out;
     }
 
     &:hover {
       color: $primary;
+
+      i {
+        transform: rotate(90deg);
+      }
     }
   }
 

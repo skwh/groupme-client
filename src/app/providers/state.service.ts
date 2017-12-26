@@ -71,6 +71,10 @@ export class StateService {
     return this.store.getMemberById(member_id);
   }
 
+  getAllMembers(): Promise<Member[]> {
+    return Promise.resolve(this.store.getMembers());
+  }
+
   getGroupById(id: number): Group {
     return this.store.getGroupById(id);
   }
@@ -104,6 +108,10 @@ export class StateService {
         this.store.putChats(response);
       });
     }
+  }
+
+  getAllChats(): Promise<Chat[]> {
+    return this.groupme.getChats(this.currentAccessToken, 1, 20);
   }
 
   /*

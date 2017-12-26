@@ -8,39 +8,45 @@ h3.header {
   margin-left: 1%;
 }
 
-img.group-avatar {
+.group-avatar {
   @include avatar(50px);
 }
 
-div.group-container {
+a.group-container {
+  text-decoration: none;
+  transition: background-color $animation-time;
   @include msg-list-container();
+
+  &:hover {
+    background-color: $primary-light;
+  }
+
+  &:nth-of-type(odd) {
+    background-color: $secondary;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
 
   div.group-text {
     @include msg-list-text();
     flex: 0 auto;
-
-    p.name>a {
-      color: darken($primary, 25%);
-      text-decoration: underline;
-      text-decoration-skip: ink;
-      &:hover {
-        color: inherit;
-      }
-    }
   }
 
   div.group-icon {
     @include msg-list-icon();
-    color: $secondary-dark;
+    color: $disabled;
+    justify-content: center;
     a {
       @include undolink();
     }
 
     i {
-      transition: 0.5s ease-in-out;
+      transition: $animation-time ease-in-out;
       &:hover {
         transform: rotate(90deg);
-        color: $primary;
+        //color: $primary;
       }
     }
   }

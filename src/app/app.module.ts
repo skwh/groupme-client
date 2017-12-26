@@ -25,6 +25,9 @@ import { InputComponent } from "./components/input/input.component";
 import { FayeService } from "./providers/faye.service";
 import { GroupsComponent } from "./components/groups/groups.component";
 import { MembersComponent } from "./components/members/members.component";
+import { TruncatePipe } from "./pipes/truncate.pipe";
+import { AlphabetizePipe } from "./pipes/alphabetize.pipe";
+import { InitialsPipe } from "./pipes/initials.pipe";
 
 @NgModule({
   declarations: [
@@ -36,7 +39,10 @@ import { MembersComponent } from "./components/members/members.component";
     InputComponent,
     GroupsComponent,
     MembersComponent,
-    ReversePipe
+    ReversePipe,
+    TruncatePipe,
+    AlphabetizePipe,
+    InitialsPipe,
   ],
   imports: [
     BrowserModule,
