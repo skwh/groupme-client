@@ -10,6 +10,8 @@ h3.header {
 
 .group-avatar {
   @include avatar(50px);
+  background: url("../../../assets/default_group_avatar.png") center;
+  background-size: cover;
 }
 
 a.group-container {
