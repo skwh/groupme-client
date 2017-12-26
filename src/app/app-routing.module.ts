@@ -5,6 +5,7 @@ import { LoginGuard } from "./guards/login.guard";
 import { MessagesComponent } from "./components/messages/messages.component";
 import { GroupsComponent } from "./components/groups/groups.component";
 import { MembersComponent } from "./components/members/members.component";
+import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
 
 const routes: Routes = [
   {
@@ -18,6 +19,10 @@ const routes: Routes = [
       {
         path: 'group/:id',
         component: MessagesComponent
+      },
+      {
+        path: 'group/:id/settings',
+        component: GroupSettingsComponent,
       },
       {
         path: 'chat/:id',

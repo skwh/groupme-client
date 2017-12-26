@@ -28,6 +28,7 @@ import { MembersComponent } from "./components/members/members.component";
 import { TruncatePipe } from "./pipes/truncate.pipe";
 import { AlphabetizePipe } from "./pipes/alphabetize.pipe";
 import { InitialsPipe } from "./pipes/initials.pipe";
+import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { InitialsPipe } from "./pipes/initials.pipe";
     InputComponent,
     GroupsComponent,
     MembersComponent,
+    GroupSettingsComponent,
     ReversePipe,
     TruncatePipe,
     AlphabetizePipe,

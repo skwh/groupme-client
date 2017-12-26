@@ -48,6 +48,55 @@ export class GroupmeService {
         ).catch(this.handleError);
   }
 
+  createNewGroup(token: string, name: string, description?: string, image_url?: string, share?: boolean): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL('groups', token);
+    return this.http.post(url, GroupmeService.safeGetPostBody([
+        ['name', name],
+        ['description', description],
+        ['image_url', image_url],
+        ['share', ""+share]
+    ])).toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  updateGroup(token: string, group_id: number, new_name?: string, new_description?:string, new_image_url?: string, office_mode?: boolean, share?: boolean): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/update`, token);
+    return this.http.post(url, GroupmeService.safeGetPostBody([
+        ['name', new_name],
+        ['description', new_description],
+        ['image_url', new_image_url],
+        ['office_mode', ""+office_mode],
+        ['share', ""+share],
+    ])).toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  destroyGroup(token: string, group_id: number): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/destroy`, token);
+    return this.http.post(url, {})
+        .toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  rejoinGroup(token: string, group_id: number): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL('groups/join', token);
+    return this.http.post(url, {'group_id': group_id})
+        .toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
   getChats(token: string, page?: number, per_page?: number): Promise<Chat[]> {
     const url = GroupmeService.safeGetApiURL('chats', token, [
         ['page', ""+page],
@@ -127,6 +176,16 @@ export class GroupmeService {
       }
     }
     return `${BASE_URL}/${endpoint}?token=${token}${params_string}`;
+  }
+
+  private static safeGetPostBody(parameters: string[][]): Object {
+    let returnObject = {};
+    for (let i=0;i<parameters.length;i++) {
+      if (parameters[i][1] != "undefined") {
+        returnObject[parameters[i][0]] = parameters[i][1];
+      }
+    }
+    return returnObject;
   }
 
   private static MakeTfromJson<T extends Model>(tClass: { new (...args: any[]): T }, json: Object[]): T[] {

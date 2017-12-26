@@ -12,14 +12,14 @@ export class StoreService {
 
   private store = {
     'access_token': "",
-    'groups': ["{}"],
+    'groups': [],
     'groups_last_updated': 0,
-    'chats': ["{}"],
+    'chats': [],
     'chats_last_updated': 0,
     'last_updated': 0,
-    'me': "{}",
+    'me': {},
     'current_chat_id': '',
-    'members': ["{}"],
+    'members': [],
   };
 
   get(key: string): any {

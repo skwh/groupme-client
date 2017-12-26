@@ -1,6 +1,10 @@
 @import "../../../variables";
 @import "../../../common_styles";
 
+.hidden {
+  display: none !important;
+}
+
 h3.subheader {
   @include subheader();
   margin-left: 1%;
