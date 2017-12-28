@@ -27,6 +27,16 @@ export class GroupmeService {
         .catch(this.handleError);
   }
 
+  getGroup(token: string, group_id: number): Promise<Group> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}`, token);
+    return this.http.get(url)
+        .toPromise()
+        .then(response =>
+          GroupmeService.MakeSingleTfromJson(Group, response["response"])
+        )
+        .catch(this.handleError);
+  }
+
   getFormerGroups(token: string): Promise<Group[]> {
     const url = GroupmeService.safeGetApiURL('groups/former', token);
     return this.http.get(url)
@@ -90,6 +100,30 @@ export class GroupmeService {
   rejoinGroup(token: string, group_id: number): Promise<boolean> {
     const url = GroupmeService.safeGetApiURL('groups/join', token);
     return this.http.post(url, {'group_id': group_id})
+        .toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  changeOwner(token: string, group_id: number, user_id: number): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL('groups/change_owners', token);
+    const request_body = GroupmeService.safeGetPostBody([
+        ["group_id", ""+group_id],
+        ["user_id", ""+user_id]
+    ]);
+    return this.http.post(url, { "requests": [request_body]})
+        .toPromise()
+        .then(response => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  removeUserFromGroup(token: string, group_id: number, membership_id: number): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/members/${membership_id}/remove`, token);
+    return this.http.post(url, {})
         .toPromise()
         .then(response => {
           return true;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Group } from "../../models/group";
 import { StateService } from "../../providers/state.service";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
@@ -19,13 +19,19 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   currentGroupOwnerIsMe: boolean = false;
   groupOwnerText: string;
   groupDescriptionText: string;
+  myUserId: number;
 
   routeParamMapSubscription;
+
+  detailsEdited: boolean = false;
+  @ViewChild('groupName') private groupName: ElementRef;
+  @ViewChild('groupDescription') private groupDescription: ElementRef;
 
   ngOnInit() {
     this.routeParamMapSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       this.handleGroupUpdate(params);
-    })
+    });
+    this.myUserId = this.state.currentUserId;
   }
 
   private handleGroupUpdate(params: ParamMap): void {
@@ -33,8 +39,10 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       let groupId = params.get('id');
       if (GroupSettingsComponent.idIsForGroup(groupId)) {
         let id = GroupSettingsComponent.getId(groupId);
-        this.currentGroup = this.state.getGroupById(id);
-        this.assignGroupOwner(this.currentGroup);
+        this.state.getGroupById(id, true).then(response => {
+          this.currentGroup = response;
+          this.assignGroupOwner(this.currentGroup);
+        });
         return;
       }
     }
@@ -44,25 +52,34 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   }
 
   private assignGroupOwner(currentGroup: Group): void {
-    let ownerId = currentGroup.creator_user_id;
-    if (ownerId == this.state.currentUserId) {
-      this.currentGroupOwnerIsMe = true;
+    // TODO(skwh): investigate bug with groups not having a creator_user_id.
+    try {
+      let ownerId = currentGroup.creator_user_id;
+      if (ownerId == this.state.currentUserId) {
+        this.currentGroupOwnerIsMe = true;
+      }
+      let owner = this.state.getMemberFromStoreById(ownerId);
+      this.currentGroupOwner = owner;
+      this.createGroupOwnerText();
+    } catch (err) {
+      console.error(err);
     }
-    let owner = this.state.getMemberFromStoreById(ownerId);
-    this.currentGroupOwner = owner;
     this.createGroupInfoText();
   }
 
-  private createGroupInfoText(): void {
-    if (this.currentGroupOwner.user_id == this.state.currentUserId) {
+  private createGroupOwnerText(): void {
+    if (this.currentGroupOwner != null && this.currentGroupOwner.user_id == this.state.currentUserId) {
       this.groupOwnerText = "You are the owner."
     } else {
       this.groupOwnerText = this.currentGroupOwner.nickname + " owns this group.";
     }
+  }
+
+  private createGroupInfoText(): void {
     if (this.currentGroup.description == null || this.currentGroup.description == undefined || this.currentGroup.description == "") {
       this.groupDescriptionText = "No description."
     } else {
-      this.groupDescriptionText = "\"" + this.currentGroup.description + "\"";
+      this.groupDescriptionText = this.currentGroup.description;
     }
   }
 
@@ -90,30 +107,77 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
 
   confirmDestroy(): void {
     if (confirm("Are you sure you want to delete this group?")) {
-
+      this.state.destroyGroup(this.currentGroup.id).then(response => {
+        alert("The group has been deleted.");
+        this.router.navigate(['/']);
+      })
     }
+  }
+
+  private getMyMembershipId(): number {
+    for (let i=0;i<this.currentGroup.members.length;i++) {
+      let currentMember = this.currentGroup.members[i];
+      if (currentMember.user_id == this.state.currentUserId) {
+        return currentMember.id;
+      }
+    }
+    return 0;
   }
 
   leave(): void {
     if (confirm("Are you sure you want to leave this group?")) {
-
+      let myMembershipId = this.getMyMembershipId();
+      if (myMembershipId != 0) {
+        this.state.leaveGroup(this.currentGroup.id, myMembershipId).then(response => {
+          alert("You have left the group.");
+          this.router.navigate(['/']);
+        });
+      } else {
+        alert("Something went wrong.");
+      }
     }
   }
 
   makeOwner(user: Member): void {
     if (confirm("Are you sure you want to make " + user.nickname + " the owner of this group?")) {
-
+      this.state.makeGroupOwner(this.currentGroup.id, user.user_id).then(response => {
+        alert(user.nickname + " was made an owner of the group.");
+      });
     }
   }
 
   removeFromGroup(user: Member): void {
     if (confirm("Are you sure you want to remove " + user.nickname + " from this group?")) {
+      this.state.removeUserFromGroup(this.currentGroup.id, user.id).then(response => {
+        alert(user.nickname + " has been removed from " + this.currentGroup.name + ".");
+        this.router.navigate(['/group', 'g'+this.currentGroup.id, 'settings']);
+      })
+    }
+  }
 
+  setUpdated(): void {
+    console.log("Changed!");
+    this.detailsEdited = true;
+  }
+
+  saveGroupChanges(): void {
+    if (confirm("Are you sure you want to save the changes you made?")) {
+      // TODO(skwh): Remove magic string
+      if (this.groupDescription.nativeElement.innerText != "No description.") {
+        this.currentGroup.description = this.groupDescription.nativeElement.innerText;
+      }
+      this.state.updateGroupToAPI(this.currentGroup.id, this.groupName.nativeElement.innerText, this.currentGroup.description).then(response => {
+        alert("Group details updated.");
+        this.detailsEdited = false;
+        this.state.updateGroupsFromApi(5, true);
+        this.router.navigate(['/group', 'g'+this.currentGroup.id, 'settings']);
+      })
     }
   }
 
   changeAvatar(): void {
     // open upload modal
+    alert("oops, that feature isn't done yet!");
   }
 
   ngOnDestroy() {

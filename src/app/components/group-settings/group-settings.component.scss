@@ -40,6 +40,18 @@ div.group-header {
       color: black;
       font-size:25px;
     }
+
+    p.group-info-l1, p.group-info-l2 {
+      cursor: default;
+    }
+
+    p[contenteditable] {
+      &:focus {
+        outline: none;
+        //border-bottom: 1px solid $primary;
+        box-shadow: 0 1px 0 0 $primary;
+      }
+    }
   }
 }
 

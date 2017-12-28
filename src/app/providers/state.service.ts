@@ -75,8 +75,12 @@ export class StateService {
     return Promise.resolve(this.store.getMembers());
   }
 
-  getGroupById(id: number): Group {
-    return this.store.getGroupById(id);
+  getGroupById(id: number, fromApi: boolean = false): Promise<Group> {
+    if (fromApi) {
+      return this.groupme.getGroup(this.currentAccessToken, id);
+    } else {
+      return Promise.resolve(this.store.getGroupById(id));
+    }
   }
 
   getAllGroups(): Promise<Group[]> {
@@ -87,10 +91,31 @@ export class StateService {
     return this.groupme.getFormerGroups(this.currentAccessToken);
   }
 
-  updateGroup(groupId: number, property: any, value: any) {
-    let group = this.getGroupById(groupId);
-    group[property] = value;
-    this.store.updateGroup(group);
+  updateGroup(groupId: number, property: any, value: any): void {
+    this.getGroupById(groupId, false).then(group => {
+      group[property] = value;
+      this.store.updateGroup(group);
+    });
+  }
+
+  destroyGroup(group_id: number): Promise<boolean> {
+    return this.groupme.destroyGroup(this.currentAccessToken, group_id);
+  }
+
+  makeGroupOwner(group_id: number, user_id: number): Promise<boolean> {
+    return this.groupme.changeOwner(this.currentAccessToken, group_id, user_id);
+  }
+
+  leaveGroup(group_id: number, my_membership_id: number): Promise<boolean> {
+    return this.groupme.removeUserFromGroup(this.currentAccessToken, group_id, my_membership_id);
+  }
+
+  removeUserFromGroup(group_id: number, member_id: number): Promise<boolean> {
+    return this.groupme.removeUserFromGroup(this.currentAccessToken, group_id, member_id);
+  }
+
+  updateGroupToAPI(group_id: number, new_name?: string, new_description?:string, new_image_url?: string, office_mode?: boolean, share?: boolean): Promise<boolean> {
+    return this.groupme.updateGroup(this.currentAccessToken, group_id, new_name, new_description, new_image_url, office_mode, share);
   }
 
   chatsSubject: Subject<Chat[]> = new Subject();

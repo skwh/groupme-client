@@ -8,6 +8,7 @@ import { Group } from "../../models/group";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/switchMap';
+import { Chat } from "../../models/chat";
 
 @Component({
   selector: 'app-messages-list',
@@ -20,6 +21,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
               private faye: FayeService) {}
 
   currentGroupId: number;
+  currentGroup: Group;
+  currentChat: Chat;
   myUserId: number;
   messageSubject: Subject<Message[]> = new Subject();
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
@@ -83,10 +86,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
         this.state.updateChatMessagesFromApi(this.currentGroupId);
       }
     } else {
-      console.log(params);
       this.currentGroupId = 0;
       this.state.resetCurrentChatId();
-      //this.state.updateMostRecentMessages();
     }
   }
 
@@ -97,8 +98,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
   private removeNotification(groupId: number): void {
-    let currentGroup = this.state.getGroupById(groupId);
-    if (currentGroup && currentGroup.hasNotification) {
+    if (this.currentGroup && this.currentGroup.hasNotification) {
       this.state.updateGroup(groupId, "hasNotification", false);
       this.state.updateGroupsFromApi(5, false);
     }
@@ -107,12 +107,13 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private processNotification(notification: FayeNotification): void {
     if (notification.type == "line.create") {
       let message = notification.subject;
-      let relevantGroup = this.state.getGroupById(message.group_id);
-      if (message.group_id == this.currentGroupId) {
-        this.addMessage(message);
-      } else if (!relevantGroup.muted) {
-        this.addNotification(relevantGroup, notification);
-      }
+      this.state.getGroupById(message.group_id).then(relevantGroup => {
+        if (message.group_id == this.currentGroupId) {
+          this.addMessage(message);
+        } else if (!relevantGroup.muted) {
+          this.addNotification(relevantGroup, notification);
+        }
+      });
     }
   }
 
