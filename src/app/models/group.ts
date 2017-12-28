@@ -17,14 +17,16 @@ export class Group implements Model {
   public phone_number: string;
   public members: Member[];
   public messages: Message[];
+  public owner: Member;
 
   public hasNotification: boolean = false;
+  public muted: boolean = false;
 
   constructor() {}
 
   public fields: string[] = [
     "id", "name", "type", "description", "image_url", "creator_user_id", "created_at", "updated_at", "share_url",
-    "max_members", "office_mode", "phone_number", "members", "messages"
+    "max_members", "office_mode", "phone_number", "members", "messages", "muted", "owner"
   ];
 
   public static storeKey: string = "groups";

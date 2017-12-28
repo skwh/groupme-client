@@ -33,14 +33,5 @@ a.chat-content-wrapper {
 
   div.chat-text {
     @include msg-list-text();
-
-    p.name>a {
-      color: darken($primary, 25%);
-      text-decoration: underline;
-      text-decoration-skip: ink;
-      &:hover {
-        color: inherit;
-      }
-    }
   }
 }

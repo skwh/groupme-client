@@ -9,6 +9,23 @@ div#sidebar {
   width: 230px;
   box-shadow: 2px 0 15px rgba(0, 0, 0, 0.25);
 
+  a.notification::before {
+    content: " ";
+    display: block;
+    background-color: $accent;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    border-radius: 10px;
+    left: 13px;
+    top: 36%;
+    border: 1px solid $disabled;
+  }
+
+  a.notification {
+    text-shadow: 1px 1px 5px $accent;
+  }
+
   div.sidebar-links {
     padding-left: 20px;
 
@@ -41,6 +58,21 @@ div#sidebar {
 
         &.hasNotification {
           color: $accent;
+        }
+
+        &.muted {
+          color: $disabled;
+        }
+
+        &.muted::before {
+          content: " ";
+          display: block;
+          background-color: $disabled;
+          height: 5px;
+          width: 5px;
+          position: absolute;
+          left: 18px;
+          top: 41%;
         }
       }
     }
@@ -121,23 +153,6 @@ div#sidebar {
         transform: rotate(90deg);
       }
     }
-  }
-
-  a.notification::before {
-    content: " ";
-    display: block;
-    background-color: $accent;
-    height: 10px;
-    width: 10px;
-    position: absolute;
-    border-radius: 10px;
-    left: 13px;
-    top: 36%;
-    border: 1px solid $disabled;
-  }
-
-  a.notification {
-    text-shadow: 1px 1px 5px $accent;
   }
 }
 

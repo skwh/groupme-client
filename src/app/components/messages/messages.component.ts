@@ -110,7 +110,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       let relevantGroup = this.state.getGroupById(message.group_id);
       if (message.group_id == this.currentGroupId) {
         this.addMessage(message);
-      } else {
+      } else if (!relevantGroup.muted) {
         this.addNotification(relevantGroup, notification);
       }
     }

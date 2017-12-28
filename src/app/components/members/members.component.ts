@@ -17,8 +17,8 @@ export class MembersComponent implements OnInit {
   myUserId: number;
 
   ngOnInit() {
-    this.state.getAllChats().then(response => this.chats = response);
-    this.state.getAllMembers().then(response => this.members = response);
+    this.state.getAllChats().then(response => this.chats = response );
+    this.state.getAllMembers().then(response => this.members = response );
     this.myUserId = this.state.currentUserId;
   }
 }

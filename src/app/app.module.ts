@@ -29,10 +29,12 @@ import { TruncatePipe } from "./pipes/truncate.pipe";
 import { AlphabetizePipe } from "./pipes/alphabetize.pipe";
 import { InitialsPipe } from "./pipes/initials.pipe";
 import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
+import { ListItemComponent } from "./components/list-item/list-item.component";
 
 @NgModule({
   declarations: [
     AppComponent,
+    ListItemComponent,
     LoginComponent,
     SidebarComponent,
     MessagesComponent,

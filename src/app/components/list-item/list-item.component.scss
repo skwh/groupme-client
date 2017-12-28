@@ -1,0 +1,19 @@
+@import "../../../variables";
+@import "../../../common_styles";
+
+.list-item-image {
+  @include avatar(40px);
+}
+
+.list-item {
+  @include msg-list-container();
+
+
+  div.list-item-body {
+    @include msg-list-text();
+  }
+
+  div.list-item-icons {
+    @include msg-list-icon();
+  }
+}

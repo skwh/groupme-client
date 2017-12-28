@@ -1,0 +1,114 @@
+@import "../../../variables";
+@import "../../../common_styles";
+
+div.page-wrapper {
+  padding: 3%;
+}
+
+h3.subheader {
+  @include subheader();
+}
+
+.group-avatar {
+  @include avatar(100px);
+  background: url("../../../assets/default_group_avatar.png") center;
+  background-size: cover;
+
+  &.change {
+    background: rgba($disabled, 0.8) none;
+    position: absolute;
+    opacity: 0;
+    transition: $animation-time ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+div.group-header {
+  @include msg-list-container();
+
+  div.group-information {
+    @include msg-list-text();
+    flex: 0 1 auto;
+    margin-left: 2%;
+
+    p.name {
+      font-weight: 500;
+      color: black;
+      font-size:25px;
+    }
+  }
+}
+
+.user-avatar {
+  @include avatar(40px);
+}
+
+div.group-member {
+  @include msg-list-container();
+
+  &:hover {
+    background-color: $primary-light;
+  }
+
+  &:nth-of-type(odd) {
+    background-color: $secondary;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
+
+  div.member-text {
+    @include msg-list-text();
+    flex: inherit;
+  }
+
+  div.group-member-icons {
+    @include msg-list-icon();
+    flex-direction: row;
+
+    color: $disabled;
+    justify-content: center;
+
+    i {
+      padding: 1%;
+    }
+
+  }
+}
+
+div.buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 2%;
+
+  button {
+    background-color: transparent;
+    border: 1px solid $primary;
+    border-radius: 5px;
+    padding: 1.5%;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-family: "Quicksand", sans-serif;
+    cursor: pointer;
+    transition: $animation-time ease-in-out;
+
+    &:hover {
+      box-shadow: 0 0 5px $primary;
+    }
+
+  }
+
+  button.destroy {
+    border-color: $warning;
+
+    &:hover {
+      box-shadow: 0 0 3px $warning;
+    }
+  }
+}

@@ -1,4 +1,34 @@
-<p>{{ this.currentGroup.name }}</p>
-<ul>
-    <li *ngFor="let member of this.currentGroup.members">{{ member.nickname }}</li>
-</ul>
+<div class="page-wrapper">
+    <div class="group-header">
+        <img *ngIf="this.currentGroup.image_url != null" [src]="this.currentGroup.image_url" [alt]="this.currentGroup.name" class="group-avatar" />
+        <div *ngIf="this.currentGroup.image_url == null" class="group-avatar"></div>
+        <div (click)="changeAvatar()" class="group-avatar change">Change</div>
+        <div class="group-information">
+            <p class="name group-name">{{ this.currentGroup.name }}</p>
+            <p class="text group-info-l1">{{ this.currentGroup.members.length }} members. A group since {{ this.currentGroup.created_at * 1000 | date:'yyyy' }}.</p>
+            <p class="text group-info-l2">{{ this.groupDescriptionText }} {{ this.groupOwnerText }}</p>
+        </div>
+    </div>
+    <div class="buttons">
+        <button *ngIf="!this.currentGroup.muted" (click)="mute()">Mute this group</button>
+        <button *ngIf="this.currentGroup.muted" (click)="unmute()">Unmute this group</button>
+        <button (click)="leave()">Leave this group</button>
+        <button *ngIf="this.currentGroupOwnerIsMe" class="destroy" (click)="confirmDestroy()">Delete this group</button>
+    </div>
+    <h3 class="subheader">Members</h3>
+    <div class="group-members">
+        <div *ngFor="let member of this.currentGroup.members" class="group-member">
+            <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+            <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+            <div class="member-text">
+                <p class="text">
+                    {{ member.nickname }}
+                </p>
+            </div>
+            <div class="group-member-icons">
+                <i *ngIf="this.currentGroupOwnerIsMe" (click)="makeOwner(member)" class="material-icons">person_add</i>
+                <i class="material-icons" (click)="removeFromGroup(member)">close</i>
+            </div>
+        </div>
+    </div>
+</div>

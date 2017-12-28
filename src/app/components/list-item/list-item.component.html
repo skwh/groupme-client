@@ -1,0 +1,26 @@
+<ng-template [ngIf]="this.itemDetails.is_link" [ngIfElse]="notlink">
+    <a [routerLink]="this.itemDetails.link_href" class="list-item">
+        <img *ngIf="this.itemDetails.image_url != null" class="list-item-image" [src]="this.itemDetails.image_url" [alt]="this.itemDetails.small_text" />
+        <div *ngIf="this.itemDetails.image_url == null" class="list-item-image">{{ this.itemDetails.initials | initials }}</div>
+        <div class="list-item-body">
+            <p class="name">{{ this.itemDetails.small_text }}</p>
+            <p class="text" [innerHTML]="this.itemDetails.large_text"></p>
+        </div>
+        <div class="item-icons">
+
+        </div>
+    </a>
+</ng-template>
+<ng-template #notlink>
+    <div *ngIf="!this.itemDetails.is_link; else link" class="list-item">
+        <img *ngIf="this.itemDetails.image_url != null" class="list-item-image" [src]="this.itemDetails.image_url" [alt]="this.itemDetails.small_text" />
+        <div *ngIf="this.itemDetails.image_url == null" class="list-item-image">{{ this.itemDetails.small_text | initials }}</div>
+        <div class="list-item-body">
+            <p class="name">{{ this.itemDetails.small_text }}</p>
+            <p class="text" [innerHTML]="this.itemDetails.large_text"></p>
+        </div>
+        <div class="item-icons">
+
+        </div>
+    </div>
+</ng-template>

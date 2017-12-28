@@ -6,7 +6,7 @@
         </h3>
         <ul class="groups">
             <li *ngFor="let group of this.groups$ | async ">
-                <a [routerLink]="['/group', 'g'+group.id]" routerLinkActive="selected" [class.notification]="group.hasNotification">{{ group.name }}</a>
+                <a [routerLink]="['/group', 'g'+group.id]" routerLinkActive="selected" [class.notification]="group.hasNotification" [class.muted]="group.muted">{{ group.name }}</a>
             </li>
         </ul>
         <h3 class="subheader">
