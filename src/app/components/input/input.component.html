@@ -5,7 +5,13 @@
     </div>
     <div class="textbox-container">
         <i class="material-icons" (click)="showAttachBox()">add</i>
-        <textarea #box (keyup.enter)="this.sendMessage(box.value)" rows="1" placeholder="Send Message..." ></textarea>
+        <textarea #box
+                  (keyup.enter)="this.sendMessage(box.value)"
+                  (focus)="this.textareaFocus()"
+                  (input)="this.textareaInput()"
+                  rows="1"
+                  data-min-rows="1"
+                  placeholder="Send Message..." ></textarea>
         <i class="material-icons" (click)="this.sendMessage(box.value)">send</i>
     </div>
 </div>
