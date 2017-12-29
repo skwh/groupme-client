@@ -1,12 +1,20 @@
 <div *ngIf="this.first || this.showTimestamp" class="message-timestamp">{{ message.created_at * 1000 | date:'short' }}</div>
-<div class="message" [class.me]="message.user_id == this.myUserId" [id]="message.id">
+<div (click)="this.toggleDetails()"
+     class="message"
+     [class.me]="message.user_id == this.myUserId"
+     [class.clickable]="message.favorited_by.length != 0"
+     [id]="message.id"
+     [title]="'Sent at ' + (message.created_at * 1000 | date:'short')">
     <img *ngIf="message.avatar_url != null" class="user-avatar" [src]="message.avatar_url" [alt]="message.name" />
     <div *ngIf="message.avatar_url == null" class="user-avatar">{{ message.name | initials }}</div>
     <div class="message-text">
-        <p class="name">{{ message.name }}</p>
+        <p class="name">
+            {{ message.name }}
+        </p>
         <p class="text" [innerHTML]="this.finalText"></p>
         <img *ngIf="this.hasImageAttachment" class="image-attachment" [src]="this.imageAttachmentUrl" />
-        <div class="favorites-list" *ngIf="message.favorited_by.length != 0">
+        <div *ngIf="message.favorited_by.length != 0" class="favorites-list" [class.hidden]="!this.favoritesOpen">
+            <i class="material-icons">favorite</i>
             <img *ngFor="let member of this.favoritedMembers" class="user-avatar small-avatar" [src]="member.image_url" [alt]="member.nickname" />
         </div>
     </div>

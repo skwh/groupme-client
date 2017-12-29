@@ -22,6 +22,9 @@ app-message:last-child > div.message {
   width: 25px;
   margin: 0 1%; }
 
+.clickable {
+  cursor: pointer; }
+
 div.message {
   display: flex;
   align-items: stretch;
@@ -75,11 +78,15 @@ div.message {
 div.me {
   background-color: #cdefff; }
 
-/*
-  TODO(skwh): figure out how favorites list will be displayed
- */
 div.favorites-list {
-  display: none; }
+  overflow-y: hidden;
+  max-height: 30px;
+  transition: 0.2s ease-in-out; }
+  div.favorites-list i {
+    color: #80D8FF;
+    font-size: 25px; }
+  div.favorites-list.hidden {
+    max-height: 0; }
 
 div.message-timestamp {
   color: #C4C4C4;

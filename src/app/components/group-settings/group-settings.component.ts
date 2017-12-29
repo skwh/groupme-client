@@ -58,8 +58,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       if (ownerId == this.state.currentUserId) {
         this.currentGroupOwnerIsMe = true;
       }
-      let owner = this.state.getMemberFromStoreById(ownerId);
-      this.currentGroupOwner = owner;
+      this.currentGroupOwner = this.state.getMemberFromStoreById(ownerId);;
       this.createGroupOwnerText();
     } catch (err) {
       console.error(err);

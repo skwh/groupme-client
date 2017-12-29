@@ -19,6 +19,8 @@ export class MessageComponent implements OnInit {
   @Input() first: boolean;
   @Input() previousMessage: Message;
 
+  favoritesOpen: boolean = false;
+
   isFavorited: boolean = false;
   hasImageAttachment: boolean = false;
   imageAttachmentUrl: string = "";
@@ -92,7 +94,9 @@ export class MessageComponent implements OnInit {
       let previousTimestamp = this.previousMessage.created_at * 1000;
       let currentTimestamp = this.message.created_at * 1000;
       let difference = currentTimestamp - previousTimestamp;
+      // TODO(skwh): remove magic number
       if (difference > 3600000) {
+        // this is an hour
         this.showTimestamp = true;
       }
     }
@@ -108,5 +112,9 @@ export class MessageComponent implements OnInit {
     this.state.unfavoriteMessage(this.message.conversation_id, this.message.id).then(response => {
       this.isFavorited = !response;
     })
+  }
+
+  toggleDetails(): void {
+    this.favoritesOpen = !this.favoritesOpen;
   }
 }

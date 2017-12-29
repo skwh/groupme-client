@@ -9,10 +9,9 @@ div.input-container {
   bottom: 0;
   width: 100%;
   background-color: $secondary;
-  padding: 1%;
   max-width: 720px;
   z-index: 10;
-  padding-top: 0;
+  padding: 0 1% 1%;
 
   div.textbox-container {
     background-color: white;

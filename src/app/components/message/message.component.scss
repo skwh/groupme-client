@@ -16,6 +16,10 @@ app-message:last-child>div.message {
   margin: 0 1%;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 div.message {
   @include msg-list-container();
 
@@ -43,11 +47,20 @@ div.me {
   background-color: $primary-light;
 }
 
-/*
-  TODO(skwh): figure out how favorites list will be displayed
- */
 div.favorites-list {
-  display: none;
+  overflow-y: hidden;
+  max-height: 30px;
+
+  transition: $animation-time ease-in-out;
+
+  i {
+    color: $primary;
+    font-size: 25px;
+  }
+
+  &.hidden {
+    max-height: 0;
+  }
 }
 
 div.message-timestamp {
