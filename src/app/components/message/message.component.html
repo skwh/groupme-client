@@ -1,4 +1,4 @@
-<div class="message-timestamp">{{ message.created_at * 1000 | date:'short' }}</div>
+<div *ngIf="this.first || this.showTimestamp" class="message-timestamp">{{ message.created_at * 1000 | date:'short' }}</div>
 <div class="message" [class.me]="message.user_id == this.myUserId" [id]="message.id">
     <img *ngIf="message.avatar_url != null" class="user-avatar" [src]="message.avatar_url" [alt]="message.name" />
     <div *ngIf="message.avatar_url == null" class="user-avatar">{{ message.name | initials }}</div>

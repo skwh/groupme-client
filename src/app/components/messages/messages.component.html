@@ -1,5 +1,11 @@
 <div #messagesContainer class="messages-container" (scroll)="onScroll($event)">
-    <app-message *ngFor="let message of this.messages$ | async | reverse" [message]="message" [myUserId]="this.myUserId" [conversationId]="this.currentGroupId"></app-message>
+    <ng-container *ngFor="let message of this.messages$ | async | reverse as messages; first as isFirst; index as i;">
+        <app-message [message]="message"
+                     [previousMessage]="messages[i-1]"
+                     [myUserId]="this.myUserId"
+                     [conversationId]="this.currentGroupId"
+                     [first]="isFirst"></app-message>
+    </ng-container>
 </div>
 <app-input (messageSent)="sendMessageToGroup($event)"></app-input>
 <div class="empty-message" [class.hidden]="this.messages.length != 0">

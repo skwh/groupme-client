@@ -16,11 +16,15 @@ export class MessageComponent implements OnInit {
   @Input() message: Message;
   @Input() myUserId: number;
   @Input() conversationId: number;
+  @Input() first: boolean;
+  @Input() previousMessage: Message;
 
   isFavorited: boolean = false;
   hasImageAttachment: boolean = false;
   imageAttachmentUrl: string = "";
   hasMentionAttachment: boolean = false;
+
+  showTimestamp: boolean = false;
 
   finalText: string = "";
   favoritedMembers: Member[] = [];
@@ -31,6 +35,7 @@ export class MessageComponent implements OnInit {
     this.handleMessageFavorites(this.message);
     this.handleMessageAttachments(this.message);
     this.favoritedMembers = this.getFavoriteNames();
+    this.handleTimestamp();
   }
 
   private handleMessageFavorites(message: Message) {
@@ -80,6 +85,17 @@ export class MessageComponent implements OnInit {
       favorites.push(member);
     }
     return favorites;
+  }
+
+  private handleTimestamp() {
+    if (typeof this.previousMessage !== "undefined") {
+      let previousTimestamp = this.previousMessage.created_at * 1000;
+      let currentTimestamp = this.message.created_at * 1000;
+      let difference = currentTimestamp - previousTimestamp;
+      if (difference > 3600000) {
+        this.showTimestamp = true;
+      }
+    }
   }
 
   favoriteMessage() {
