@@ -33,4 +33,18 @@
             </div>
         </div>
     </div>
+    <div class="update-avatar-modal" [class.hidden]="!this.modalOpen">
+        <div class="shadow"></div>
+        <div class="update-avatar-box">
+            <h3 class="subheader">Current Avatar</h3>
+            <div class="uploaded-image">
+                <img [alt]="this.currentGroup.name" [src]="this.currentGroup.image_url" />
+            </div>
+            <app-image-upload (onUploaded)="handleAvatarUpdated($event)"></app-image-upload>
+            <div class="controls">
+                <button (click)="cancelUpdateAvatar()" class="destroy align-left">Cancel</button>
+                <button (click)="confirmChange()" class="align-right">Done</button>
+            </div>
+        </div>
+    </div>
 </div>

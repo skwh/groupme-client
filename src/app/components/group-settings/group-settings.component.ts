@@ -21,6 +21,9 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   groupDescriptionText: string;
   myUserId: number;
 
+  modalOpen: boolean = false;
+  oldImageUrl: string;
+
   routeParamMapSubscription;
 
   detailsEdited: boolean = false;
@@ -41,6 +44,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
         let id = GroupSettingsComponent.getId(groupId);
         this.state.getGroupById(id, true).then(response => {
           this.currentGroup = response;
+          this.oldImageUrl = this.currentGroup.image_url;
           this.assignGroupOwner(this.currentGroup);
         });
         return;
@@ -165,7 +169,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       if (this.groupDescription.nativeElement.innerText != "No description.") {
         this.currentGroup.description = this.groupDescription.nativeElement.innerText;
       }
-      this.state.updateGroupToAPI(this.currentGroup.id, this.groupName.nativeElement.innerText, this.currentGroup.description).then(response => {
+      this.state.updateGroupToAPI(this.currentGroup.id, this.groupName.nativeElement.innerText, this.currentGroup.description, this.currentGroup.image_url).then(response => {
         alert("Group details updated.");
         this.detailsEdited = false;
         this.state.updateGroupsFromApi(5, true);
@@ -175,8 +179,21 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   }
 
   changeAvatar(): void {
-    // open upload modal
-    alert("oops, that feature isn't done yet!");
+    this.modalOpen = true;
+  }
+
+  handleAvatarUpdated(image_url: string): void {
+    this.currentGroup.image_url = image_url;
+    this.setUpdated();
+  }
+
+  cancelUpdateAvatar(): void {
+    this.currentGroup.image_url = this.oldImageUrl;
+    this.modalOpen = false;
+  }
+
+  confirmChange(): void {
+    this.modalOpen = false;
   }
 
   ngOnDestroy() {
