@@ -1,6 +1,10 @@
+<app-attach [class.hidden]="!this.attachBoxVisible" (cancel)="handleCancel()" (done)="handleAttach($event)"></app-attach>
 <div class="input-container">
+    <div class="attachments-container">
+        <p title="Remove attachment" (click)="removeAttachments()">{{ this.currentMessage.attachments.length }} attachments.</p>
+    </div>
     <div class="textbox-container">
-        <i class="material-icons">add</i>
+        <i class="material-icons" (click)="showAttachBox()">add</i>
         <textarea #box (keyup.enter)="this.sendMessage(box.value)" rows="1" placeholder="Send Message..." ></textarea>
         <i class="material-icons" (click)="this.sendMessage(box.value)">send</i>
     </div>

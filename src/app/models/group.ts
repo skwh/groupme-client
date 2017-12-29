@@ -22,7 +22,10 @@ export class Group implements Model {
   public hasNotification: boolean = false;
   public muted: boolean = false;
 
-  constructor() {}
+  constructor() {
+    this.members = [];
+    this.messages = [];
+  }
 
   public fields: string[] = [
     "id", "name", "type", "description", "image_url", "creator_user_id", "created_at", "updated_at", "share_url",

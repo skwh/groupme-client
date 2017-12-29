@@ -8,6 +8,7 @@ import { Model } from "../models/model.interface";
 import { Member } from "../models/member";
 
 const BASE_URL = "https://api.groupme.com/v3";
+const IMAGE_SERVICE_URL = "https://image.groupme.com/";
 
 @Injectable()
 export class GroupmeService {
@@ -179,12 +180,9 @@ export class GroupmeService {
         .catch(this.handleError);
   }
 
-  sendMessage(token: string, conversation_id: number, user_id: number, text: string, message_guid: string): Promise<boolean> {
-    const url = GroupmeService.safeGetApiURL(`groups/${conversation_id}/messages`, token);
-    let sentMessage = new Message(text, user_id);
-    sentMessage.group_id = conversation_id;
-    sentMessage.source_guid = message_guid;
-    return this.http.post(url, { "message": sentMessage })
+  sendMessage(token: string, message: Message): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${message.conversation_id}/messages`, token);
+    return this.http.post(url, { "message": message })
         .toPromise()
         .then(response => { return true })
         .catch(this.handleError);
@@ -200,7 +198,17 @@ export class GroupmeService {
     }
   }
 
-  private static safeGetApiURL(endpoint: string, token: string, parameters?:string[][]): string {
+  uploadImage(token: string, image_data: Blob): Promise<string> {
+    const url = GroupmeService.safeGetApiURL('pictures', token, [], IMAGE_SERVICE_URL);
+    return this.http.post(url, image_data)
+        .toPromise()
+        .then(response => {
+          return response["payload"]["picture_url"];
+        })
+        .catch(this.handleError);
+  }
+
+  private static safeGetApiURL(endpoint: string, token: string, parameters?:string[][], base_url: string = BASE_URL): string {
     let params_string = "";
     if (parameters) {
       for (let i = 0; i < parameters.length; i++) {
@@ -209,7 +217,7 @@ export class GroupmeService {
         }
       }
     }
-    return `${BASE_URL}/${endpoint}?token=${token}${params_string}`;
+    return `${base_url}/${endpoint}?token=${token}${params_string}`;
   }
 
   private static safeGetPostBody(parameters: string[][]): Object {

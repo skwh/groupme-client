@@ -3,6 +3,8 @@ import { Attachment } from "./attachment";
 
 export class Message implements Model {
   public id: number;
+  public text: string;
+  public user_id: number;
   public avatar_url: string;
   public conversation_id: number;
   public source_guid: string;
@@ -13,7 +15,10 @@ export class Message implements Model {
   public favorited_by: number[];
   public attachments: Attachment[];
 
-  constructor(public text: string, public user_id: number) {}
+  constructor() {
+    this.attachments = [];
+    this.favorited_by = [];
+  }
 
   fields: string[] = [
       "image_url", "source_guid", "created_at", "group_id",

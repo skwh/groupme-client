@@ -202,9 +202,10 @@ export class StateService {
     return this.groupme.destroyLike(this.currentAccessToken, conversation_id, message_id);
   }
 
-  sendMessage(conversation_id: number, text: string): Promise<boolean> {
-    let message_guid = ""+Date.now();
-    return this.groupme.sendMessage(this.currentAccessToken, conversation_id, this.currentUserId, text, message_guid);
+  sendMessage(conversation_id: number, message: Message): Promise<boolean> {
+    message.source_guid = ""+Date.now();
+    message.conversation_id = conversation_id;
+    return this.groupme.sendMessage(this.currentAccessToken, message);
   }
 
   private static currentChatIdIsGroup(chat_id: string): boolean {
@@ -244,6 +245,10 @@ export class StateService {
     this.store.putAccessToken(validated_token);
     this.updateGroupsFromApi(5);
     this.updateChatsFromApi(5);
+  }
+
+  handleImageUpload(image_data: Blob): Promise<string> {
+    return this.groupme.uploadImage(this.currentAccessToken, image_data);
   }
 
 }

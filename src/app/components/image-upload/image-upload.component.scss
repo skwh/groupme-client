@@ -1,0 +1,24 @@
+@import "../../../variables";
+
+div.image-upload-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: $secondary-dark;
+  height: 30vh;
+
+  i, label {
+    color: $background;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      text-shadow: 0 0 1px $primary-light;
+    }
+  }
+
+  input#file {
+    display: none;
+  }
+}

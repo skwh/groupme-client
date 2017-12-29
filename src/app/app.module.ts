@@ -30,6 +30,8 @@ import { AlphabetizePipe } from "./pipes/alphabetize.pipe";
 import { InitialsPipe } from "./pipes/initials.pipe";
 import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
 import { ListItemComponent } from "./components/list-item/list-item.component";
+import { ImageUploadComponent } from "./components/image-upload/image-upload.component";
+import { AttachComponent } from "./components/attach/attach.component";
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { ListItemComponent } from "./components/list-item/list-item.component";
     GroupsComponent,
     MembersComponent,
     GroupSettingsComponent,
+    ImageUploadComponent,
+    AttachComponent,
     ReversePipe,
     TruncatePipe,
     AlphabetizePipe,

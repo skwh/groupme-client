@@ -62,8 +62,8 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  sendMessageToGroup(text: string): void {
-    this.state.sendMessage(this.currentGroupId, text).then(result => {
+  sendMessageToGroup(message: Message): void {
+    this.state.sendMessage(this.currentGroupId, message).then(result => {
       console.log(result);
     });
   }

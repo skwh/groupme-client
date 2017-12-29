@@ -1,0 +1,8 @@
+<div class="image-upload-box" #dragAndDropBox>
+    <label for="file">
+        <i class="material-icons">add</i>
+        <br />
+        Click or Drag to Upload
+    </label>
+    <input type="file" id="file" accept="image/*" (change)="handleFileUpload($event)" />
+</div>

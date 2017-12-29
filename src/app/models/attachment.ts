@@ -17,4 +17,9 @@ export class Attachment implements Model {
   public fields: string[] = [
       "type", "url", "loci", "user_ids"
   ];
+
+  constructor() {
+    this.loci = [];
+    this.user_ids = [];
+  }
 }

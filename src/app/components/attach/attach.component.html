@@ -1,0 +1,21 @@
+<div class="shadow"></div>
+<div class="attach-box">
+    <h3 class="subheader">Add Attachment</h3>
+    <div class="attachments-wrapper">
+        <div class="attachments-labels">
+            <p class="active">Upload Image</p>
+            <p class="disabled">Add GIPHY gif</p>
+        </div>
+        <div class="tab active" data-tabnum="1">
+            <app-image-upload [class.hidden]="this.imageUploaded" (onUploaded)="handleUpload($event)"></app-image-upload>
+            <div class="uploaded-image">
+                <img *ngIf="this.imageUploaded" [src]="this.uploadedImageUrl" />
+            </div>
+        </div>
+        <div class="tab" data-tabnum="2">
+            Sorry, this feature isn't done yet.
+        </div>
+    </div>
+    <button class="warning align-left" (click)="this.cancel.emit(true)">Close</button>
+    <button class="align-right" (click)="this.done.emit(this.uploadedImageUrl)">Done</button>
+</div>

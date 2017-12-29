@@ -109,3 +109,30 @@
   align-items: center;
   font-size: 18px;
 }
+
+@mixin buttons() {
+  button {
+    background-color: transparent;
+    border: 1px solid $primary;
+    border-radius: 5px;
+    padding: 1.5%;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-family: "Quicksand", sans-serif;
+    cursor: pointer;
+    transition: $animation-time ease-in-out;
+
+    &:hover {
+      box-shadow: 0 0 5px $primary;
+    }
+
+  }
+
+  button.warning, button.destroy {
+    border-color: $warning;
+
+    &:hover {
+      box-shadow: 0 0 3px $warning;
+    }
+  }
+}
