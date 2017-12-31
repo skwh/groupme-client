@@ -3,11 +3,11 @@
         <app-message [message]="message"
                      [previousMessage]="messages[i-1]"
                      [myUserId]="this.myUserId"
-                     [conversationId]="this.currentGroupId"
+                     [conversationId]="this.currentChannelNumber"
                      [first]="isFirst"></app-message>
     </ng-container>
 </div>
-<app-input (messageSent)="sendMessageToGroup($event)"></app-input>
-<div class="empty-message" [class.hidden]="this.messages.length != 0">
+<app-input [thisUser]="this.state.currentUser" (messageSent)="sendMessageToChannel($event)"></app-input>
+<div class="empty-message" [class.hidden]="this.currentChannelIsGroup != null">
     Select a Group or Contact from the sidebar to get started!
 </div>

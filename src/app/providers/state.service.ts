@@ -15,13 +15,15 @@ export class StateService {
   ACCESS_TOKEN_KEY: string = "access_token";
 
   currentAccessToken: string = "";
-  currentChatId: string = "";
+  currentChannelId: string = "";
   currentUserId: number = 0;
+  currentUser: Member;
 
   constructor(private groupme: GroupmeService, private store: StoreService) {
     this.currentAccessToken = this.store.get(this.ACCESS_TOKEN_KEY);
-    this.currentUserId = this.store.getMe().user_id;
-    this.currentChatId = this.store.getCurrentChatId();
+    this.currentUser = this.store.getMe();
+    this.currentUserId = this.currentUser.user_id;
+    this.currentChannelId = this.store.getCurrentChannelId();
   }
 
   groupsSubject: Subject<Group[]> = new Subject();
@@ -139,6 +141,12 @@ export class StateService {
     return this.groupme.getChats(this.currentAccessToken, 1, 20);
   }
 
+  updateChat(user_id: number, property: string, value: any): void {
+    let chat = this.store.getChatByUserId(user_id);
+    chat[property] = value;
+    this.store.updateChatByUserId(user_id, chat);
+  }
+
   /*
     The messages channel is always the messages that are currently visible on screen.
    */
@@ -151,7 +159,7 @@ export class StateService {
     }
     this.groupme.getGroupMessages(this.currentAccessToken, group_id).then(response => {
       this.messagesSubject.next(response);
-      this.updateChatId('g'+group_id);
+      this.updateChannelId('g'+group_id);
     });
   }
 
@@ -161,7 +169,7 @@ export class StateService {
     }
     this.groupme.getGroupMessages(this.currentAccessToken, group_id, before_id).then(response => {
       this.messagesSubject.next(response);
-      this.updateChatId('g'+group_id);
+      this.updateChannelId('g'+group_id);
     });
   }
 
@@ -171,27 +179,64 @@ export class StateService {
     }
     this.groupme.getDirectMessages(this.currentAccessToken, user_id).then(response => {
       this.messagesSubject.next(response);
-      this.updateChatId('u'+user_id);
+      this.updateChannelId('u'+user_id);
     });
   }
 
+  updateChatMessagesFromApiBeforeMessage(user_id: number, before_id: number) {
+    if (this.accessTokenIsEmpty()) {
+      return;
+    }
+    this.groupme.getDirectMessages(this.currentAccessToken, user_id, before_id).then(response => {
+      this.messagesSubject.next(response);
+      this.updateChannelId('u'+user_id);
+    })
+  }
+
   updateMostRecentMessages() {
-    if (this.currentChatId != "" && !this.accessTokenIsEmpty()) {
-      if (StateService.currentChatIdIsGroup(this.currentChatId)) {
-        this.updateGroupMessagesFromApi(StateService.getIdFromIdString(this.currentChatId));
+    if (this.currentChannelId != "" && !this.accessTokenIsEmpty()) {
+      if (StateService.currentChatIdIsGroup(this.currentChannelId)) {
+        this.updateGroupMessagesFromApi(StateService.getIdFromIdString(this.currentChannelId));
       } else {
-        this.updateChatMessagesFromApi(StateService.getIdFromIdString(this.currentChatId));
+        this.updateChatMessagesFromApi(StateService.getIdFromIdString(this.currentChannelId));
       }
     }
   }
 
-  updateChatId(chat_id: string) {
-    this.currentChatId = chat_id;
-    this.store.putCurrentChatId(chat_id);
+  updateChannelId(chat_id: string) {
+    this.currentChannelId = chat_id;
+    this.store.putCurrentChannelId(chat_id);
   }
 
-  resetCurrentChatId() {
-    this.store.putCurrentChatId('');
+  resetCurrentChannelId() {
+    this.currentChannelId = "";
+    this.store.putCurrentChannelId('');
+  }
+
+  getSetting(key: string): any {
+    return this.store.get(key);
+  }
+
+  setSetting(key: string, value: any): void {
+    this.store.setSetting(key, value);
+  }
+
+  getNotificationSetting(key: string): any {
+    return this.store.getNotificationSetting(key);
+  }
+
+  setNotificationSetting(key: string, value: any): void {
+    this.store.setNotificationSetting(key, value);
+  }
+
+  removeNotificationFromChannel(channel_id: string) {
+    if (StateService.currentChatIdIsGroup(channel_id)) {
+      this.updateGroup(StateService.getIdFromIdString(channel_id), "hasNotification", false);
+      this.updateGroupsFromApi(5, false);
+    } else {
+      this.updateChat(StateService.getIdFromIdString(channel_id), "hasNotification", false);
+      this.updateChatsFromApi(5, false);
+    }
   }
 
   favoriteMessage(conversation_id: number, message_id: number): Promise<boolean> {
@@ -202,10 +247,23 @@ export class StateService {
     return this.groupme.destroyLike(this.currentAccessToken, conversation_id, message_id);
   }
 
-  sendMessage(conversation_id: number, message: Message): Promise<boolean> {
-    message.source_guid = ""+Date.now();
+  sendMessageToGroup(conversation_id: number, message: Message): Promise<boolean> {
+    message = StateService.addGUIDtoMessage(message);
     message.conversation_id = conversation_id;
-    return this.groupme.sendMessage(this.currentAccessToken, message);
+    return this.groupme.sendMessageToGroup(this.currentAccessToken, message);
+  }
+
+  sendMessageToUser(user_id: number, message: Message): Promise<boolean> {
+    message = StateService.addGUIDtoMessage(message);
+    message.recipient_id = user_id;
+    message.conversation_id = user_id;
+    return this.groupme.sendMessageToUser(this.currentAccessToken, message);
+  }
+
+
+  private static addGUIDtoMessage(message: Message): Message {
+    message.source_guid = ""+Date.now();
+    return message;
   }
 
   private static currentChatIdIsGroup(chat_id: string): boolean {

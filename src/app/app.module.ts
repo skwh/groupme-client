@@ -32,6 +32,7 @@ import { GroupSettingsComponent } from "./components/group-settings/group-settin
 import { ListItemComponent } from "./components/list-item/list-item.component";
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component";
 import { AttachComponent } from "./components/attach/attach.component";
+import { NotificationService } from "./providers/notification.service";
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { AttachComponent } from "./components/attach/attach.component";
     {provide: GroupmeService, useClass: GroupmeService},
     StateService,
     FayeService,
+    NotificationService,
     LoginGuard
   ],
   bootstrap: [AppComponent]

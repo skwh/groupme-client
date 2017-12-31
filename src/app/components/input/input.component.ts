@@ -1,6 +1,7 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Message } from "../../models/message";
 import { Attachment, AttachmentType } from "../../models/attachment";
+import { Member } from "../../models/member";
 
 @Component({
   selector: 'app-input',
@@ -9,6 +10,8 @@ import { Attachment, AttachmentType } from "../../models/attachment";
 })
 export class InputComponent implements OnInit {
   @ViewChild('box') private messageInput: ElementRef;
+
+  @Input() thisUser: Member;
   @Output() messageSent = new EventEmitter<Message>();
 
   baseScrollHeight: number = 0;
@@ -18,6 +21,7 @@ export class InputComponent implements OnInit {
 
   ngOnInit() {
     this.resetMessage();
+    this.attachBoxVisible = false;
   }
 
   textareaFocus(): void {
@@ -39,6 +43,9 @@ export class InputComponent implements OnInit {
 
   sendMessage(text: string) {
     this.currentMessage.text = text;
+    this.currentMessage.name = this.thisUser.name;
+    this.currentMessage.avatar_url = this.thisUser.avatar_url;
+    this.currentMessage.user_id = this.thisUser.user_id;
     this.messageInput.nativeElement.value = "";
     this.messageSent.emit(this.currentMessage);
     this.resetMessage();

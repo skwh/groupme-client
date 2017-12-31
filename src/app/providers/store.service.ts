@@ -18,8 +18,14 @@ export class StoreService {
     'chats_last_updated': 0,
     'last_updated': 0,
     'me': {},
-    'current_chat_id': '',
+    'current_channel_id': '',
     'members': [],
+    'settings': {
+      'notifications': {
+        'on': true,
+        'eachMessage': false
+      }
+    }
   };
 
   get(key: string): any {
@@ -119,6 +125,26 @@ export class StoreService {
     }
   }
 
+  getChatByUserId(user_id: number): Chat {
+    let chats: Chat[] = this.get(Chat.storeKey);
+    for (let i=0;i<chats.length;i++) {
+      if (chats[i].other_user.id == user_id) {
+        return chats[i];
+      }
+    }
+    return null;
+  }
+
+  updateChatByUserId(user_id: number, new_chat: Chat): void {
+    let chats: Chat[] = this.get(Chat.storeKey);
+    for (let i=0;i<chats.length;i++) {
+      if (chats[i].other_user.id == user_id) {
+        chats[i] = new_chat;
+      }
+    }
+    this.putChats(chats);
+  }
+
   putMe(me: Member) {
     this.put(Member.userStoreKey, me);
   }
@@ -127,12 +153,12 @@ export class StoreService {
     return this.get(Member.userStoreKey);
   }
 
-  putCurrentChatId(chat_id: string) {
-    this.put('current_chat_id', chat_id);
+  putCurrentChannelId(channel_id: string) {
+    this.put('current_channel_id', channel_id);
   }
 
-  getCurrentChatId(): string {
-    return this.get('current_chat_id');
+  getCurrentChannelId(): string {
+    return this.get('current_channel_id');
   }
 
   putMember(member: Member) {
@@ -157,6 +183,26 @@ export class StoreService {
       }
     }
     return null;
+  }
+
+  getSetting(key: string): any {
+    return this.get("settings")[key];
+  }
+
+  setSetting(key: string, value: any): void {
+    let settings = this.get('settings');
+    settings[key] = value;
+    this.put("settings", settings);
+  }
+
+  getNotificationSetting(key: string): any {
+    return this.getSetting("notifications")[key];
+  }
+
+  setNotificationSetting(key: string, value: any): void {
+    let notifications = this.getSetting("notifications");
+    notifications[key] = value;
+    this.setSetting("notifications", notifications);
   }
 
 }

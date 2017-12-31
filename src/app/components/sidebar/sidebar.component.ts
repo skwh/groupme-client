@@ -4,6 +4,7 @@ import { Chat } from "../../models/chat";
 import { Group } from "../../models/group";
 import { Subject } from "rxjs/Subject";
 import { Observable } from "rxjs/Observable";
+import { NotificationService } from "../../providers/notification.service";
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +12,8 @@ import { Observable } from "rxjs/Observable";
   styleUrls: ['sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  constructor(private state: StateService) {}
+  constructor(private state: StateService,
+              private notServ: NotificationService) {}
 
   groups: Group[] = [];
   groupSubject: Subject<Group[]> = new Subject();

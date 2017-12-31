@@ -2,13 +2,9 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/co
 import { ActivatedRoute, ParamMap } from "@angular/router";
 import { StateService } from "../../providers/state.service";
 import { Message } from "../../models/message";
-import { FayeService } from "../../providers/faye.service";
-import { FayeNotification } from "../../models/notification";
-import { Group } from "../../models/group";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/switchMap';
-import { Chat } from "../../models/chat";
 
 @Component({
   selector: 'app-messages-list',
@@ -17,12 +13,11 @@ import { Chat } from "../../models/chat";
 })
 export class MessagesComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
-              private state: StateService,
-              private faye: FayeService) {}
+              private state: StateService) {}
 
-  currentGroupId: number;
-  currentGroup: Group;
-  currentChat: Chat;
+  currentChannelId: string;
+  currentChannelNumber: number;
+  currentChannelIsGroup: boolean = null;
   myUserId: number;
   messageSubject: Subject<Message[]> = new Subject();
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
@@ -32,7 +27,6 @@ export class MessagesComponent implements OnInit, OnDestroy {
 
   stateMessageSubscription;
   routeParamMapSubscription;
-  notificationSubscription;
 
   @ViewChild('messagesContainer') private messagesContainer: ElementRef;
 
@@ -42,10 +36,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
       this.addMessagesFromArray(messages);
     });
     this.routeParamMapSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
-      this.processGroupChange(params);
-    });
-    this.notificationSubscription = this.faye.message$.subscribe((notification) => {
-      this.processNotification(notification);
+      this.processChannelChange(params);
     });
     this.scrollToBottom();
   }
@@ -62,10 +53,26 @@ export class MessagesComponent implements OnInit, OnDestroy {
     }
   }
 
-  sendMessageToGroup(message: Message): void {
-    this.state.sendMessage(this.currentGroupId, message).then(result => {
+  sendMessageToChannel(message: Message): void {
+    if (this.currentChannelIsGroup) {
+      this.sendMessageToGroup(message);
+    } else {
+      this.sendMessageToChat(message);
+    }
+  }
+
+  private sendMessageToGroup(message: Message): void {
+    this.state.sendMessageToGroup(this.currentChannelNumber, message).then(result => {
       console.log(result);
+      this.state.updateGroupMessagesFromApi(this.currentChannelNumber);
     });
+  }
+
+  private sendMessageToChat(message: Message): void {
+    this.state.sendMessageToUser(this.currentChannelNumber, message).then(result => {
+      console.log(result);
+      this.state.updateChatMessagesFromApi(this.currentChannelNumber);
+    })
   }
 
   private addMessagesFromArray(messages: Message[]): void  {
@@ -75,47 +82,61 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.oldScrollHeight = this.getScrollHeight();
   }
 
-  private processGroupChange(params: ParamMap): void {
+  private processChannelChange(params: ParamMap): void {
     this.messages = [];
     if (params.has('id')) {
-      this.currentGroupId = MessagesComponent.getOriginalId(params.get('id'));
-      if (MessagesComponent.isGroupMessageId(params.get('id'))) {
-        this.removeNotification(this.currentGroupId);
-        this.state.updateGroupMessagesFromApi(this.currentGroupId);
+      this.currentChannelId = params.get('id');
+      this.currentChannelNumber = MessagesComponent.getOriginalId(this.currentChannelId);
+      try {
+        this.state.removeNotificationFromChannel(this.currentChannelId);
+      } catch (err) {
+        console.log("Tried to remove a notification from a chat that doesn't exist");
+      }
+      if (MessagesComponent.isGroupMessageId(this.currentChannelId)) {
+        this.currentChannelIsGroup = true;
+        this.state.updateGroupMessagesFromApi(this.currentChannelNumber);
       } else {
-        this.state.updateChatMessagesFromApi(this.currentGroupId);
+        this.currentChannelIsGroup = false;
+        this.state.updateChatMessagesFromApi(this.currentChannelNumber);
       }
     } else {
-      this.currentGroupId = 0;
-      this.state.resetCurrentChatId();
+      this.resetChannelIndicators();
     }
   }
 
-  private addNotification(group: Group, notification: FayeNotification): void {
-    this.state.updateGroup(group.id, "hasNotification", true);
-    MessagesComponent.showNotification(notification, group);
-    this.state.updateGroupsFromApi(5, false);
+  private resetChannelIndicators(): void {
+    this.currentChannelNumber = 0;
+    this.currentChannelId = "";
+    this.currentChannelIsGroup = null;
+    this.state.resetCurrentChannelId();
   }
 
-  private removeNotification(groupId: number): void {
-    if (this.currentGroup && this.currentGroup.hasNotification) {
-      this.state.updateGroup(groupId, "hasNotification", false);
-      this.state.updateGroupsFromApi(5, false);
+  private updateMessages(): void {
+    if (this.currentChannelIsGroup) {
+      this.state.updateGroupMessagesFromApi(this.currentChannelNumber);
+    } else {
+      this.state.updateChatMessagesFromApi(this.currentChannelNumber);
     }
   }
 
-  private processNotification(notification: FayeNotification): void {
-    if (notification.type == "line.create") {
-      let message = notification.subject;
-      this.state.getGroupById(message.group_id).then(relevantGroup => {
-        if (message.group_id == this.currentGroupId) {
-          this.addMessage(message);
-        } else if (!relevantGroup.muted) {
-          this.addNotification(relevantGroup, notification);
-        }
-      });
-    }
-  }
+  // private addNotification(group: Group, notification: FayeNotification): void {
+  //   this.state.updateGroup(group.id, "hasNotification", true);
+  //   MessagesComponent.showNotification(notification, group);
+  //   this.state.updateGroupsFromApi(5, false);
+  // }
+
+  // private processNotification(notification: FayeNotification): void {
+  //   if (notification.type == "line.create") {
+  //     let message = notification.subject;
+  //     this.state.getGroupById(message.group_id).then(relevantGroup => {
+  //       if (message.group_id == this.currentGroupId) {
+  //         this.addMessage(message);
+  //       } else if (!relevantGroup.muted) {
+  //         this.addNotification(relevantGroup, notification);
+  //       }
+  //     });
+  //   }
+  // }
 
   private addMessage(message: Message): void {
     if (this.reverseMessages) {
@@ -139,12 +160,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
   }
 
 
-  private static showNotification(notification: FayeNotification, relevantGroup: Group): Notification {
-    return new Notification(relevantGroup.name, {
-      'body': notification.alert,
-      'icon': relevantGroup.image_url,
-    });
-  }
+  // private static showNotification(notification: FayeNotification, relevantGroup: Group): Notification {
+  //   return new Notification(relevantGroup.name, {
+  //     'body': notification.alert,
+  //     'icon': relevantGroup.image_url,
+  //   });
+  // }
 
   private static isGroupMessageId(id: string): boolean {
     return id.indexOf("g") != -1;
@@ -181,11 +202,15 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private getPreviousMessages(): void {
     let firstMessageId = this.messages[0].id;
     this.reverseMessages = true;
-    this.state.updateGroupMessagesFromApiBeforeMessage(this.currentGroupId, firstMessageId);
+    if (this.currentChannelIsGroup) {
+      this.state.updateGroupMessagesFromApiBeforeMessage(this.currentChannelNumber, firstMessageId);
+    } else {
+      this.state.updateChatMessagesFromApiBeforeMessage(this.currentChannelNumber, firstMessageId);
+    }
   }
 
   ngOnDestroy() {
-    this.notificationSubscription.unsubscribe();
+    this.state.resetCurrentChannelId();
     this.routeParamMapSubscription.unsubscribe();
     this.stateMessageSubscription.unsubscribe();
   }

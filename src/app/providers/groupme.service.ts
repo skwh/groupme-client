@@ -146,7 +146,9 @@ export class GroupmeService {
 
   getDirectMessages(token: string, user_id: number, before_id?: number, since_id?: number): Promise<Message[]> {
     const url = GroupmeService.safeGetApiURL('direct_messages', token, [
-        ['other_user_id', user_id.toString()]
+        ['other_user_id', user_id.toString()],
+        ['before_id', ""+before_id],
+        ['since_id', ""+since_id]
     ]);
     return this.http.get(url)
         .toPromise()
@@ -180,9 +182,17 @@ export class GroupmeService {
         .catch(this.handleError);
   }
 
-  sendMessage(token: string, message: Message): Promise<boolean> {
+  sendMessageToGroup(token: string, message: Message): Promise<boolean> {
     const url = GroupmeService.safeGetApiURL(`groups/${message.conversation_id}/messages`, token);
     return this.http.post(url, { "message": message })
+        .toPromise()
+        .then(response => { return true })
+        .catch(this.handleError);
+  }
+
+  sendMessageToUser(token: string, message: Message): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL('direct_messages', token);
+    return this.http.post(url, { "direct_message" : message })
         .toPromise()
         .then(response => { return true })
         .catch(this.handleError);
