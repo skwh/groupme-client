@@ -8,6 +8,8 @@ export class Message implements Model {
   public avatar_url: string;
   public conversation_id: number;
   public recipient_id: number;
+  public sender_id: number;
+  public chat_id: string;
   public source_guid: string;
   public created_at: number;
   public group_id: number;
@@ -24,6 +26,6 @@ export class Message implements Model {
   fields: string[] = [
       "image_url", "source_guid", "created_at", "group_id",
       "name", "avatar_url", "system", "favorited_by", "text", "user_id", "conversation_id",
-      "attachments", "id", "recipient_id"
+      "attachments", "id", "recipient_id", "sender_id", "chat_id"
   ];
 }

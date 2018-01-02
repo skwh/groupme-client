@@ -147,6 +147,10 @@ export class StateService {
     this.store.updateChatByUserId(user_id, chat);
   }
 
+  getChatByUserId(user_id: number): Chat {
+    return this.store.getChatByUserId(user_id);
+  }
+
   /*
     The messages channel is always the messages that are currently visible on screen.
    */

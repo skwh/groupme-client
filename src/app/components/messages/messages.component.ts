@@ -64,14 +64,12 @@ export class MessagesComponent implements OnInit, OnDestroy {
   private sendMessageToGroup(message: Message): void {
     this.state.sendMessageToGroup(this.currentChannelNumber, message).then(result => {
       console.log(result);
-      this.state.updateGroupMessagesFromApi(this.currentChannelNumber);
     });
   }
 
   private sendMessageToChat(message: Message): void {
     this.state.sendMessageToUser(this.currentChannelNumber, message).then(result => {
       console.log(result);
-      this.state.updateChatMessagesFromApi(this.currentChannelNumber);
     })
   }
 

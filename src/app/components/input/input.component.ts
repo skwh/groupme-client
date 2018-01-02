@@ -79,5 +79,6 @@ export class InputComponent implements OnInit {
 
   private resetMessage(): void {
     this.currentMessage = new Message();
+    this.messageInput.nativeElement.rows = 1;
   }
 }
