@@ -1,0 +1,10 @@
+@import "../../../common_styles";
+@import "../../../variables";
+
+h3.subheader, h5.subsubheader {
+  @include subheader();
+}
+
+h5.subsubheader {
+  font-size: 15px;
+}

@@ -6,6 +6,7 @@ import { MessagesComponent } from "./components/messages/messages.component";
 import { GroupsComponent } from "./components/groups/groups.component";
 import { MembersComponent } from "./components/members/members.component";
 import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
+import { SettingsComponent } from "./components/settings/settings.component";
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
       {
         path: 'members',
         component: MembersComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
       }
     ]
   },

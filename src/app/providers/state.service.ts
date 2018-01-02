@@ -218,7 +218,11 @@ export class StateService {
   }
 
   getSetting(key: string): any {
-    return this.store.get(key);
+    return this.store.getSetting(key);
+  }
+
+  getAllSettings(): Object {
+    return this.store.get("settings");
   }
 
   setSetting(key: string, value: any): void {

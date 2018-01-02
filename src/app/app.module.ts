@@ -33,6 +33,7 @@ import { ListItemComponent } from "./components/list-item/list-item.component";
 import { ImageUploadComponent } from "./components/image-upload/image-upload.component";
 import { AttachComponent } from "./components/attach/attach.component";
 import { NotificationService } from "./providers/notification.service";
+import { SettingsComponent } from "./components/settings/settings.component";
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { NotificationService } from "./providers/notification.service";
     InputComponent,
     GroupsComponent,
     MembersComponent,
+    SettingsComponent,
     GroupSettingsComponent,
     ImageUploadComponent,
     AttachComponent,
