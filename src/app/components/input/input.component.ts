@@ -41,7 +41,9 @@ export class InputComponent implements OnInit {
 
   // autoexpanding textarea code comes from https://codepen.io/vsync/pen/frudD
 
-  sendMessage(text: string) {
+  sendMessage(event, text: string) {
+    event.preventDefault();
+    text = text.slice(0, text.length-1);
     this.currentMessage.text = text;
     this.currentMessage.name = this.thisUser.name;
     this.currentMessage.avatar_url = this.thisUser.avatar_url;

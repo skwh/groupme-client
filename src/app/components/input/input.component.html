@@ -6,7 +6,7 @@
     <div class="textbox-container">
         <i class="material-icons" (click)="showAttachBox()">add</i>
         <textarea #box
-                  (keyup.enter)="this.sendMessage(box.value)"
+                  (keyup.enter)="this.sendMessage($event, box.value)"
                   (focus)="this.textareaFocus()"
                   (input)="this.textareaInput()"
                   rows="1"
