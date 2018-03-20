@@ -34,6 +34,8 @@ import { ImageUploadComponent } from "./components/image-upload/image-upload.com
 import { AttachComponent } from "./components/attach/attach.component";
 import { NotificationService } from "./providers/notification.service";
 import { SettingsComponent } from "./components/settings/settings.component";
+import { FilterPipe } from "./pipes/filter.pipe";
+import { MentionsComponent } from "./components/mentions/mentions.component";
 
 @NgModule({
   declarations: [
@@ -50,10 +52,12 @@ import { SettingsComponent } from "./components/settings/settings.component";
     GroupSettingsComponent,
     ImageUploadComponent,
     AttachComponent,
+    MentionsComponent,
     ReversePipe,
     TruncatePipe,
     AlphabetizePipe,
     InitialsPipe,
+    FilterPipe,
   ],
   imports: [
     BrowserModule,

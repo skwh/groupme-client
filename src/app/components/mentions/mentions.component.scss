@@ -1,0 +1,38 @@
+@import "../../../common_styles";
+@import "../../../variables";
+
+.user-avatar {
+  @include avatar(40px);
+}
+
+div.mentions-wrapper {
+  position: fixed;
+  bottom: 10%;
+  left: 27%;
+  background-color: $background;
+  border: 1px solid $disabled;
+  border-radius: 5px;
+}
+
+a.chat-content-wrapper {
+  text-decoration: none;
+  transition: background-color $animation-time;
+  @include msg-list-container();
+
+  &:hover {
+    background-color: $primary-light;
+  }
+
+  &:nth-of-type(odd) {
+    background-color: $secondary;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
+
+  div.chat-text {
+    @include msg-list-text();
+    flex: 0 1 auto;
+  }
+}

@@ -1,0 +1,13 @@
+<div class="mentions-wrapper" *ngIf="this.filteredMembers != undefined && this.filteredMembers.length != 0">
+    <ng-container *ngFor="let member of this.filteredMembers">
+        <a class="chat-content-wrapper">
+            <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+            <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+            <div class="chat-text">
+                <p class="text">
+                    {{ member.nickname }}
+                </p>
+            </div>
+        </a>
+    </ng-container>
+</div>

@@ -105,12 +105,14 @@ export class MessageComponent implements OnInit {
   favoriteMessage() {
     this.state.favoriteMessage(this.message.conversation_id, this.message.id).then(response => {
       this.isFavorited = response;
+      this.message.favorited_by.push(this.state.currentUser.user_id);
     });
   }
 
   unfavoriteMessage() {
     this.state.unfavoriteMessage(this.message.conversation_id, this.message.id).then(response => {
       this.isFavorited = !response;
+      this.message.favorited_by.slice(this.message.favorited_by.indexOf(this.state.currentUser.user_id),1);
     })
   }
 

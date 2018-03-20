@@ -7,7 +7,7 @@
                      [first]="isFirst"></app-message>
     </ng-container>
 </div>
-<app-input *ngIf="this.currentChannelIsGroup != null" [thisUser]="this.state.currentUser" (messageSent)="sendMessageToChannel($event)"></app-input>
+<app-input *ngIf="this.currentChannelIsGroup != null" [thisUser]="this.state.currentUser" (messageSent)="sendMessageToChannel($event)" [currentChannelIsGroup]="this.currentChannelIsGroup"></app-input>
 <div class="empty-message" [class.hidden]="this.currentChannelIsGroup != null">
     Select a Group or Contact from the sidebar to get started!
 </div>

@@ -84,6 +84,7 @@ export class MessagesComponent implements OnInit, OnDestroy {
     this.messages = [];
     if (params.has('id')) {
       this.currentChannelId = params.get('id');
+      this.state.updateChannelId(this.currentChannelId);
       this.currentChannelNumber = MessagesComponent.getOriginalId(this.currentChannelId);
       try {
         this.state.removeNotificationFromChannel(this.currentChannelId);

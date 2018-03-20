@@ -11,7 +11,7 @@ export enum AttachmentType {
 export class Attachment implements Model {
   public type: AttachmentType;
   public url: string;
-  public loci: number[];
+  public loci: number[][];
   public user_ids: number[];
 
   public fields: string[] = [

@@ -198,16 +198,6 @@ export class GroupmeService {
         .catch(this.handleError);
   }
 
-  handleError(error: any): Promise<any> {
-    if (error.status == 304) {
-      console.log("Not modified");
-      return Promise.reject("Not modified");
-    } else {
-      console.error('An error occurred in Groupme Service: ', error);
-      return Promise.reject(error.message || error);
-    }
-  }
-
   uploadImage(token: string, image_data: Blob): Promise<string> {
     const url = GroupmeService.safeGetApiURL('pictures', token, [], IMAGE_SERVICE_URL);
     return this.http.post(url, image_data)
@@ -216,6 +206,17 @@ export class GroupmeService {
           return response["payload"]["picture_url"];
         })
         .catch(this.handleError);
+  }
+
+  handleError(error: any): Promise<any> {
+    //TODO(skwh): hook api error logic into ui components
+    if (error.status == 304) {
+      console.log("Not modified");
+      return Promise.reject("Not modified");
+    } else {
+      console.error('An error occurred in Groupme Service: ', error);
+      return Promise.reject(error.message || error);
+    }
   }
 
   private static safeGetApiURL(endpoint: string, token: string, parameters?:string[][], base_url: string = BASE_URL): string {
