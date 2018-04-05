@@ -1,5 +1,5 @@
 <h3 class="subheader">Current Chats</h3>
-<a *ngFor="let chat of this.chats" class="chat-content-wrapper" [routerLink]="['/chat', 'u'+chat.other_user.id]">
+<a *ngFor="let chat of this.chats" class="chat-content-wrapper" [routerLink]="['/chat', chat.other_user.id]">
     <img *ngIf="chat.other_user.avatar_url != ''" class="user-avatar" [src]="chat.other_user.avatar_url" [alt]="chat.other_user.name" />
     <div *ngIf="chat.other_user.avatar_url == ''" class="user-avatar">{{ chat.other_user.name | initials }}</div>
     <div class="chat-text">
@@ -16,7 +16,7 @@
     </div>
 </a>
 <h3 class="subheader">All Contacts</h3>
-<a *ngFor="let member of this.members | alphabetize: 'nickname' " [class.hidden]="member.user_id == this.myUserId" class="chat-content-wrapper" [routerLink]="['/chat', 'u'+member.user_id]">
+<a *ngFor="let member of this.members | alphabetize: 'nickname' " [class.hidden]="member.user_id == this.myUserId" class="chat-content-wrapper" [routerLink]="['/chat', member.user_id]">
     <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
     <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
     <div class="chat-text">

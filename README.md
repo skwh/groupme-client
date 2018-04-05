@@ -10,17 +10,17 @@ gmg is a fully-featured GroupMe client, meaning you can do (almost) anything her
 
 Currently implemented features:
 
-- See messages from Groups and directly from other users (DMs).
-- Send messages to those Groups and users, including image attachments.
-- Like / Favorite messages in Groups and DMs.
-- Get desktop notifications when new messages are delivered to your Groups and DMs.
+- See _messages from Groups and directly from other users (DMs).
+- Send _messages to those Groups and users, including image attachments.
+- Like / Favorite _messages in Groups and DMs.
+- Get desktop notifications when new _messages are delivered to your Groups and DMs.
 - Change the title, description, and avatar for your Groups.
 - Remove users from your Groups.
 
 Features planned for Version 1:
 
 - Create new groups
-- Mention other users in your messages
+- Mention other users in your _messages
 - Use keyboard shortcuts to navigate through the app
 - Native menus for navigating and interacting with the app
 - Settings page for configuring the app
@@ -29,7 +29,7 @@ Features planned for Version 2:
 
 - Responsive design; resize the window as you please
 - See previews of the image you've attached to your message
-- Add GIPHY gifs and Emojis to your messages
+- Add GIPHY gifs and Emojis to your _messages
 - Edit your GroupMe profile, including avatar
 - User blocks
 
@@ -56,7 +56,7 @@ If you don't have a Github account, I'm not going to make you get one. Please [s
 - Your Operating System (OS): macOS, Win 7/8/10, etc.
 - What happened when you encountered the bug
 - What you expected to happen
-- If you saw any error messages appear
+- If you saw any error _messages appear
 
 ## Contributing
 

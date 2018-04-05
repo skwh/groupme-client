@@ -1,10 +1,6 @@
 <app-attach [class.hidden]="!this.attachBoxVisible"
             (cancel)="handleCancel()"
             (done)="handleAttach($event)"></app-attach>
-<app-mentions [class.hidden]="!this.showMentions"
-              [searchString]="this.mentionString"
-              [groupMembers]="this.currentGroupMembers"
-              (foundMember)="getMention($event)"></app-mentions>
 <div class="input-container">
     <div class="attachments-container">
         <p title="Remove attachment" (click)="removeAttachments()">{{ this.currentMessage.attachments.length }} attachments.</p>
@@ -13,7 +9,6 @@
         <i class="material-icons" (click)="showAttachBox()">add</i>
         <textarea #box
                   (keyup.enter)="this.sendMessage($event, box.value)"
-                  (keydown)="this.detectMention($event)"
                   (focus)="this.textareaFocus()"
                   (input)="this.textareaInput($event)"
                   rows="1"

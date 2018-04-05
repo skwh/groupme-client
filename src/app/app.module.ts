@@ -36,6 +36,10 @@ import { NotificationService } from "./providers/notification.service";
 import { SettingsComponent } from "./components/settings/settings.component";
 import { FilterPipe } from "./pipes/filter.pipe";
 import { MentionsComponent } from "./components/mentions/mentions.component";
+import { ChatMessagesComponent } from "./components/chat-messages/chat-messages.component";
+import { GroupMessagesComponent } from "./components/group-messages/group-messages.component";
+import { ChatsService } from "./providers/chats.service";
+import { GroupsService } from "./providers/groups.service";
 
 @NgModule({
   declarations: [
@@ -43,6 +47,8 @@ import { MentionsComponent } from "./components/mentions/mentions.component";
     ListItemComponent,
     LoginComponent,
     SidebarComponent,
+    GroupMessagesComponent,
+    ChatMessagesComponent,
     MessagesComponent,
     MessageComponent,
     InputComponent,
@@ -71,6 +77,8 @@ import { MentionsComponent } from "./components/mentions/mentions.component";
     StoreService,
     {provide: GroupmeService, useClass: GroupmeService},
     StateService,
+    GroupsService,
+    ChatsService,
     FayeService,
     NotificationService,
     LoginGuard

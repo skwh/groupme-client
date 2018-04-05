@@ -1,13 +1,10 @@
 <div #messagesContainer class="messages-container" (scroll)="onScroll($event)">
-    <ng-container *ngFor="let message of this.messages$ | async | reverse as messages; first as isFirst; index as i;">
+    <ng-container *ngFor="let message of this.messages$ | async | reverse
+     as messageArray; first as isFirst; index as i;">
         <app-message [message]="message"
-                     [previousMessage]="messages[i-1]"
-                     [myUserId]="this.myUserId"
+                     [previousMessage]="messageArray[i-1]"
+                     [myUserId]="this.currentUserId"
                      [conversationId]="this.currentChannelNumber"
                      [first]="isFirst"></app-message>
     </ng-container>
-</div>
-<app-input *ngIf="this.currentChannelIsGroup != null" [thisUser]="this.state.currentUser" (messageSent)="sendMessageToChannel($event)" [currentChannelIsGroup]="this.currentChannelIsGroup"></app-input>
-<div class="empty-message" [class.hidden]="this.currentChannelIsGroup != null">
-    Select a Group or Contact from the sidebar to get started!
 </div>

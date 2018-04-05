@@ -7,6 +7,8 @@ import { GroupsComponent } from "./components/groups/groups.component";
 import { MembersComponent } from "./components/members/members.component";
 import { GroupSettingsComponent } from "./components/group-settings/group-settings.component";
 import { SettingsComponent } from "./components/settings/settings.component";
+import { GroupMessagesComponent } from "./components/group-messages/group-messages.component";
+import { ChatMessagesComponent } from "./components/chat-messages/chat-messages.component";
 
 const routes: Routes = [
   {
@@ -19,7 +21,7 @@ const routes: Routes = [
       },
       {
         path: 'group/:id',
-        component: MessagesComponent
+        component: GroupMessagesComponent
       },
       {
         path: 'group/:id/settings',
@@ -27,7 +29,7 @@ const routes: Routes = [
       },
       {
         path: 'chat/:id',
-        component: MessagesComponent
+        component: ChatMessagesComponent
       },
       {
         path: 'groups',

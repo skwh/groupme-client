@@ -1,0 +1,8 @@
+<app-messages-list
+        [currentUserId]="this.currentUser.id"
+        [currentChannelNumber]="this.currentChatId"
+        [messages]="this.messages"
+        (getOldMessages)="this.getPreviousMessages($event)"></app-messages-list>
+<app-input
+        (messageSent)="sendMessage($event)"
+        [currentUser]="this.currentUser"></app-input>
