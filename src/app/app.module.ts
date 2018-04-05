@@ -40,6 +40,7 @@ import { ChatMessagesComponent } from "./components/chat-messages/chat-messages.
 import { GroupMessagesComponent } from "./components/group-messages/group-messages.component";
 import { ChatsService } from "./providers/chats.service";
 import { GroupsService } from "./providers/groups.service";
+import { EomIndicatorComponent } from "./components/eom-indicator/eom-indicator.component";
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { GroupsService } from "./providers/groups.service";
     SidebarComponent,
     GroupMessagesComponent,
     ChatMessagesComponent,
+    EomIndicatorComponent,
     MessagesComponent,
     MessageComponent,
     InputComponent,

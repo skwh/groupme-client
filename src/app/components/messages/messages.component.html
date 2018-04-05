@@ -1,4 +1,5 @@
 <div #messagesContainer class="messages-container" (scroll)="onScroll($event)">
+    <app-eom-indicator [class.hidden]="!this.loadedAllMessages"></app-eom-indicator>
     <ng-container *ngFor="let message of this.messages$ | async | reverse
      as messageArray; first as isFirst; index as i;">
         <app-message [message]="message"

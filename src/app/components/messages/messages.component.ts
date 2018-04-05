@@ -13,6 +13,7 @@ export class MessagesComponent implements OnInit {
 
   @Input() currentChannelNumber: number;
   @Input() currentUserId: number;
+  @Input() loadedAllMessages: boolean = false;
   @Output() getOldMessages = new EventEmitter<number>();
 
   @Input()
@@ -99,6 +100,8 @@ export class MessagesComponent implements OnInit {
   private getPreviousMessages(): void {
     let firstMessageId = this._messages[0].id;
     this.reverseMessages = true;
-    this.getOldMessages.emit(firstMessageId);
+    if (!this.loadedAllMessages) {
+      this.getOldMessages.emit(firstMessageId);
+    }
   }
 }

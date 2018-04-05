@@ -1,0 +1,15 @@
+@import "../../../variables";
+@import "../../../common_styles";
+
+div {
+  @include msg-list-container();
+  background-color: $secondary;
+  box-shadow: inset 0px -2px 4px rgba(0,0,0,0.25);
+  p {
+    text-align: center;
+    width: 100%;
+    color: black;
+    font-weight: normal;
+    font-family: "Encode Sans", sans-serif;
+  }
+}

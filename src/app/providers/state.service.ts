@@ -174,6 +174,12 @@ export class StateService {
     this.groupme.getGroupMessages(this.currentAccessToken, group_id, before_id).then(response => {
       this.messagesSubject.next(response);
       this.updateChannelId('g'+group_id);
+    }).catch((reason: string) => {
+      if (reason === "Not modified") {
+        this.messagesSubject.next([]);
+      } else {
+        console.error(reason);
+      }
     });
   }
 

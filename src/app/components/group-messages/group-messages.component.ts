@@ -17,6 +17,8 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
   currentUser: Member;
   groupId: number;
   messages: Array<Message> = [];
+  requestPrevious: boolean = false;
+  loadedAllMessages: boolean = false;
 
   messagesSubscription: Subscription;
   routeSubscription: Subscription;
@@ -24,17 +26,22 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentUser = this.state.currentUser;
     this.messagesSubscription = this.groups.groupMessages$.subscribe((messages: Array<Message>) => {
-      let newMessages = [...this.messages, ...messages];
-      newMessages.sort((a: Message, b: Message) => {
-        if (a.created_at < b.created_at) {
-          return 1;
-        } else if (a.created_at > b.created_at) {
-          return -1;
-        } else {
-          return 0;
-        }
-      });
-      this.messages = newMessages;
+      if (this.requestPrevious && messages.length === 0) {
+        this.loadedAllMessages = true;
+      } else {
+        let newMessages = [...this.messages, ...messages];
+        newMessages.sort((a: Message, b: Message) => {
+          if (a.created_at < b.created_at) {
+            return 1;
+          } else if (a.created_at > b.created_at) {
+            return -1;
+          } else {
+            return 0;
+          }
+        });
+        this.messages = newMessages;
+      }
+      this.requestPrevious = false;
     });
     this.routeSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       if (params.has('id')) {
@@ -56,6 +63,7 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
   }
 
   getPreviousMessages(messageId: number): void {
+    this.requestPrevious = true;
     this.groups.updateMessagesFromBeforeMessage(messageId);
   }
 
