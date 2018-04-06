@@ -23,7 +23,17 @@ export class StoreService {
     'settings': {
       'notifications': {
         'on': true,
-        'eachMessage': false
+        'forChats': true,
+        'forGroups': true,
+        'forAvatar': true,
+        'forTopic': true,
+        'frequency': 1
+      },
+      'colors': {
+        'nightMode': false,
+      },
+      'window': {
+        'keepRunning': true
       }
     }
   };
@@ -193,6 +203,10 @@ export class StoreService {
     let settings = this.get('settings');
     settings[key] = value;
     this.put("settings", settings);
+  }
+
+  setSettings(settingsObject: object): void {
+    this.put("settings", settingsObject);
   }
 
   getNotificationSetting(key: string): any {

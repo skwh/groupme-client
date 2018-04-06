@@ -235,6 +235,10 @@ export class StateService {
     this.store.setSetting(key, value);
   }
 
+  setSettings(settingsObject: object): void {
+    this.store.setSettings(settingsObject);
+  }
+
   getNotificationSetting(key: string): any {
     return this.store.getNotificationSetting(key);
   }

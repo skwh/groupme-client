@@ -1,4 +1,52 @@
-<h3 class="subheader">gmg Settings</h3>
-<h5 class="subsubheader">Notifications</h5>
-<p>Notifications on? {{ this.settings.notifications.on }}</p>
-<p>Send a notification for each message? {{ this.settings.notifications.each }}</p>
+<h3 class="subheader">Settings</h3>
+<form #settingsForm="ngForm">
+    <div>
+        <h5 class="subsubheader">Notifications</h5>
+        <div>
+            <label for="recieveNotifications">Recieve Notifications</label> <input type="checkbox" id="recieveNotifications" name="notifications.on" [(ngModel)]="this.settings.notifications.on">
+            <div>
+                <label for="fromGroups">...for Groups</label> <input type="checkbox"
+                                                                     id="fromGroups"
+                                                                     name="notifications.forGroups"
+                                                                     [(ngModel)]="this.settings.notifications.forGroups"
+                                                                     disabled="{{!this.settings.notifications.on}}"><br />
+                <label for="fromChats">...for Chats</label> <input type="checkbox"
+                                                                   id="fromChats"
+                                                                   name="notifications.forChats"
+                                                                   [(ngModel)]="this.settings.notifications.forChats"
+                                                                   disabled="{{!this.settings.notifications.on}}"><br />
+                <label for="groupAvatar">...when a group changes its avatar</label> <input type="checkbox"
+                                                                                           id="groupAvatar"
+                                                                                           name="notifications.forAvatar"
+                                                                                           [(ngModel)]="this.settings.notifications.forAvatar"
+                                                                                           disabled="{{!this.settings.notifications.on}}"><br />
+                <label for="groupTopic">...when a group changes its topic</label> <input type="checkbox"
+                                                                                         id="groupTopic"
+                                                                                         name="notifications.forTopic"
+                                                                                         [(ngModel)]="this.settings.notifications.forTopic"
+                                                                                         disabled="{{!this.settings.notifications.on}}"><br />
+            </div>
+            <p>Send a notification for every
+                <select name="notifications.frequency" [(ngModel)]="this.settings.notifications.frequency">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+                message(s) sent in a channel
+            </p>
+        </div>
+    </div>
+    <div>
+        <h5 class="subsubheader">Colors</h5>
+        <div>
+            <label for="nightMode">Enable Night Mode</label> <input type="checkbox" id="nightMode" name="colors.nightMode" [(ngModel)]="this.settings.colors.nightMode">
+        </div>
+    </div>
+    <div>
+        <h5 class="subsubheader">Window</h5>
+        <div>
+            <label for="window">Keep gmg running, even if the window isn't open</label> <input type="checkbox" id="window" name="window.keepRunning" [(ngModel)]="this.settings.window.keepRunning">
+        </div>
+    </div>
+</form>

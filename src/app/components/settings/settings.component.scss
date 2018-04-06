@@ -3,8 +3,34 @@
 
 h3.subheader, h5.subsubheader {
   @include subheader();
+  font-size: 30px;
+  line-height: 38px;
+}
+
+h3.subheader {
+  margin-left: 2vw;
 }
 
 h5.subsubheader {
-  font-size: 15px;
+  font-size: 20px;
+  line-height: 25px;
 }
+
+form {
+  margin-left: 4vw;
+  width: 80%;
+}
+form>div {
+  margin-bottom: 1vh;
+}
+form>div div {
+  margin-left: 2vw;
+}
+form input {
+  float: right;
+}
+form label, p {
+  font-size: 18px;
+  font-family: "Encode Sans", sans-serif;
+}
+

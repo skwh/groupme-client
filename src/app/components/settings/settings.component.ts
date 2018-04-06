@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { StateService } from "../../providers/state.service";
+import { NgForm } from "@angular/forms";
 
 @Component({
   selector: 'app-settings',
@@ -9,9 +10,14 @@ import { StateService } from "../../providers/state.service";
 export class SettingsComponent implements OnInit {
   constructor (private state: StateService) {}
 
+  @ViewChild('settingsForm') form: NgForm;
+
   settings: Object;
 
   ngOnInit() {
     this.settings = this.state.getAllSettings();
+    this.form.valueChanges.subscribe(() => {
+      this.state.setSettings(this.settings);
+    });
   }
 }
