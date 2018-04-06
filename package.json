@@ -1,6 +1,6 @@
 {
   "name": "groupme-client",
-  "version": "0.0.1",
+  "version": "0.4.5",
   "description": "An electron client for groupme, based on angular-electron",
   "homepage": "https://github.com/skwh/groupme-client.git",
   "main": "main.js",

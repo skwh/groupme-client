@@ -13,3 +13,16 @@ html, body {
 *, *:before, *:after {
   box-sizing: border-box;
 }
+
+h1#loadingMessage {
+  font-family: "Quicksand", sans-serif;
+  font-weight: normal;
+  text-align: center;
+}
+
+div#loadingBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
