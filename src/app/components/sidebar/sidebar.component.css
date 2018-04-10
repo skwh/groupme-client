@@ -102,9 +102,9 @@ div#sidebar {
     div#sidebar a.settings i {
       vertical-align: bottom;
       transition: 0.2s ease-in-out; }
-    div#sidebar a.settings:hover {
+    div#sidebar a.settings:hover, div#sidebar a.settings {
       color: #80D8FF; }
-      div#sidebar a.settings:hover i {
+      div#sidebar a.settings:hover i, div#sidebar a.settings i {
         transform: rotate(90deg); }
 
 /*# sourceMappingURL=sidebar.component.css.map */

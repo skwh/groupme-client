@@ -20,7 +20,7 @@ export class ChatsService {
   chatsMessagesSubject: Subject<Message[]> = new Subject();
   chatsMessages$: Observable<Message[]> = this.chatsMessagesSubject.asObservable();
 
-  mostRecentChats: Array<Chat>;
+  mostRecentChats: Array<Chat> = [];
 
   sendMessage(message: Message): Promise<boolean> {
     return this.state.sendMessageToUser(this.currentChatId, message);

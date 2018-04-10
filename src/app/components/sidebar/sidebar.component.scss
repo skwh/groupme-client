@@ -147,7 +147,7 @@ div#sidebar {
       transition: $animation-time ease-in-out;
     }
 
-    &:hover {
+    &:hover, &.selected {
       color: $primary;
 
       i {

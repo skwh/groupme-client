@@ -21,7 +21,7 @@ export class GroupsService {
   groupMessagesSubject: Subject<Message[]> = new Subject();
   groupMessages$: Observable<Message[]> = this.groupMessagesSubject.asObservable();
 
-  mostRecentGroups: Array<Group>;
+  mostRecentGroups: Array<Group> = [];
 
   sendMessage(message: Message): Promise<boolean> {
     return this.state.sendMessageToGroup(this.currentGroupId, message);
