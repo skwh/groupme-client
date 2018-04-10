@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ElectronService } from './providers/electron.service';
 import { StoreService } from "./providers/store.service";
+import { NotificationService } from "./providers/notification.service";
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,7 @@ import { StoreService } from "./providers/store.service";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(public electronService: ElectronService, private store: StoreService) {
+  constructor(public electronService: ElectronService, private store: StoreService, private notification: NotificationService) {
 
     if (electronService.isElectron()) {
       console.log('Mode electron');
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
     } else {
       console.log('Mode web');
     }
-    this.store.doLoad();
+    this.notification.doSetup();
   }
 
   ngOnInit() {

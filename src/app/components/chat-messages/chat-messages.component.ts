@@ -5,6 +5,7 @@ import { Message } from "../../models/message";
 import { Member } from "../../models/member";
 import { StateService } from "../../providers/state.service";
 import { Subscription } from "rxjs/Subscription";
+import { NotificationService } from "../../providers/notification.service";
 
 @Component({
   selector: 'app-chat-messages',
@@ -12,7 +13,10 @@ import { Subscription } from "rxjs/Subscription";
   styleUrls: ['chat-messages.component.scss']
 })
 export class ChatMessagesComponent implements OnInit, OnDestroy {
-  constructor(private route: ActivatedRoute, private chats: ChatsService, private state: StateService) {}
+  constructor(private route: ActivatedRoute,
+              private chats: ChatsService,
+              private state: StateService,
+              private notification: NotificationService) {}
 
   currentUser: Member;
   currentChatId: number;
@@ -29,17 +33,7 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
       if (this.requestPrevious && messages.length === 0) {
         this.loadedAllMessages = true;
       } else {
-        let newMessages = [...this.messages, ...messages];
-        newMessages.sort((a: Message, b: Message) => {
-          if (a.created_at < b.created_at) {
-            return 1;
-          } else if (a.created_at > b.created_at) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-        this.messages = newMessages;
+        this.updateMessages(messages);
       }
       this.requestPrevious = false;
     });
@@ -49,10 +43,30 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
         this.currentChatId = Number(params.get('id'));
         this.chats.currentChatId = this.currentChatId;
         this.chats.loadLatestMessages();
+        this.clearNotificationFlag(this.currentChatId);
       } else {
         console.error("No id provided to ChatMessagesComponent!");
       }
     });
+  }
+
+  clearNotificationFlag(id: number): void {
+    this.state.updateChat(id, "hasNotification", false);
+    this.notification.clearNotificationForId(id);
+  }
+
+  updateMessages(messages: Array<Message>): void {
+    let newMessages = [...this.messages, ...messages];
+    newMessages.sort((a: Message, b: Message) => {
+      if (a.created_at < b.created_at) {
+        return 1;
+      } else if (a.created_at > b.created_at) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+    this.messages = newMessages;
   }
 
   sendMessage(message: Message): void {

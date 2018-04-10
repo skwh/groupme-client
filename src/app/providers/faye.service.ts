@@ -13,7 +13,9 @@ export class FayeService {
   messageSubject:Subject<FayeNotification> = new Subject();
   message$: Observable<FayeNotification> = this.messageSubject.asObservable();
 
-  constructor(private state: StateService) {
+  constructor(private state: StateService) {}
+
+  connect(): void {
     this.client = new Faye.Client("http://push.groupme.com/faye");
     this.token = this.state.currentAccessToken;
     this.client.addExtension({

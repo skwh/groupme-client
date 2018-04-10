@@ -20,6 +20,7 @@ export class StateService {
   currentUser: Member;
 
   constructor(private groupme: GroupmeService, private store: StoreService) {
+    this.store.doLoad();
     this.currentAccessToken = this.store.get(this.ACCESS_TOKEN_KEY);
     this.currentUser = this.store.getMe();
     this.currentUserId = this.currentUser.user_id;

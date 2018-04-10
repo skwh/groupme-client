@@ -4,19 +4,24 @@ import { StateService } from "./state.service";
 import { FayeNotification } from "../models/notification";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
+import { isUndefined } from "util";
 
 @Injectable()
 export class NotificationService {
   constructor(private faye: FayeService,
               private state: StateService) {
+  }
+
+  notificationSubscription;
+  storedNotifications: { [key: number]:Notification} = [];
+
+  doSetup(): void {
+    this.faye.connect();
     this.notificationSubscription = this.faye.message$.subscribe((notification: FayeNotification) => {
       this.handleIncomingNotification(notification);
     });
     this.storedNotifications = [];
   }
-
-  notificationSubscription;
-  storedNotifications: Notification[];
 
   private handleIncomingNotification(notification: FayeNotification) {
     console.log(notification);
@@ -62,25 +67,32 @@ export class NotificationService {
     return parseInt(id.slice(1));
   }
 
-  private showNotification(notification_text: string, channel_name: string, channel_image_url: string): Notification {
+  private showNotification(notification_text: string, channel_name: string, channel_image_url: string, group_id: number): Notification {
     let not = new Notification(channel_name, {
       'body': notification_text,
       'icon': channel_image_url,
     });
-    this.storedNotifications.push(not);
+    this.storedNotifications[group_id] = not;
     return not;
   }
 
   private addGroupNotification(group: Group, notification: FayeNotification): void {
     this.state.updateGroup(group.id, "hasNotification", true);
-    this.showNotification(notification.alert, group.name, group.image_url);
+    this.showNotification(notification.alert, group.name, group.image_url, group.id);
     this.state.updateGroupsFromApi(5, false);
   }
 
   private addChatNotification(chat: Chat, notification: FayeNotification): void {
     this.state.updateChat(chat.other_user.id, "hasNotification", true);
-    this.showNotification(notification.subject.text, chat.other_user.name, chat.other_user.avatar_url);
+    this.showNotification(notification.subject.text, chat.other_user.name, chat.other_user.avatar_url, chat.other_user.id);
     this.state.updateChatsFromApi(5, false);
+  }
+
+  clearNotificationForId(id: number): void {
+    if (!isUndefined(this.storedNotifications[id])) {
+      this.storedNotifications[id].close();
+      delete this.storedNotifications[id];
+    }
   }
 
 }
