@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Message } from "../../models/message";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
@@ -9,7 +9,7 @@ import 'rxjs/add/operator/switchMap';
   templateUrl: 'messages.component.html',
   styleUrls: ['messages.component.scss']
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent implements OnInit, AfterViewInit {
 
   @Input() currentChannelNumber: number;
   @Input() currentUserId: number;
@@ -26,24 +26,24 @@ export class MessagesComponent implements OnInit {
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
   private _messages: Message[] = [];
 
+  onloadScroll: boolean = false;
   reverseMessages: boolean = false;
   oldScrollHeight: number = 0;
 
   @ViewChild('messagesContainer') private messagesContainer: ElementRef;
 
   ngOnInit() {
+    this.messages$.subscribe(() => this.scrollToBottom());
+  }
+
+  ngAfterViewInit() {
     this.scrollToBottom();
   }
 
   ngAfterViewChecked() {
-    if (this.oldScrollHeight != this.getScrollHeight()) {
-      if (this.reverseMessages) {
-        this.scrollToOldPosition();
-        this.reverseMessages = false;
-      } else {
-        this.scrollToBottom();
-      }
-      this.oldScrollHeight = this.getScrollHeight();
+    if (this.reverseMessages) {
+      this.scrollToOldPosition();
+      this.reverseMessages = false;
     }
   }
 
@@ -76,6 +76,7 @@ export class MessagesComponent implements OnInit {
     } catch(error) {
       console.error(error);
     }
+
   }
 
   private scrollToLocation(location: number): void {

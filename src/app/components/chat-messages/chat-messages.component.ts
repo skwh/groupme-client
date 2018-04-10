@@ -58,7 +58,9 @@ export class ChatMessagesComponent implements OnInit, OnDestroy {
   sendMessage(message: Message): void {
     //TODO(skwh): Push sent message to messages-list then wait for response as to success, mark as such.
     this.chats.sendMessage(message).then(result => {
-      console.log(result);
+      if (result) {
+        this.chats.chatsMessagesSubject.next([message]);
+      }
     })
   }
 

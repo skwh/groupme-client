@@ -276,7 +276,6 @@ function sendNavigationMessage(sender: Electron.WebContents, angularRelativePath
 }
 
 ipcMain.on('group-menu-update', (event, args: any[]) => {
-  console.log(event.sender.id);
   gmgMenuObj.setGroupDetails(args[0], args[1], event.sender.id);
 });
 

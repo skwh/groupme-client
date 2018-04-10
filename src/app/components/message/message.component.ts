@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { Message } from "../../models/message";
 import { Attachment, AttachmentType } from "../../models/attachment";
 import { StateService } from "../../providers/state.service";
-import { isUndefined } from "util";
+import { isNull, isUndefined } from "util";
 import { Member } from "../../models/member";
 
 @Component({
@@ -32,12 +32,20 @@ export class MessageComponent implements OnInit {
   favoritedMembers: Member[] = [];
 
   ngOnInit() {
-    this.finalText = this.message.text;
+    this.finalText = this.escapeHTML(this.message.text);
     this.message.conversation_id = this.conversationId;
     this.handleMessageFavorites(this.message);
     this.handleMessageAttachments(this.message);
     this.favoritedMembers = this.getFavoriteNames();
     this.handleTimestamp();
+  }
+
+  private escapeHTML(unsafe): string {
+    if (isNull(unsafe)) {
+      return unsafe;
+    }
+    return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
   private handleMessageFavorites(message: Message) {
