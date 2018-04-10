@@ -1,7 +1,7 @@
 <h3 class="subheader">Settings</h3>
 <form #settingsForm="ngForm">
     <div>
-        <h5 class="subsubheader">Notifications</h5>
+        <h5 class="subsubheader"><span>Notifications</span></h5>
         <div>
             <label for="recieveNotifications">Recieve Notifications</label> <input type="checkbox" id="recieveNotifications" name="notifications.on" [(ngModel)]="this.settings.notifications.on">
             <div>
@@ -38,13 +38,13 @@
         </div>
     </div>
     <div>
-        <h5 class="subsubheader">Colors</h5>
+        <h5 class="subsubheader"><span>Colors</span></h5>
         <div>
             <label for="nightMode">Enable Night Mode</label> <input type="checkbox" id="nightMode" name="colors.nightMode" [(ngModel)]="this.settings.colors.nightMode">
         </div>
     </div>
     <div>
-        <h5 class="subsubheader">Window</h5>
+        <h5 class="subsubheader"><span>Window</span></h5>
         <div>
             <label for="window">Keep gmg running, even if the window isn't open</label> <input type="checkbox" id="window" name="window.keepRunning" [(ngModel)]="this.settings.window.keepRunning">
         </div>

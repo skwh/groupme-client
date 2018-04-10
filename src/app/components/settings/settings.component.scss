@@ -14,11 +14,29 @@ h3.subheader {
 h5.subsubheader {
   font-size: 20px;
   line-height: 25px;
+
+  span {
+    display: inline-block;
+    position: relative;
+    &:after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      background-color: $primary;
+      top: 12px;
+      width: 100vw;
+      left: 100%;
+      margin-left: 15px;
+    }
+  }
+
+
 }
 
 form {
   margin-left: 4vw;
   width: 80%;
+  overflow: hidden;
 }
 form>div {
   margin-bottom: 1vh;
