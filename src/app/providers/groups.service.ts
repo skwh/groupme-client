@@ -10,9 +10,13 @@ import "rxjs/add/operator/merge";
 export class GroupsService {
   constructor(private state: StateService) {
     this.groupMessages$ = this.groupMessages$.merge(this.state.messages$);
+    this.state.groups$.subscribe((value: Group[]) => {
+      this.mostRecentGroups.unshift(...value);
+      this.mostRecentGroups = this.mostRecentGroups.slice(0, 5);
+    })
   }
 
-  currentGroupId: number;
+  currentGroupId: number = 0;
 
   groupMessagesSubject: Subject<Message[]> = new Subject();
   groupMessages$: Observable<Message[]> = this.groupMessagesSubject.asObservable();

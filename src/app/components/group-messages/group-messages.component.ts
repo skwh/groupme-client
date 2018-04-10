@@ -71,7 +71,6 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
 
   sendMessage(message: Message): void {
     //TODO(skwh): Push sent message to messages-list then wait for response as to success, mark as such.
-    this.updateMessages([message]);
     this.groups.sendMessage(message).then(result => {
       if (result) {
         this.groups.groupMessagesSubject.next([message]);
@@ -85,6 +84,7 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.groups.currentGroupId = 0;
     this.messagesSubscription.unsubscribe();
     this.routeSubscription.unsubscribe();
   }

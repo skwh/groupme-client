@@ -9,9 +9,13 @@ import { Observable } from "rxjs/Observable";
 export class ChatsService {
   constructor (private state: StateService) {
     this.chatsMessages$ = this.chatsMessages$.merge(this.state.messages$);
+    this.state.chats$.subscribe((value: Chat[]) => {
+      this.mostRecentChats.unshift(...value);
+      this.mostRecentChats = this.mostRecentChats.slice(0, 5);
+    });
   }
 
-  currentChatId: number;
+  currentChatId: number = 0;
 
   chatsMessagesSubject: Subject<Message[]> = new Subject();
   chatsMessages$: Observable<Message[]> = this.chatsMessagesSubject.asObservable();

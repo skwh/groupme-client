@@ -5,11 +5,25 @@ import { FayeNotification } from "../models/notification";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
 import { isUndefined } from "util";
+import { ChatsService } from "./chats.service";
+import { GroupsService } from "./groups.service";
+
+function copy(o) {
+  let output, v, key;
+  output = Array.isArray(o) ? [] : {};
+  for (key in o) {
+    v = o[key];
+    output[key] = (typeof v === "object") ? copy(v) : v;
+  }
+  return output;
+}
 
 @Injectable()
 export class NotificationService {
   constructor(private faye: FayeService,
-              private state: StateService) {
+              private state: StateService,
+              private group: GroupsService,
+              private chat: ChatsService) {
   }
 
   notificationSubscription;
@@ -27,11 +41,9 @@ export class NotificationService {
     console.log(notification);
     if (notification.type == "line.create" || notification.type == "direct_message.create") {
       if (this.messageComponentIsOpen() && this.notificationIsForCurrentGroup(notification)) {
-        console.log("sending new message to current channel");
         let message = notification.subject;
         this.state.messagesSubject.next([message]);
       } else {
-        console.log("Send a notification!");
         this.handleNotificationSend(notification);
       }
     }
@@ -53,18 +65,12 @@ export class NotificationService {
   }
 
   private messageComponentIsOpen(): boolean {
-    return this.state.currentChannelId != "";
+    return (this.group.currentGroupId != 0 && this.chat.currentChatId != 0);
   }
 
   private notificationIsForCurrentGroup(notification: FayeNotification): boolean {
-    return (notification.subject.group_id == this.getIdNumber(this.state.currentChannelId)
-        || notification.subject.sender_id == this.getIdNumber(this.state.currentChannelId)
-        || (notification.subject.chat_id &&
-            notification.subject.chat_id.indexOf(""+this.getIdNumber(this.state.currentChannelId)) != -1));
-  }
-
-  private getIdNumber(id: string): number {
-    return parseInt(id.slice(1));
+    return (notification.subject.group_id == this.group.currentGroupId
+        || notification.subject.sender_id == this.chat.currentChatId);
   }
 
   private showNotification(notification_text: string, channel_name: string, channel_image_url: string, group_id: number): Notification {
@@ -78,13 +84,25 @@ export class NotificationService {
 
   private addGroupNotification(group: Group, notification: FayeNotification): void {
     this.state.updateGroup(group.id, "hasNotification", true);
-    this.showNotification(notification.alert, group.name, group.image_url, group.id);
+    let notificationBody = notification.alert;
+    if (!isUndefined(this.storedNotifications[group.id])) {
+     let existingNotification = copy(this.storedNotifications[group.id]);
+     this.clearNotificationForId(group.id);
+     notificationBody = notification.alert + "\n" + existingNotification.body;
+    }
+    this.showNotification(notificationBody, group.name, group.image_url, group.id);
     this.state.updateGroupsFromApi(5, false);
   }
 
   private addChatNotification(chat: Chat, notification: FayeNotification): void {
     this.state.updateChat(chat.other_user.id, "hasNotification", true);
-    this.showNotification(notification.subject.text, chat.other_user.name, chat.other_user.avatar_url, chat.other_user.id);
+    let notificationBody = notification.alert;
+    if (!isUndefined(this.storedNotifications[chat.other_user.id])) {
+      let existingNotification = copy(this.storedNotifications[chat.other_user.id]);
+      this.clearNotificationForId(chat.other_user.id);
+      notificationBody = notification.subject.text + "\n" + existingNotification.body;
+    }
+    this.showNotification(notificationBody, chat.other_user.name, chat.other_user.avatar_url, chat.other_user.id);
     this.state.updateChatsFromApi(5, false);
   }
 
