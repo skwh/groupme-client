@@ -1,6 +1,7 @@
 import { Menu } from "electron";
 import { GMG_APP_INSTANCE, gmgApp } from "../../main";
 import { copy } from "./util";
+import { isUndefined } from "util";
 
 /*
   Menus:
@@ -60,14 +61,14 @@ export class gmgMenu {
         {role: 'delete'},
         {role: 'selectall'},
         {type: 'separator'},
-        {
-          label: 'Add Attachment',
-          accelerator: 'CmdOrCtrl+N',
-          click () {
-            //TODO(skwh): implement "Add attachment" shortcut
-            // navigateTo(gmgMenu.senderId, );
-          }
-        },
+        // {
+        //   label: 'Add Attachment',
+        //   accelerator: 'CmdOrCtrl+N',
+        //   click () {
+        //     //TODO(skwh): implement "Add attachment" shortcut
+        //     // navigateTo(gmgMenu.senderId, );
+        //   }
+        // },
       ]
     },
     {
@@ -83,14 +84,16 @@ export class gmgMenu {
           label: 'New Group',
           accelerator: process.platform === 'darwin' ? 'Cmd+Shift+Option+N' : 'Ctrl+Shift+Alt+N',
           click () {
-            //TODO(skwh): implement "New Group" shortcut
+            gmgApp.navigateTo(gmgMenu.senderId, 'groups/new');
           }
         },
         {
           label: 'Settings for Current Group',
           accelerator: 'CmdOrCtrl+/',
           click () {
-            //TODO(skwh): implement "current group settings" shortcut
+            if (!isUndefined(GMG_APP_INSTANCE.currentGroupId) && GMG_APP_INSTANCE.currentGroupId !== -1) {
+              gmgApp.navigateTo(gmgMenu.senderId, 'group/' + GMG_APP_INSTANCE.currentGroupId + '/settings/');
+            }
           }
         },
         {
@@ -105,13 +108,6 @@ export class gmgMenu {
     {
       label: 'Chats',
       submenu: [
-        {
-          label: 'New Chat',
-          accelerator: 'CmdOrCtrl+Shift+N',
-          click () {
-            //TODO(skwh): implement "New Chat" shortcut
-          }
-        },
         {
           label: 'Show List of Chats',
           accelerator: 'CmdOrCtrl+M',
@@ -128,21 +124,39 @@ export class gmgMenu {
           label: 'Next Group/Chat',
           accelerator: 'CmdOrCtrl+]',
           click () {
-            //TODO(skwh): implement "Next Channel" shortcut
+            if (GMG_APP_INSTANCE.currentChannelIndex >= 0 && GMG_APP_INSTANCE.currentChannelIndex <= 9) {
+              if (GMG_APP_INSTANCE.currentChannelIndex < 9) {
+                GMG_APP_INSTANCE.currentChannelIndex += 1;
+              }
+              if (GMG_APP_INSTANCE.currentChannelIndex <= 4 && GMG_APP_INSTANCE.currentChannelIndex >= 0) {
+                gmgApp.navigateTo(gmgMenu.senderId, 'group/' + GMG_APP_INSTANCE.currentGroups[GMG_APP_INSTANCE.currentChannelIndex]);
+              } else if (GMG_APP_INSTANCE.currentChannelIndex <= 9 && GMG_APP_INSTANCE.currentChannelIndex > 4) {
+                gmgApp.navigateTo(gmgMenu.senderId, 'chat/' + GMG_APP_INSTANCE.currentChats[GMG_APP_INSTANCE.currentChannelIndex-5]);
+              }
+            }
           }
         },
         {
           label: 'Previous Group/Chat',
           accelerator: 'CmdOrCtrl+[',
           click () {
-            //TODO(skwh): implement "Last Channel" shortcut
+            if (GMG_APP_INSTANCE.currentChannelIndex >= 0 && GMG_APP_INSTANCE.currentChannelIndex <= 9) {
+              if (GMG_APP_INSTANCE.currentChannelIndex > 0) {
+                GMG_APP_INSTANCE.currentChannelIndex -= 1;
+              }
+              if (GMG_APP_INSTANCE.currentChannelIndex <= 4 && GMG_APP_INSTANCE.currentChannelIndex >= 0) {
+                gmgApp.navigateTo(gmgMenu.senderId, 'group/' + GMG_APP_INSTANCE.currentGroups[GMG_APP_INSTANCE.currentChannelIndex]);
+              } else if (GMG_APP_INSTANCE.currentChannelIndex <= 9 && GMG_APP_INSTANCE.currentChannelIndex > 4) {
+                gmgApp.navigateTo(gmgMenu.senderId, 'chat/' + GMG_APP_INSTANCE.currentChats[GMG_APP_INSTANCE.currentChannelIndex-5]);
+              }
+            }
           }
         },
         {
           label: "Jump to Last Group/Chat",
           accelerator: 'Shift+CmdOrCtrl+~',
           click() {
-            //TODO(skwh): implement "Jump to last group/chat" shortcut
+            gmgApp.navigateTo(gmgMenu.senderId, GMG_APP_INSTANCE.lastChannelType.get(1) + '/' + GMG_APP_INSTANCE.lastChannelId.get(1));
           }
         }
       ]

@@ -1,14 +1,25 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem, webContents } from 'electron';
 import { gmgMenu } from "./src/electron/gmgMenu";
+import { FixedSizeArray } from "./src/electron/util";
 
 export class gmgApp {
   win: Electron.BrowserWindow;
   serve: boolean;
   menu: gmgMenu;
   electronApp: Electron.App;
+  currentAngularRoute: string = '/';
+  currentGroupId: number = -1;
+  currentChatId: number = -1;
+  currentGroups: number[] = [];
+  currentChats: number[] = [];
+  currentChannelIndex: number = -1;
+  lastChannelId: FixedSizeArray<number>;
+  lastChannelType: FixedSizeArray<string>;
 
   constructor(app: Electron.App) {
     this.electronApp = app;
+    this.lastChannelType = new FixedSizeArray<string>(2);
+    this.lastChannelId = new FixedSizeArray<number>(2);
   }
 
   initialize(): void {
@@ -29,6 +40,34 @@ export class gmgApp {
     ipcMain.on('chat-menu-update', (event, args: any[]) => {
       this.menu.setChatDetails(args[0], args[1], event.sender.id);
     });
+    ipcMain.on('route-update', (event, args: any[]) => {
+      this.updateRouteInformation(args[0]);
+    });
+    ipcMain.on('groups-list-update', (event, args: any[]) => {
+      console.log(this.currentGroups);
+      this.currentGroups = args[0];
+    });
+    ipcMain.on('chats-list-update', (event, args: any[]) => {
+      console.log(this.currentChats);
+      this.currentChats = args[0];
+    })
+  }
+
+  private updateRouteInformation(route: string): void {
+    this.currentAngularRoute = route;
+    if (route.indexOf('group') !== -1 && route.indexOf('new') === -1 && route.indexOf('settings') === -1) {
+      this.lastChannelType.push('group');
+      this.currentGroupId = Number(route.substring(route.indexOf('/group/') + 7));
+      this.currentChannelIndex = this.currentGroups.indexOf(this.currentGroupId);
+      this.lastChannelId.push(this.currentGroupId);
+    } else if (route.indexOf('chat') !== -1 && route.indexOf('new') === -1 && route.indexOf('settings') === -1) {
+      this.lastChannelType.push('chat');
+      this.currentChatId = Number(route.substring(route.indexOf('/chat/') + 6));
+      this.currentChannelIndex = this.currentChats.indexOf(this.currentChatId) + 5;
+      this.lastChannelId.push(this.currentChatId);
+    } else {
+      this.currentChannelIndex = -1;
+    }
   }
 
   createWindow(): void {

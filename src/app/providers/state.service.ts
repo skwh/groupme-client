@@ -349,8 +349,8 @@ export class StateService {
 
   doFirstTimeSetup(validated_token: string) {
     this.store.putAccessToken(validated_token);
-    this.updateGroupsFromApi(5);
-    this.updateChatsFromApi(5);
+    this.updateGroupsFromApi(5, true);
+    this.updateChatsFromApi(5, true);
   }
 
   handleImageUpload(image_data: Blob): Promise<string> {
