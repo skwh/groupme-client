@@ -44,11 +44,9 @@ export class gmgApp {
       this.updateRouteInformation(args[0]);
     });
     ipcMain.on('groups-list-update', (event, args: any[]) => {
-      console.log(this.currentGroups);
       this.currentGroups = args[0];
     });
     ipcMain.on('chats-list-update', (event, args: any[]) => {
-      console.log(this.currentChats);
       this.currentChats = args[0];
     })
   }

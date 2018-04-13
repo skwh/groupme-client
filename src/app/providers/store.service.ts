@@ -38,6 +38,10 @@ export class StoreService {
     }
   };
 
+  clear(): void {
+    this.localStore.clear();
+  }
+
   get(key: string): any {
     return this.store[key];
   }

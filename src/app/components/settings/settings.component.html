@@ -49,4 +49,11 @@
             <label for="window">Keep gmg running, even if the window isn't open</label> <input type="checkbox" id="window" name="window.keepRunning" [(ngModel)]="this.settings.window.keepRunning">
         </div>
     </div>
+    <div>
+        <h5 class="subsubheader"><span>Sign Out</span></h5>
+        <div>
+            <p>Click here to sign out of gmg. All your data will be cleared and you will be required to authenticate and sign in again if you want to use gmg again.</p>
+            <button (click)="signOut()">Sign out</button>
+        </div>
+    </div>
 </form>

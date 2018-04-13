@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { StateService } from "../../providers/state.service";
 import { NgForm } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-settings',
@@ -8,7 +9,8 @@ import { NgForm } from "@angular/forms";
   styleUrls: ['settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  constructor (private state: StateService) {}
+  constructor (private state: StateService,
+               private router: Router) {}
 
   @ViewChild('settingsForm') form: NgForm;
 
@@ -19,5 +21,10 @@ export class SettingsComponent implements OnInit {
     this.form.valueChanges.subscribe(() => {
       this.state.setSettings(this.settings);
     });
+  }
+
+  signOut():void {
+    this.state.clearStore();
+    document.location.reload(true);
   }
 }

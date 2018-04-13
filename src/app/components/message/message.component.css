@@ -20,6 +20,8 @@ app-message:last-child > div.message {
 
 .small-avatar {
   display: inline-block;
+  min-height: 25px;
+  min-width: 25px;
   height: 25px;
   width: 25px;
   margin: 0 1%; }
@@ -84,6 +86,8 @@ div.favorites-list {
   overflow-y: hidden;
   max-height: 40px;
   transition: 0.2s ease-in-out; }
+  div.favorites-list img, div.favorites-list i, div.favorites-list div {
+    vertical-align: middle; }
   div.favorites-list i {
     color: #80D8FF;
     font-size: 25px; }

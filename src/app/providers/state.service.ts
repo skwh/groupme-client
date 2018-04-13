@@ -330,6 +330,10 @@ export class StateService {
     return this.storeHas(key+'_last_updated', 0);
   }
 
+  clearStore(): void {
+    this.store.clear();
+  }
+
   accessTokenIsEmpty(): boolean {
     return this.store.get(this.ACCESS_TOKEN_KEY) == "";
   }

@@ -15,7 +15,10 @@
         <img *ngIf="this.hasImageAttachment" class="image-attachment" [src]="this.imageAttachmentUrl" />
         <div *ngIf="message.favorited_by.length != 0" class="favorites-list" [class.hidden]="!this.favoritesOpen">
             <i class="material-icons">favorite</i>
-            <img *ngFor="let member of this.favoritedMembers" class="user-avatar small-avatar" [src]="member.image_url" [alt]="member.nickname" />
+            <ng-container *ngFor="let member of this.favoritedMembers">
+                <img *ngIf="member.image_url != null" class="user-avatar small-avatar" [src]="member.image_url" [alt]="member.nickname" />
+                <div *ngIf="member.image_url == null" class="user-avatar small-avatar">{{ member.nickname | initials }}</div>
+            </ng-container>
         </div>
     </div>
     <div class="message-heart">

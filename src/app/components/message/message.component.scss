@@ -11,6 +11,8 @@ app-message:last-child>div.message {
 
 .small-avatar {
   display: inline-block;
+  min-height: 25px;
+  min-width: 25px;
   height: 25px;
   width: 25px;
   margin: 0 1%;
@@ -52,6 +54,10 @@ div.favorites-list {
   max-height: 40px;
 
   transition: $animation-time ease-in-out;
+
+  img, i, div {
+    vertical-align: middle;
+  }
 
   i {
     color: $primary;
