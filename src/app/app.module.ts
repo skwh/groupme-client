@@ -42,6 +42,7 @@ import { ChatsService } from "./providers/chats.service";
 import { GroupsService } from "./providers/groups.service";
 import { EomIndicatorComponent } from "./components/eom-indicator/eom-indicator.component";
 import { GroupCreateComponent } from "./components/group-create/group-create.component";
+import { XorPipe } from "./pipes/xor.pipe";
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { GroupCreateComponent } from "./components/group-create/group-create.com
     AlphabetizePipe,
     InitialsPipe,
     FilterPipe,
+    XorPipe,
   ],
   imports: [
     BrowserModule,

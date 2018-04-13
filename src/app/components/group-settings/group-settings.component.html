@@ -17,7 +17,11 @@
         <button *ngIf="this.currentGroupOwnerIsMe" class="destroy" (click)="confirmDestroy()">Delete this group</button>
         <button *ngIf="this.detailsEdited" (click)="saveGroupChanges()">Save Changes</button>
     </div>
-    <h3 class="subheader">Members</h3>
+    <h3 class="subheader">
+        Members
+        <i *ngIf="!this.showAddMembers" (click)="toggleAddMembers()" class="material-icons">add_circle_outline</i>
+        <i *ngIf="this.showAddMembers" (click)="toggleAddMembers()" class="material-icons">remove_circle_outline</i>
+    </h3>
     <div class="group-members">
         <div *ngFor="let member of this.currentGroup.members | alphabetize:'nickname'" class="group-member">
             <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
@@ -31,6 +35,30 @@
                 <i *ngIf="this.currentGroupOwnerIsMe && member.user_id != this.myUserId" (click)="makeOwner(member)" class="material-icons">arrow_upward</i>
                 <i *ngIf="!this.currentGroupOwnerIsMe" class="material-icons" (click)="removeFromGroup(member)">close</i>
             </div>
+        </div>
+    </div>
+    <div class="add-members" [class.hidden]="!this.showAddMembers">
+        <h3 class="subheader">Known Members</h3>
+        <div class="known-members-list">
+            <ng-container *ngFor="let member of this.allMembers | xor: this.currentGroup.members:'user_id' | alphabetize:'nickname'">
+                <div *ngIf="member.id != this.state.currentUserId" class="member-entry">
+                    <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+                    <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+                    <div class="member-info">
+                        <p class="text">
+                            {{ member.nickname }}
+                        </p>
+                    </div>
+                    <div class="member-icon">
+                        <i *ngIf="!this.hasBeenAdded(member)" (click)="this.addMember(member)" class="material-icons">
+                            check
+                        </i>
+                        <i *ngIf="this.hasBeenAdded(member)" (click)="this.removeMember(member)" class="material-icons">
+                            clear
+                        </i>
+                    </div>
+                </div>
+            </ng-container>
         </div>
     </div>
     <div class="update-avatar-modal" [class.hidden]="!this.modalOpen">

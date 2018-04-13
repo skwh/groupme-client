@@ -11,6 +11,12 @@ div.page-wrapper {
 
 h3.subheader {
   @include subheader();
+
+  i.material-icons {
+    float: right;
+    color: $primary;
+    cursor: pointer;
+  }
 }
 
 .group-avatar {
@@ -50,7 +56,7 @@ div.group-header {
     }
 
     p[contenteditable] {
-      &:focus {
+      &:focus, &:hover {
         outline: none;
         //border-bottom: 1px solid $primary;
         box-shadow: 0 1px 0 0 $primary;
@@ -63,7 +69,14 @@ div.group-header {
   @include avatar(40px);
 }
 
-div.group-member {
+div.known-members-list {
+  max-height: 45vh;
+  width: 90%;
+  margin: auto;
+  overflow: scroll;
+}
+
+div.group-member, div.member-entry {
   @include msg-list-container();
 
   &:hover {
@@ -78,12 +91,12 @@ div.group-member {
     }
   }
 
-  div.member-text {
+  div.member-text, div.member-info {
     @include msg-list-text();
     flex: inherit;
   }
 
-  div.group-member-icons {
+  div.group-member-icons, div.member-icon {
     @include msg-list-icon();
     flex-direction: row;
 

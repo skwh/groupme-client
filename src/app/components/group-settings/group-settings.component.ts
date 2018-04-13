@@ -21,6 +21,11 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
   groupDescriptionText: string;
   myUserId: number;
 
+  allMembers: Member[] = [];
+  addedMembers: Member[] = [];
+  addedMemberIds: number[] = [];
+  showAddMembers: boolean = false;
+
   modalOpen: boolean = false;
   oldImageUrl: string;
 
@@ -34,6 +39,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
     this.routeParamMapSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       this.handleGroupUpdate(params);
     });
+    this.state.getAllMembers().then((members: Member[]) => this.allMembers = members);
     this.myUserId = this.state.currentUserId;
   }
 
@@ -44,6 +50,10 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
         this.currentGroup = response;
         this.oldImageUrl = this.currentGroup.image_url;
         this.assignGroupOwner(this.currentGroup);
+        this.currentGroup.members.forEach((value: Member) => {
+          this.addedMemberIds.push(value.id);
+          this.addedMembers.push(value);
+        });
       });
       return;
     }
@@ -168,9 +178,17 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
           .then(() => {
         alert("Group details updated.");
         this.detailsEdited = false;
-        this.state.updateGroupsFromApi(5, true);
-        this.router.navigate(['/group', this.currentGroup.id, 'settings']);
-      })
+        if (this.addedMembers.length != this.currentGroup.members.length) {
+          this.state.addUsersToGroup(this.currentGroup, this.addedMembers).then(() => {
+            this.addedMembers = [];
+            this.state.updateGroupsFromApi(5, true);
+            this.router.navigate(['/group', this.currentGroup.id, 'settings']);
+          });
+        } else {
+          this.state.updateGroupsFromApi(5, true);
+          this.router.navigate(['/group', this.currentGroup.id, 'settings']);
+        }
+      });
     }
   }
 
@@ -190,6 +208,23 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
 
   confirmChange(): void {
     this.modalOpen = false;
+  }
+
+  toggleAddMembers(): void {
+    this.showAddMembers = !this.showAddMembers;
+  }
+
+  hasBeenAdded(member: Member): boolean {
+    return this.addedMembers.indexOf(member) != -1 && this.addedMemberIds.indexOf(member.id) != -1;
+  }
+
+  addMember(member: Member): void {
+    this.addedMembers.push(member);
+    this.setUpdated();
+  }
+
+  removeMember(member: Member): void {
+    delete this.addedMembers[this.addedMembers.indexOf(member)];
   }
 
   ngOnDestroy() {
