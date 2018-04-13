@@ -1,0 +1,125 @@
+@import "../../../variables";
+@import "../../../common_styles";
+
+@include buttons();
+
+div.page-wrapper {
+  margin: 2%;
+}
+
+h1, h3 {
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 25px;
+  line-height: 31px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
+.group-avatar {
+  @include avatar(100px);
+  background: url("../../../assets/default_group_avatar.png") center;
+  background-size: cover;
+
+  &.change {
+    background: rgba($disabled, 0.8) none;
+    position: absolute;
+    opacity: 0;
+    transition: $animation-time ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+div.group-header {
+  @include msg-list-container();
+
+  div.group-name-field {
+    @include msg-list-text();
+    flex: 0 1 auto;
+    margin-left: 2%;
+
+    label, input {
+      font-size: 20px;
+      line-height: 25px;
+    }
+
+    input {
+      font-family: "Encode Sans", sans-serif;
+      outline: none;
+      width:75%;
+      height: 1.95rem;
+      font-size: 18px;
+      padding: 2%;
+      border: 1px solid $secondary;
+
+      &:focus {
+        outline: 2px solid $primary;
+      }
+
+      &::placeholder {
+        color: $secondary-dark;
+      }
+    }
+
+    input.alert {
+      box-shadow: inset 0 0 2px 0 $warning;
+    }
+  }
+}
+
+div.form-actions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 2%;
+
+  button {
+    font-size: 20px;
+  }
+}
+
+div.known-members-list, div.added-members-list {
+  width: 90%;
+  margin: auto;
+  max-height: 45vh;
+  overflow: scroll;
+  border: 1px solid $secondary;
+}
+
+div.member-entry {
+  @include msg-list-container();
+
+  &:nth-of-type(odd) {
+    background-color: $secondary;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
+
+  div.member-info {
+    @include msg-list-text();
+    flex: 0 auto;
+  }
+
+  div.member-icon {
+    @include msg-list-icon();
+    i {
+      color: $secondary-dark;
+    }
+  }
+}
+
+.user-avatar {
+  @include avatar(40px);
+}
+
+

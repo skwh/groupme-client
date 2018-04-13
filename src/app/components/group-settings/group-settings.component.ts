@@ -39,16 +39,13 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
 
   private handleGroupUpdate(params: ParamMap): void {
     if (params.has('id')) {
-      let groupId = params.get('id');
-      if (GroupSettingsComponent.idIsForGroup(groupId)) {
-        let id = GroupSettingsComponent.getId(groupId);
-        this.state.getGroupById(id, true).then(response => {
-          this.currentGroup = response;
-          this.oldImageUrl = this.currentGroup.image_url;
-          this.assignGroupOwner(this.currentGroup);
-        });
-        return;
-      }
+      let groupId = Number(params.get('id'));
+      this.state.getGroupById(groupId, true).then(response => {
+        this.currentGroup = response;
+        this.oldImageUrl = this.currentGroup.image_url;
+        this.assignGroupOwner(this.currentGroup);
+      });
+      return;
     }
     // if the group id is malformed or doesn't exist, redirect
     // TODO(skwh): error handling for malformed group id
@@ -62,7 +59,7 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       if (ownerId == this.state.currentUserId) {
         this.currentGroupOwnerIsMe = true;
       }
-      this.currentGroupOwner = this.state.getMemberFromStoreById(ownerId);;
+      this.currentGroupOwner = this.state.getMemberFromStoreById(ownerId);
       this.createGroupOwnerText();
     } catch (err) {
       console.error(err);
@@ -86,14 +83,6 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private static idIsForGroup(id: string): boolean {
-    return id.indexOf('g') == 0;
-  }
-
-  private static getId(id: string): number {
-    return parseInt(id.slice(1));
-  }
-
   //TODO(skwh): Change confirm prompts to "undoable" actions (http://alistapart.com/article/neveruseawarning)
 
   mute(): void {
@@ -110,9 +99,10 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
 
   confirmDestroy(): void {
     if (confirm("Are you sure you want to delete this group?")) {
-      this.state.destroyGroup(this.currentGroup.id).then(response => {
+      this.state.destroyGroup(this.currentGroup.id).then(() => {
         alert("The group has been deleted.");
-        this.router.navigate(['/']);
+        this.state.updateGroupsFromApi(5, true);
+        this.router.navigate(['/groups']);
       })
     }
   }
@@ -131,8 +121,9 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
     if (confirm("Are you sure you want to leave this group?")) {
       let myMembershipId = this.getMyMembershipId();
       if (myMembershipId != 0) {
-        this.state.leaveGroup(this.currentGroup.id, myMembershipId).then(response => {
+        this.state.leaveGroup(this.currentGroup.id, myMembershipId).then(() => {
           alert("You have left the group.");
+          this.state.updateGroupsFromApi(5, true);
           this.router.navigate(['/']);
         });
       } else {
@@ -143,17 +134,18 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
 
   makeOwner(user: Member): void {
     if (confirm("Are you sure you want to make " + user.nickname + " the owner of this group?")) {
-      this.state.makeGroupOwner(this.currentGroup.id, user.user_id).then(response => {
+      this.state.makeGroupOwner(this.currentGroup.id, user.user_id).then(() => {
         alert(user.nickname + " was made an owner of the group.");
+        this.router.navigate(['/group', this.currentGroup.id, 'settings']);
       });
     }
   }
 
   removeFromGroup(user: Member): void {
     if (confirm("Are you sure you want to remove " + user.nickname + " from this group?")) {
-      this.state.removeUserFromGroup(this.currentGroup.id, user.id).then(response => {
+      this.state.removeUserFromGroup(this.currentGroup.id, user.id).then(() => {
         alert(user.nickname + " has been removed from " + this.currentGroup.name + ".");
-        this.router.navigate(['/group', 'g'+this.currentGroup.id, 'settings']);
+        this.router.navigate(['/group', this.currentGroup.id, 'settings']);
       })
     }
   }
@@ -169,11 +161,15 @@ export class GroupSettingsComponent implements OnInit, OnDestroy {
       if (this.groupDescription.nativeElement.innerText != "No description.") {
         this.currentGroup.description = this.groupDescription.nativeElement.innerText;
       }
-      this.state.updateGroupToAPI(this.currentGroup.id, this.groupName.nativeElement.innerText, this.currentGroup.description, this.currentGroup.image_url).then(response => {
+      this.state.updateGroupToAPI(this.currentGroup.id,
+                                  this.groupName.nativeElement.innerText,
+                                  this.currentGroup.description,
+                                  this.currentGroup.image_url)
+          .then(() => {
         alert("Group details updated.");
         this.detailsEdited = false;
         this.state.updateGroupsFromApi(5, true);
-        this.router.navigate(['/group', 'g'+this.currentGroup.id, 'settings']);
+        this.router.navigate(['/group', this.currentGroup.id, 'settings']);
       })
     }
   }

@@ -2,10 +2,17 @@
 @import "../../../variables";
 
 @include notification();
+@include buttons();
 
 h3.header {
   @include subheader();
   margin-left: 1%;
+}
+
+button.new-group {
+  display: block;
+  width: 25%;
+  margin: 1% auto;
 }
 
 .group-avatar {

@@ -4,6 +4,8 @@ app-message:last-child > div.message {
 .user-avatar {
   height: 40px;
   width: 40px;
+  min-width: 40px;
+  min-height: 40px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
@@ -80,7 +82,7 @@ div.me {
 
 div.favorites-list {
   overflow-y: hidden;
-  max-height: 30px;
+  max-height: 40px;
   transition: 0.2s ease-in-out; }
   div.favorites-list i {
     color: #80D8FF;

@@ -89,6 +89,12 @@ export class StoreService {
     this.put(Group.storeKey + '_last_updated', Date.now());
   }
 
+  putGroup(group: Group): void {
+    let groups: Group[] = this.get(Group.storeKey);
+    groups.push(group);
+    this.putGroups(groups);
+  }
+
   updateGroup(group: Group) {
     let groups: Group[] = this.get(Group.storeKey);
     for (let g of groups) {

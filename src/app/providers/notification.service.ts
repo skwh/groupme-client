@@ -65,7 +65,7 @@ export class NotificationService {
   }
 
   private messageComponentIsOpen(): boolean {
-    return (this.group.currentGroupId != 0 && this.chat.currentChatId != 0);
+    return (this.group.currentGroupId != 0 || this.chat.currentChatId != 0);
   }
 
   private notificationIsForCurrentGroup(notification: FayeNotification): boolean {

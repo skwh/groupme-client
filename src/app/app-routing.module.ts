@@ -9,6 +9,7 @@ import { GroupSettingsComponent } from "./components/group-settings/group-settin
 import { SettingsComponent } from "./components/settings/settings.component";
 import { GroupMessagesComponent } from "./components/group-messages/group-messages.component";
 import { ChatMessagesComponent } from "./components/chat-messages/chat-messages.component";
+import { GroupCreateComponent } from "./components/group-create/group-create.component";
 
 const routes: Routes = [
   {
@@ -20,12 +21,16 @@ const routes: Routes = [
         component: MessagesComponent
       },
       {
-        path: 'group/:id',
-        component: GroupMessagesComponent
+        path: 'group/new',
+        component: GroupCreateComponent,
       },
       {
         path: 'group/:id/settings',
         component: GroupSettingsComponent,
+      },
+      {
+        path: 'group/:id',
+        component: GroupMessagesComponent
       },
       {
         path: 'chat/:id',

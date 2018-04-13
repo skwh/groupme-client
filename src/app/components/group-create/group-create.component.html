@@ -1,0 +1,56 @@
+<div class="page-wrapper">
+    <h1>Create a new Group</h1>
+    <form #groupForm="ngForm" (ngSubmit)="this.onSubmit()">
+        <div class="group-header">
+            <div class="group-avatar"></div>
+            <div class="group-name-field">
+                <label for="group-name">Group Name</label>
+                <input id="group-name" name="group.name" #name="ngModel" [(ngModel)]="model.name" required [class.alert]="!name.valid" />
+            </div>
+        </div>
+        <div class="group-members">
+            <h3>Known Members</h3>
+            <div class="known-members-list">
+                <ng-container *ngFor="let member of this.allMembers | alphabetize:'nickname'">
+                    <div *ngIf="member.id != this.state.currentUserId" class="member-entry">
+                        <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+                        <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+                        <div class="member-info">
+                            <p class="text">
+                                {{ member.nickname }}
+                            </p>
+                        </div>
+                        <div class="member-icon">
+                            <i *ngIf="!this.hasBeenAdded(member)" (click)="this.addMember(member)" class="material-icons">
+                                check
+                            </i>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <h3>Added Members</h3>
+            <div class="added-members-list">
+                <ng-container *ngFor="let member of this.addedMembers| alphabetize:'nickname'">
+                    <div class="member-entry">
+                        <img *ngIf="member.image_url != null" class="user-avatar" [src]="member.image_url" [alt]="member.nickname" />
+                        <div *ngIf="member.image_url == null" class="user-avatar">{{ member.nickname | initials }}</div>
+                        <div class="member-info">
+                            <p class="text">
+                                {{ member.nickname }}
+                            </p>
+                        </div>
+                        <div class="member-icon">
+                            <i (click)="this.removeMember(member)" class="material-icons">
+                                clear
+                            </i>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="warning">Cancel</button>
+            <button [disabled]="!groupForm.form.valid">Create</button>
+        </div>
+    </form>
+</div>

@@ -23,6 +23,7 @@ export class StateService {
     this.store.doLoad();
     this.currentAccessToken = this.store.get(this.ACCESS_TOKEN_KEY);
     this.currentUser = this.store.getMe();
+    this.currentUser.nickname = this.currentUser.name;
     this.currentUserId = this.currentUser.user_id;
     this.currentChannelId = this.store.getCurrentChannelId();
   }
@@ -99,6 +100,22 @@ export class StateService {
       group[property] = value;
       this.store.updateGroup(group);
     });
+  }
+
+  createGroup(group: Group): Promise<Group> {
+    return this.groupme.createNewGroup(this.currentAccessToken, group.name).then(value => {
+      this.store.putGroup(value);
+      return value;
+    });
+  }
+
+  addUserToGroup(group: Group, member: Member): Promise<boolean> {
+    return this.groupme.addUserToGroup(this.currentAccessToken, group.id, member, StateService.generateGUID());
+  }
+
+  addUsersToGroup(group: Group, members: Member[]): Promise<boolean> {
+    let guids: string[] = StateService.generateGUIDs(members.length);
+    return this.groupme.addUsersToGroup(this.currentAccessToken, group.id, members, guids);
   }
 
   destroyGroup(group_id: number): Promise<boolean> {
@@ -281,8 +298,20 @@ export class StateService {
 
 
   private static addGUIDtoMessage(message: Message): Message {
-    message.source_guid = ""+Date.now();
+    message.source_guid = StateService.generateGUID();
     return message;
+  }
+
+  private static generateGUID(): string {
+    return (""+Date.now())+Math.floor((Math.random()*10));
+  }
+
+  private static generateGUIDs(count: number): string[] {
+    let ids = [];
+    for (let i=0;i<count;i++) {
+      ids.push(StateService.generateGUID());
+    }
+    return ids;
   }
 
   private static currentChatIdIsGroup(chat_id: string): boolean {

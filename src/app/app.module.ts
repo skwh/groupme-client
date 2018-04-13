@@ -41,6 +41,7 @@ import { GroupMessagesComponent } from "./components/group-messages/group-messag
 import { ChatsService } from "./providers/chats.service";
 import { GroupsService } from "./providers/groups.service";
 import { EomIndicatorComponent } from "./components/eom-indicator/eom-indicator.component";
+import { GroupCreateComponent } from "./components/group-create/group-create.component";
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { EomIndicatorComponent } from "./components/eom-indicator/eom-indicator.
     ImageUploadComponent,
     AttachComponent,
     MentionsComponent,
+    GroupCreateComponent,
     ReversePipe,
     TruncatePipe,
     AlphabetizePipe,

@@ -1,4 +1,6 @@
-<h3 class="header">All Groups</h3>
+<h3 class="header">
+    All Groups
+</h3>
 <a *ngFor="let group of this.groups" class="group-container" [routerLink]="['/group', group.id]">
     <img *ngIf="group.image_url != null" [src]="group.image_url" [alt]="group.name" class="group-avatar" />
     <div *ngIf="group.image_url == null" class="group-avatar"></div>
@@ -10,6 +12,7 @@
         <a [routerLink]="['/group', group.id, 'settings']"><i class="material-icons">settings</i></a>
     </div>
 </a>
+<button class="new-group" [routerLink]="['/group/new']">New Group</button>
 <h3 class="header">Former Groups</h3>
 <a *ngFor="let group of this.formerGroups" class="group-container" [routerLink]="['/group', group.id]">
     <img *ngIf="group.image_url != null" [src]="group.image_url" [alt]="group.name" class="group-avatar" />

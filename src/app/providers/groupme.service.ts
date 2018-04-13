@@ -5,7 +5,8 @@ import { HttpClient } from "@angular/common/http";
 import "rxjs/add/operator/toPromise";
 import { Message } from "../models/message";
 import { Model } from "../models/model.interface";
-import { Member } from "../models/member";
+import { Member, MemberJson } from "../models/member";
+import { isUndefined } from "util";
 
 const BASE_URL = "https://api.groupme.com/v3";
 const IMAGE_SERVICE_URL = "https://image.groupme.com/";
@@ -59,7 +60,7 @@ export class GroupmeService {
         ).catch(this.handleError);
   }
 
-  createNewGroup(token: string, name: string, description?: string, image_url?: string, share?: boolean): Promise<boolean> {
+  createNewGroup(token: string, name: string, description?: string, image_url?: string, share?: boolean): Promise<Group> {
     const url = GroupmeService.safeGetApiURL('groups', token);
     return this.http.post(url, GroupmeService.safeGetPostBody([
         ['name', name],
@@ -68,7 +69,7 @@ export class GroupmeService {
         ['share', ""+share]
     ])).toPromise()
         .then(response => {
-          return true;
+          return GroupmeService.MakeSingleTfromJson(Group, response["response"]);
         })
         .catch(this.handleError);
   }
@@ -82,7 +83,7 @@ export class GroupmeService {
         ['office_mode', ""+office_mode],
         ['share', ""+share],
     ])).toPromise()
-        .then(response => {
+        .then(() => {
           return true;
         })
         .catch(this.handleError);
@@ -90,9 +91,9 @@ export class GroupmeService {
 
   destroyGroup(token: string, group_id: number): Promise<boolean> {
     const url = GroupmeService.safeGetApiURL(`groups/${group_id}/destroy`, token);
-    return this.http.post(url, {})
+    return this.http.post(url, "{}", {responseType: "text"})
         .toPromise()
-        .then(response => {
+        .then(() => {
           return true;
         })
         .catch(this.handleError);
@@ -102,7 +103,7 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL('groups/join', token);
     return this.http.post(url, {'group_id': group_id})
         .toPromise()
-        .then(response => {
+        .then(() => {
           return true;
         })
         .catch(this.handleError);
@@ -112,21 +113,76 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL('groups/change_owners', token);
     const request_body = GroupmeService.safeGetPostBody([
         ["group_id", ""+group_id],
-        ["user_id", ""+user_id]
+        ["owner_id", ""+user_id]
     ]);
     return this.http.post(url, { "requests": [request_body]})
         .toPromise()
-        .then(response => {
+        .then(() => {
           return true;
         })
         .catch(this.handleError);
+  }
+
+  addUserToGroup(token: string, group_id: number, member: Member, guid: string): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/members/add`, token);
+    const request_body = JSON.stringify({
+      "members": [GroupmeService.memberToJsonData(member, guid)]
+    });
+    return this.http.post(url, request_body)
+        .toPromise()
+        .then(() => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  addUsersToGroup(token: string, group_id: number, members: Member[], guids: string[]): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/members/add`, token);
+    const request_body = JSON.stringify({
+      "members": [...GroupmeService.membersToJsonData(members, guids)]
+    });
+    return this.http.post(url, request_body)
+        .toPromise()
+        .then(() => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  getUserAddResult(token: string, group_id: number, results_id: string): Promise<boolean> {
+    const url = GroupmeService.safeGetApiURL(`groups/${group_id}/members/results/${results_id}`, token);
+    return this.http.get(url)
+        .toPromise()
+        .then(() => {
+          return true;
+        })
+        .catch(this.handleError);
+  }
+
+  private static membersToJsonData(members: Member[], guids: string[]): MemberJson[] {
+    if (members.length != guids.length) {
+      console.error("Members and GUIDs length do not match!");
+    }
+    let data: MemberJson[] = [];
+    for (let i=0;i<members.length;i++) {
+      data[i] = GroupmeService.memberToJsonData(members[i], guids[i]);
+    }
+    return data;
+  }
+
+  private static memberToJsonData(member: Member, guid: string): MemberJson {
+    return {
+      nickname: (isUndefined(member.name))? member.nickname : member.name,
+      user_id: String(member.user_id),
+      guid: guid
+    };
   }
 
   removeUserFromGroup(token: string, group_id: number, membership_id: number): Promise<boolean> {
     const url = GroupmeService.safeGetApiURL(`groups/${group_id}/members/${membership_id}/remove`, token);
     return this.http.post(url, {})
         .toPromise()
-        .then(response => {
+        .then(() => {
           return true;
         })
         .catch(this.handleError);
@@ -170,7 +226,7 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL(`messages/${conversation_id}/${message_id}/like`, token);
     return this.http.post(url, null)
         .toPromise()
-        .then(response => { return true })
+        .then(() => { return true })
         .catch(this.handleError);
   }
 
@@ -178,7 +234,7 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL(`messages/${conversation_id}/${message_id}/unlike`, token);
     return this.http.post(url, null)
         .toPromise()
-        .then(response => { return true })
+        .then(() => { return true })
         .catch(this.handleError);
   }
 
@@ -186,7 +242,7 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL(`groups/${message.conversation_id}/messages`, token);
     return this.http.post(url, { "message": message })
         .toPromise()
-        .then(response => { return true })
+        .then(() => { return true })
         .catch(this.handleError);
   }
 
@@ -194,7 +250,7 @@ export class GroupmeService {
     const url = GroupmeService.safeGetApiURL('direct_messages', token);
     return this.http.post(url, { "direct_message" : message })
         .toPromise()
-        .then(response => { return true })
+        .then(() => { return true })
         .catch(this.handleError);
   }
 

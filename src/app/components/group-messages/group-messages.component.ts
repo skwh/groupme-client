@@ -73,7 +73,7 @@ export class GroupMessagesComponent implements OnInit, OnDestroy {
     //TODO(skwh): Push sent message to messages-list then wait for response as to success, mark as such.
     this.groups.sendMessage(message).then(result => {
       if (result) {
-        this.groups.groupMessagesSubject.next([message]);
+        // this.groups.groupMessagesSubject.next([message]);
       }
     })
   }

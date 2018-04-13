@@ -28,7 +28,7 @@
                 </p>
             </div>
             <div class="group-member-icons">
-                <i *ngIf="this.currentGroupOwnerIsMe && member.user_id != this.myUserId" (click)="makeOwner(member)" class="material-icons">person_add</i>
+                <i *ngIf="this.currentGroupOwnerIsMe && member.user_id != this.myUserId" (click)="makeOwner(member)" class="material-icons">arrow_upward</i>
                 <i *ngIf="!this.currentGroupOwnerIsMe" class="material-icons" (click)="removeFromGroup(member)">close</i>
             </div>
         </div>

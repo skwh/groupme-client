@@ -33,7 +33,7 @@ form > input {
     color: #C4C4C4; }
 
 form > input.invalid {
-  border: 2px solid red; }
+  border: 2px solid #FFA1A6; }
 
 h1 {
   font-family: "Quicksand", sans-serif;

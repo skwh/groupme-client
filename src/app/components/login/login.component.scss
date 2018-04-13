@@ -45,7 +45,7 @@ form>input {
 }
 
 form>input.invalid {
-  border: 2px solid red;
+  border: 2px solid $warning;
 }
 
 h1 {

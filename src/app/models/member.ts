@@ -22,3 +22,9 @@ export class Member implements Model {
 
   public static userStoreKey: string = "me";
 }
+
+export interface MemberJson {
+  nickname: string;
+  user_id: string;
+  guid: string;
+}
