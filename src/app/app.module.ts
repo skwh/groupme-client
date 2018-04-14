@@ -43,6 +43,7 @@ import { GroupsService } from "./providers/groups.service";
 import { EomIndicatorComponent } from "./components/eom-indicator/eom-indicator.component";
 import { GroupCreateComponent } from "./components/group-create/group-create.component";
 import { XorPipe } from "./pipes/xor.pipe";
+import { NmIndicatorComponent } from "./components/nm-indicator/nm-indicator.component";
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { XorPipe } from "./pipes/xor.pipe";
     AttachComponent,
     MentionsComponent,
     GroupCreateComponent,
+    NmIndicatorComponent,
     ReversePipe,
     TruncatePipe,
     AlphabetizePipe,

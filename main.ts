@@ -65,6 +65,8 @@ export class gmgApp {
       this.lastChannelId.push(this.currentChatId);
     } else {
       this.currentChannelIndex = -1;
+      this.currentGroupId = -1;
+      this.currentChatId = -1;
     }
   }
 

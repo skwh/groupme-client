@@ -91,7 +91,7 @@ export class gmgMenu {
           label: 'Settings for Current Group',
           accelerator: 'CmdOrCtrl+/',
           click () {
-            if (!isUndefined(GMG_APP_INSTANCE.currentGroupId) && GMG_APP_INSTANCE.currentGroupId !== -1) {
+            if (!isUndefined(GMG_APP_INSTANCE.currentGroupId) && !isNaN(GMG_APP_INSTANCE.currentGroupId) && GMG_APP_INSTANCE.currentGroupId !== -1) {
               gmgApp.navigateTo(gmgMenu.senderId, 'group/' + GMG_APP_INSTANCE.currentGroupId + '/settings/');
             }
           }

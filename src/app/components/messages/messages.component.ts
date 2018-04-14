@@ -1,15 +1,16 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { Message } from "../../models/message";
 import { Observable } from "rxjs/Observable";
 import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/switchMap';
+import { Subscription } from "rxjs/Subscription";
 
 @Component({
   selector: 'app-messages-list',
   templateUrl: 'messages.component.html',
   styleUrls: ['messages.component.scss']
 })
-export class MessagesComponent implements OnInit, AfterViewInit {
+export class MessagesComponent implements OnInit, OnDestroy {
 
   @Input() currentChannelNumber: number;
   @Input() currentUserId: number;
@@ -24,23 +25,31 @@ export class MessagesComponent implements OnInit, AfterViewInit {
 
   messageSubject: Subject<Message[]> = new Subject();
   messages$: Observable<Message[]> = this.messageSubject.asObservable();
+  messagesSubscription: Subscription;
   private _messages: Message[] = [];
 
   onloadScroll: boolean = false;
   reverseMessages: boolean = false;
   oldScrollHeight: number = 0;
+  newMessageIndicatorVisible: boolean = false;
 
   @ViewChild('messagesContainer') private messagesContainer: ElementRef;
 
   ngOnInit() {
-    this.messages$.subscribe(() => this.scrollToBottom());
+    this.messagesSubscription = this.messages$.subscribe(() => MessagesComponent.scrollToBottom());
+  }
+
+  ngOnDestroy() {
+    this.messagesSubscription.unsubscribe();
+    this.reverseMessages = false;
+    this.oldScrollHeight = 0;
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom();
+    MessagesComponent.scrollToBottom();
   }
 
-  ngAfterViewChecked() {
+  ngDoCheck() {
     if (this.reverseMessages) {
       this.scrollToOldPosition();
       this.reverseMessages = false;
@@ -57,6 +66,9 @@ export class MessagesComponent implements OnInit, AfterViewInit {
   private addMessage(message: Message): void {
     this._messages.push(message);
     this.messageSubject.next(this._messages);
+    if (!this.reverseMessages) {
+      this.newMessageIndicatorVisible = true;
+    }
   }
 
   private scrollToOldPosition(): void {
@@ -65,14 +77,22 @@ export class MessagesComponent implements OnInit, AfterViewInit {
         scrollHeight = total scrollable height of the element
         scrollTop = current scrolled amount
        */
+    console.log("Old Scroll height: " + this.oldScrollHeight);
     let newScrollHeight = this.getScrollHeight();
+    console.log("New scroll height: " + newScrollHeight);
     let oldPosition = newScrollHeight - this.oldScrollHeight;
+    console.log("old position: " + oldPosition);
     this.scrollToLocation(oldPosition);
   }
 
-  private scrollToBottom(): void {
+  private static scrollToBottom(): void {
     try {
-      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      let lastMessage = document.querySelector('.lastMessage');
+      if (lastMessage != null) {
+        lastMessage.scrollIntoView({
+         behavior: 'smooth'
+        });
+      }
     } catch(error) {
       console.error(error);
     }
@@ -95,7 +115,17 @@ export class MessagesComponent implements OnInit, AfterViewInit {
     if (ev.srcElement.scrollTop === 0) {
       console.log("At the top!");
       this.getPreviousMessages();
+    } else if (ev.srcElement.scrollTop === ev.srcElement.scrollHeight - 556) {
+      console.log("At the bottom!");
+      this.newMessageIndicatorVisible = false;
+    } else {
+      console.log(ev.srcElement.scrollHeight - ev.srcElement.scrollTop);
     }
+  }
+
+  newMessagesIndicatorClicked(): void {
+    MessagesComponent.scrollToBottom();
+    this.newMessageIndicatorVisible = false;
   }
 
   private getPreviousMessages(): void {

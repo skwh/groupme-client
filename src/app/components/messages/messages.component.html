@@ -1,11 +1,14 @@
+<app-nm-indicator [visible]="this.newMessageIndicatorVisible" (clicked)="this.newMessagesIndicatorClicked()"></app-nm-indicator>
 <div #messagesContainer class="messages-container" (scroll)="onScroll($event)">
     <app-eom-indicator [class.hidden]="!this.loadedAllMessages"></app-eom-indicator>
     <ng-container *ngFor="let message of this.messages$ | async | reverse
-     as messageArray; first as isFirst; index as i;">
+     as messageArray; first as isFirst; last as isLast; index as i;">
         <app-message [message]="message"
                      [previousMessage]="messageArray[i-1]"
                      [myUserId]="this.currentUserId"
                      [conversationId]="this.currentChannelNumber"
-                     [first]="isFirst"></app-message>
+                     [first]="isFirst"
+                     [class.firstMessage]="isFirst"
+                     [class.lastMessage]="isLast"></app-message>
     </ng-container>
 </div>

@@ -1,0 +1,24 @@
+@import "../../../variables";
+
+div {
+  background-color: $primary;
+  border-radius: 25px;
+  font-family: "Encode Sans", sans-serif;
+  color: black;
+  position: absolute;
+  z-index: 2;
+  padding: 0.5% 1%;
+  left: 52%;
+  bottom: 11%;
+  cursor: pointer;
+  box-shadow: 0 0 4px 0 black;
+
+  i {
+    vertical-align: middle;
+  }
+  transition: bottom 0.5s;
+}
+
+div.hidden {
+  bottom: 0;
+}
