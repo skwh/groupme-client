@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { StateService } from "../../providers/state.service";
 import { NgForm } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Settings } from "../../providers/store.service";
 
 @Component({
   selector: 'app-settings',
@@ -14,7 +15,7 @@ export class SettingsComponent implements OnInit {
 
   @ViewChild('settingsForm') form: NgForm;
 
-  settings: Object;
+  settings: Settings;
 
   ngOnInit() {
     this.settings = this.state.getAllSettings();

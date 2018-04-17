@@ -4,38 +4,59 @@ import { Chat } from "../models/chat";
 import { isNull } from "util";
 import { Member } from "../models/member";
 
+export interface NotificationSettings {
+  on: boolean;
+  forChats: boolean;
+  forGroups: boolean;
+  forAvatar: boolean;
+  forTopic: boolean;
+  frequency: number;
+}
+
+export interface ColorSettings {
+  nightMode: boolean;
+}
+
+export interface WindowSettings {
+  keepRunning: boolean;
+}
+
+export interface Settings {
+  notifications: NotificationSettings;
+  color: ColorSettings;
+  window: WindowSettings;
+}
+
+interface Store {
+  access_token: string;
+  groups: Group[];
+  groups_last_updated: number;
+  chats: Chat[];
+  chats_last_updated: number;
+  last_updated: number;
+  me: Member;
+  current_channel_id: string;
+  members: Member[];
+  settings: Settings;
+}
+
 @Injectable()
 export class StoreService {
   private localStore = window.localStorage;
 
   ACCESS_TOKEN_KEY = "access_token";
 
-  private store = {
-    'access_token': "",
-    'groups': [],
-    'groups_last_updated': 0,
-    'chats': [],
-    'chats_last_updated': 0,
-    'last_updated': 0,
-    'me': {},
-    'current_channel_id': '',
-    'members': [],
-    'settings': {
-      'notifications': {
-        'on': true,
-        'forChats': true,
-        'forGroups': true,
-        'forAvatar': true,
-        'forTopic': true,
-        'frequency': 1
-      },
-      'colors': {
-        'nightMode': false,
-      },
-      'window': {
-        'keepRunning': true
-      }
-    }
+  private store: Store = {
+    access_token: "",
+    groups: [],
+    groups_last_updated: 0,
+    chats: [],
+    chats_last_updated: 0,
+    last_updated: 0,
+    me: <Member> {},
+    current_channel_id: '',
+    members: [],
+    settings: <Settings> {},
   };
 
   clear(): void {

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { StoreService } from "./store.service";
+import { Settings, StoreService } from "./store.service";
 import { GroupmeService } from "./groupme.service";
 import { Group } from "../models/group";
 import { Chat } from "../models/chat";
@@ -245,7 +245,7 @@ export class StateService {
     return this.store.getSetting(key);
   }
 
-  getAllSettings(): Object {
+  getAllSettings(): Settings {
     return this.store.get("settings");
   }
 
